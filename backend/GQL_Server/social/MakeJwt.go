@@ -3,7 +3,7 @@ package social
 import (
 	"time"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/andru100/Social-Network-Microservice/model"
+	"github.com/andru100/Social-Network-Microservice/backend/GQL_Server/model"
 )
 
 func MakeJwt(userid *string, isauth bool) (string, error) {

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/net/context"
-	"github.com/andru100/Social-Network-Microservice/social"
+	"github.com/andru100/Social-Network-Microservice/backend/GQL_Server/social"
 )
 
 
