@@ -38,7 +38,7 @@ import (
     "github.com/99designs/gqlgen/graphql/handler"
     "github.com/99designs/gqlgen/graphql/handler/transport"
     "github.com/99designs/gqlgen/graphql/playground"
-    "github.com/andru100/Graphql-Social-Network/graph"
+    "github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/graph"
     //"github.com/andru100/Graphql-Social-Network/graph/social"
     "github.com/go-chi/chi"
     "github.com/gorilla/websocket"
