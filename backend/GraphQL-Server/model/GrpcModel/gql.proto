@@ -1,0 +1,136 @@
+syntax = "proto3";
+option go_package = "model/";
+//package GrpcMicroservice;
+
+service SocialGrpc {
+  rpc Chkauth(JwtdataInput) returns (Authd) {}
+  rpc GetAllComments(GetComments) returns (MongoFields) {}
+  rpc GetUserComments(GetComments) returns (MongoFields) {}
+  rpc SignIn(UsrsigninInput) returns (Jwtdata) {}
+  rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
+  rpc LikeComment(SendLikeInput) returns (MongoFields) {}
+  rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
+  rpc NewComment(SendCmtInput)returns (MongoFields) {}
+  //rpc PostFile(Upload) returns (MongoFields) {} 
+  rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
+}
+
+
+message GetComments {
+	string Username = 1 ;
+}
+
+message Authd  {
+	string AuthdUser = 1 ;
+}
+
+message Claims  {
+	string Username = 1 ; 
+}
+
+message GetUserCmts  {
+	string Page = 1 ;
+	string Username = 2 ; 
+}
+
+message Jwtdata  {
+	string Token = 1 ;
+}
+
+message JwtdataInput  {
+	string Token = 1 ; 
+}
+
+message Likes  {
+	string Username = 1 ;
+	string Profpic = 2 ; 
+}
+
+message MongoFields  {
+	string  Key = 1 ;
+	string ID = 2 ; 	 
+	string Username = 3 ;  
+	string Password = 4 ;   
+	string Email = 5 ;     
+	string Bio = 6 ; 
+	string Profpic = 7 ; 
+	repeated string Photos = 8 ;
+	int32 LastCommentNum = 9 ;
+	repeated PostData Posts = 10 ; //         []PostData `json:"Posts"`
+}
+
+message MsgCmts  {
+	string Username = 1 ;
+	string Comment = 2 ; 
+	string Profpic = 3 ;
+}
+
+message MutationInput  {
+	string Name = 1 ; 
+	string ID = 2;
+}
+
+message NewUserDataInput  {
+	string Username = 1 ; 
+	string Password = 2 ;
+	string Email = 3 ;
+}
+
+message PostData  {
+	string Username = 1 ; 
+	string SessionUser = 2 ; 
+	string MainCmt = 3 ; 
+	int32 PostNum = 4 ; 
+	string Time = 5 ;  
+	int64 TimeStamp = 6 ; 
+	string Date = 7 ;   
+	repeated MsgCmts Comments = 8 ; //    []MsgCmts `bson:"Comments" json:"Comments"`
+	repeated Likes Likes = 9 ; //   []Likes   `bson:"Likes" json:"Likes"`
+}
+
+message ReplyCommentInput  {
+	string AuthorUsername = 1 ; 
+	string ReplyUsername = 2 ; 
+	string ReplyComment = 3 ; 
+	string ReplyProfpic = 4 ; 
+	int32 PostIndx = 5 ;  
+	string ReturnPage = 6 ;
+}
+
+message SendCmtInput  {
+	string Username = 1 ; 
+	string SessionUser = 2 ;
+	string MainCmt = 3 ; 
+	string Time = 4 ;
+	int64 TimeStamp = 5 ;   
+	string Date = 6 ; 
+	string ReturnPage = 7 ;  
+}
+
+message SendLikeInput  {
+	string Username = 1 ; 
+	string LikedBy = 2 ; 
+	string LikeByPic = 3 ;  
+	int32 PostIndx = 4 ;   
+	string ReturnPage = 5 ; 
+}
+
+message UpdateBioInput  {
+	string Username = 1 ;
+	string Bio  = 2 ;     
+}
+
+message Usrsignin  {
+	string Username = 1 ;
+	string Password = 2 ;
+	string Email = 3 ; 
+	string Bio = 4 ; 
+	repeated string Photos = 5 ;
+	int32 LastCommentNum = 6 ;
+	repeated PostData Posts = 7 ;
+}
+
+message UsrsigninInput  {
+	string Username = 1 ; 
+	string Password = 2 ;
+}
