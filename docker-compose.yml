@@ -1,0 +1,63 @@
+version: '3'
+services:
+
+  frontend:
+    build: 
+      context: ./frontend
+      args:
+        - DOMAIN=${DOMAIN}
+        - CHKAUTH_PORT=${CHKAUTH_PORT} 
+        - POSTFILE_PORT=${POSTFILE_PORT} 
+        - POSTMSG_PORT=${POSTMSG_PORT} 
+        - SIGNIN_PORT=${SIGNIN_PORT} 
+        - SIGNUP_PORT=${SIGNUP_PORT} 
+        - STDGET_PORT=${STDGET_PORT} 
+        - UPDATEBIO_PORT=${UPDATEBIO_PORT} 
+
+    container_name: frontend
+    ports:
+      - 80:80
+
+  # Backend Services
+  
+  # backend-chkauth:
+  #   build: ./backend/services/ChkAuth
+  #   container_name: backend-chkauth
+  #   ports:
+  #     - 4001:4001
+
+  # backend-postfile:
+  #   build: ./backend/services/PostFile
+  #   container_name: backend-postfile
+  #   ports:
+  #     - 4002:4002
+
+  # backend-postmsg:
+  #   build: ./backend/services/PostMsg
+  #   container_name: backend-postmsg
+  #   ports:
+  #     - 4003:4003
+
+  # backend-signin:
+  #   build: ./backend/services/SignIn
+  #   container_name: backend-signin
+  #   ports:
+  #     - 4004:4004
+
+  # backend-signup:
+  #   build: ./backend/services/SignUp
+  #   container_name: backend-signup
+  #   ports:
+  #     - 4005:4005
+
+  # backend-stdget:
+  #   build: ./backend/services/StdGet
+  #   container_name: backend-stdget
+  #   ports:
+  #     - 4006:4006
+
+  # backend-updatebio:
+  #   build: ./backend/services/UpdateBio
+  #   container_name: backend-updatebio
+  #   ports:
+  #     - 4007:4007
