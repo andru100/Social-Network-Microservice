@@ -16,7 +16,7 @@ import (
 
 	//"github.com/99designs/gqlgen/graphql"
 	//"github.com/andru100/Graphql-Social-Network/graph/GrpcModel"
-	"github.com/andru100/Graphql-Social-Network/model"
+	"github.com/andru100/Social-Network-Microservice/model"
 	//"github.com/andru100/Graphql-Social-Network/graph/social"
 )
 

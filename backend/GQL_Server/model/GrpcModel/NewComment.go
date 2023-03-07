@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 	"errors"
-	"github.com/andru100/Graphql-Social-Network/social"
+	"github.com/andru100/Social-Network-Microservice/social"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
