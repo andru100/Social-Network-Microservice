@@ -38,11 +38,11 @@ func (s *Server) SignUp(ctx context.Context, newUserData *NewUserDataInput) (*Jw
 	social.Createbucket(newUserData.Username) // create bucket to store users files
 
 	//add error return when social package gets pushed
-	token := social.MakeJwt(&newUserData.Username, true) // make jwt with user id and auth true
+	token, err1 := MakeJwt(&newUserData.Username, true) // make jwt with user id and auth true
 
-	if err != nil {
-		return nil, err
+	if err1 != nil {
+		return nil, err1
 	}
 
-	return &Jwtdata{Token: token}, err
+	return &Jwtdata{Token: token}, err1 // or nil need to sort this
 }

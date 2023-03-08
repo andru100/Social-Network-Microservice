@@ -15,8 +15,8 @@ import (
 	//"google.golang.org/protobuf"
 
 	//"github.com/99designs/gqlgen/graphql"
-	//"github.com/andru100/Graphql-Social-Network/graph/GrpcModel"
-	"github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/model"
+	GrpcModel "github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/model"
+	model "github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/graph/model1"
 	//"github.com/andru100/Graphql-Social-Network/graph/social"
 )
 
@@ -32,16 +32,16 @@ func (r *mutationResolver) SignIn(ctx context.Context, input model.UsrsigninInpu
 	}
 	defer conn.Close()
 
-	//gql2rpc := model.JwtdataInput(input)
+	//gql2rpc := GrpcModel.JwtdataInput(input)
 
 	// data, err := protobuf.Marshal(&gql2rpc)
     // if err != nil {
     //     log.Fatal("marshaling error: ", err)
     // }
 
-	c := model.NewSocialGrpcClient(conn)
+	c := GrpcModel.NewSocialGrpcClient(conn)
 
-	test := model.UsrsigninInput{Username: input.Username, Password: input.Password }
+	test := GrpcModel.UsrsigninInput{Username: input.Username, Password: input.Password }
 
 	result, err := c.SignIn(context.Background(), &test)
 	
@@ -70,9 +70,9 @@ func (r *mutationResolver) SignUp(ctx context.Context, input model.NewUserDataIn
 	}
 	defer conn.Close()
 
-	c := model.NewSocialGrpcClient(conn)
+	c := GrpcModel.NewSocialGrpcClient(conn)
 
-	test := model.NewUserDataInput{Username: input.Username, Password: input.Password, Email: input.Username}
+	test := GrpcModel.NewUserDataInput{Username: input.Username, Password: input.Password, Email: input.Username}
 
 	result, err := c.SignUp(context.Background(), &test)
 	
@@ -101,9 +101,9 @@ func (r *mutationResolver) LikeComment(ctx context.Context, input model.SendLike
 	}
 	defer conn.Close()
 
-	c := model.NewSocialGrpcClient(conn)
+	c := GrpcModel.NewSocialGrpcClient(conn)
 
-	convert := model.SendLikeInput{}
+	convert := GrpcModel.SendLikeInput{}
 
 	wrapped, _ := json.Marshal(input)
     _ = json.Unmarshal(wrapped,&convert)
@@ -138,9 +138,9 @@ func (r *mutationResolver) ReplyComment(ctx context.Context, input model.ReplyCo
 	}
 	defer conn.Close()
 
-	c := model.NewSocialGrpcClient(conn)
+	c := GrpcModel.NewSocialGrpcClient(conn)
 
-	convert := model.ReplyCommentInput{}
+	convert := GrpcModel.ReplyCommentInput{}
 
 	wrapped, _ := json.Marshal(input)
     _ = json.Unmarshal(wrapped,&convert)
@@ -175,9 +175,9 @@ func (r *mutationResolver) NewComment(ctx context.Context, input model.SendCmtIn
 	}
 	defer conn.Close()
 
-	c := model.NewSocialGrpcClient(conn)
+	c := GrpcModel.NewSocialGrpcClient(conn)
 
-	convert := model.SendCmtInput{}
+	convert := GrpcModel.SendCmtInput{}
 
 	wrapped, _ := json.Marshal(input)
     _ = json.Unmarshal(wrapped,&convert)
@@ -225,9 +225,9 @@ func (r *mutationResolver) UpdateBio(ctx context.Context, input model.UpdateBioI
 	}
 	defer conn.Close()
 
-	c := model.NewSocialGrpcClient(conn)
+	c := GrpcModel.NewSocialGrpcClient(conn)
 
-	convert := model.UpdateBioInput{}
+	convert := GrpcModel.UpdateBioInput{}
 
 	wrapped, _ := json.Marshal(input)
     _ = json.Unmarshal(wrapped,&convert)
@@ -258,16 +258,16 @@ func (r *queryResolver) Chkauth(ctx context.Context, input model.JwtdataInput) (
 	}
 	defer conn.Close()
 
-	//gql2rpc := model.JwtdataInput(input)
+	//gql2rpc := GrpcModel.JwtdataInput(input)
 
 	// data, err := protobuf.Marshal(&gql2rpc)
     // if err != nil {
     //     log.Fatal("marshaling error: ", err)
     // }
 
-	c := model.NewSocialGrpcClient(conn)
+	c := GrpcModel.NewSocialGrpcClient(conn)
 
-	test := model.JwtdataInput{Token: input.Token}
+	test := GrpcModel.JwtdataInput{Token: input.Token}
 
 	result, err := c.Chkauth(context.Background(), &test)
 	
@@ -299,9 +299,9 @@ func (r *queryResolver) GetAllComments(ctx context.Context, username string) (*m
 	}
 	defer conn.Close()
 
-	c := model.NewSocialGrpcClient(conn)
+	c := GrpcModel.NewSocialGrpcClient(conn)
 
-	result, err := c.GetAllComments(context.Background(), &model.GetComments{Username: username})
+	result, err := c.GetAllComments(context.Background(), &GrpcModel.GetComments{Username: username})
 	
 	if err != nil {
 		return nil, err
@@ -329,9 +329,9 @@ func (r *queryResolver) GetUserComments(ctx context.Context, username string) (*
 	}
 	defer conn.Close()
 
-	c := model.NewSocialGrpcClient(conn)
+	c := GrpcModel.NewSocialGrpcClient(conn)
 
-	result, err := c.GetUserComments(context.Background(), &model.GetComments{Username: username})
+	result, err := c.GetUserComments(context.Background(), &GrpcModel.GetComments{Username: username})
 	
 	if err != nil {
 		return nil, err

@@ -1,9 +1,8 @@
-package social
+package model
 
 import (
 	"time"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/model"
 )
 
 func MakeJwt(userid *string, isauth bool) (string, error) {
@@ -13,7 +12,7 @@ func MakeJwt(userid *string, isauth bool) (string, error) {
 	expirationTime := time.Now().Add(5 * time.Minute)
 	
 	// Create the JWT claims, which includes the username and expiry time
-	claims := model.ClaimsChk{
+	claims := ClaimsChk{
 		Username: *userid,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),

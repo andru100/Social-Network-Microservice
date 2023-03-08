@@ -6,6 +6,7 @@
 #scalar Upload
 #scalar Time
 scalar Int64
+scalar Int32
 #scalar Map
 # scalar Authd
 # scalar AuthCheck
@@ -52,7 +53,7 @@ type Authd  {
 
 type GetUserCmts  {
 	Page:     String! 
-	UserName: String! 
+	Username: String! 
 }
 
 type Claims  {
@@ -93,7 +94,7 @@ type PostData  {
 	Username:    String!    	
 	SessionUser: String!    
 	MainCmt:     String!   
-	PostNum:     Int!      
+	PostNum:     Int32!      
 	Time:        String!   
 	TimeStamp:   Int64! 
 	Date:        String!    
@@ -113,7 +114,7 @@ type Usrsignin  {
 	Email:          String!    
 	Bio:            String!   
 	Photos:         [String!]!
-	LastCommentNum: Int!     
+	LastCommentNum: Int32!     
 	Posts:          [PostData!]! 
 }
 
@@ -128,7 +129,7 @@ type MongoFields  {
 	Bio:            String!           
 	Profpic:        String!   
 	Photos:         [String!]!         
-	LastCommentNum: Int!             
+	LastCommentNum: Int32!             
 	Posts:          [PostData!]!       #   
 }
 
@@ -139,7 +140,7 @@ type MongoFields  {
 # 	IsReply:    String!  
 # 	LikeSent:   Likes! #  
 # 	ReplyCmt:   MsgCmts! #  
-# 	PostIndx:   Int!      
+# 	PostIndx:   Int32!      
 # 	Key2updt:   String!  
 # 	Value2updt: PostData! # 
 # }
@@ -171,7 +172,7 @@ input UsrsigninInput  {
 # 	IsReply:    String!  
 # 	LikeSent:   Likes #  
 # 	ReplyCmt:   MsgCmts #  
-# 	PostIndx:   Int      
+# 	PostIndx:   Int32      
 # 	Key2updt:   String!  
 # 	Value2updt: PostData # 
 # }
@@ -180,7 +181,7 @@ input SendLikeInput  {
 	Username:   String!  
 	LikedBy:   String! #  
 	LikeByPic:   String! #  
-	PostIndx:   Int!,
+	PostIndx:   Int32!,
 	ReturnPage: String!,
 }
 
@@ -199,7 +200,7 @@ input ReplyCommentInput  {
 	ReplyUsername: String! 
 	ReplyComment:  String! 
 	ReplyProfpic:  String!
-	PostIndx:   Int!   
+	PostIndx:   Int32!   
 	ReturnPage: String! 
 }
 

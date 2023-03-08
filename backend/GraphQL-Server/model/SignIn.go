@@ -28,8 +28,8 @@ func (s *Server) SignIn(ctx context.Context, in *UsrsigninInput) (*Jwtdata, erro
 	}
 
 	if result.Password == in.Password {
-		token := social.MakeJwt(&in.Username, true)
-		return &Jwtdata{Token: token}, nil
+		token, err1 := MakeJwt(&in.Username, true)
+		return &Jwtdata{Token: token}, err1
 	} else {
 		return nil, errors.New("password does not match")
 	}
