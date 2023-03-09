@@ -16,7 +16,7 @@ func main() {
     router := gin.New()  
     router.Use(social.CORSMiddleware())
     router.POST("/postfile/:userid", Postfile)// posts profile pic and users media
-    router.Run(":4002")
+    router.Run(":4010")
     //router.RunTLS(":4001", "./server.pem", "./server.key")
 }
 

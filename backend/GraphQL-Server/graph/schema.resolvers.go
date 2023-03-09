@@ -8,16 +8,8 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"encoding/json"
-
-	//"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	//"google.golang.org/protobuf"
-
-	//"github.com/99designs/gqlgen/graphql"
-	GrpcModel "github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/model"
-	model "github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/graph/model1"
-	//"github.com/andru100/Graphql-Social-Network/graph/social"
+	"github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/model"
 )
 
 // Signin is the resolver for the Signin field.
@@ -32,30 +24,15 @@ func (r *mutationResolver) SignIn(ctx context.Context, input model.UsrsigninInpu
 	}
 	defer conn.Close()
 
-	//gql2rpc := GrpcModel.JwtdataInput(input)
+	c := model.NewSocialGrpcClient(conn)
 
-	// data, err := protobuf.Marshal(&gql2rpc)
-    // if err != nil {
-    //     log.Fatal("marshaling error: ", err)
-    // }
-
-	c := GrpcModel.NewSocialGrpcClient(conn)
-
-	test := GrpcModel.UsrsigninInput{Username: input.Username, Password: input.Password }
-
-	result, err := c.SignIn(context.Background(), &test)
+	result, err := c.SignIn(context.Background(), &input)
 	
 	if err != nil {
 		return nil, err
 	}
 	
-	convertback := model.Jwtdata{}
-
-	wrappedback, _ := json.Marshal(result)
-    _ = json.Unmarshal(wrappedback,&convertback)
-	
-	
-	return &convertback, err
+	return result, err
 }
 
 // SignUp is the resolver for the SignUp field.
@@ -70,23 +47,15 @@ func (r *mutationResolver) SignUp(ctx context.Context, input model.NewUserDataIn
 	}
 	defer conn.Close()
 
-	c := GrpcModel.NewSocialGrpcClient(conn)
+	c := model.NewSocialGrpcClient(conn)
 
-	test := GrpcModel.NewUserDataInput{Username: input.Username, Password: input.Password, Email: input.Username}
-
-	result, err := c.SignUp(context.Background(), &test)
+	result, err := c.SignUp(context.Background(), &input)
 	
 	if err != nil {
 		return nil, err
 	}
 	
-	convert := model.Jwtdata{}
-
-	wrapped, _ := json.Marshal(result)
-    _ = json.Unmarshal(wrapped,&convert)
-	
-	return &convert, err
-	panic(fmt.Errorf("not implemented: Signin - Signin"))
+	return result, err
 }
 
 // LikeComment is the resolver for the LikeComment field.
@@ -101,27 +70,16 @@ func (r *mutationResolver) LikeComment(ctx context.Context, input model.SendLike
 	}
 	defer conn.Close()
 
-	c := GrpcModel.NewSocialGrpcClient(conn)
-
-	convert := GrpcModel.SendLikeInput{}
-
-	wrapped, _ := json.Marshal(input)
-    _ = json.Unmarshal(wrapped,&convert)
+	c := model.NewSocialGrpcClient(conn)
 
 
-	result, err := c.LikeComment(context.Background(), &convert)
+	result, err := c.LikeComment(context.Background(), &input)
 	
 	if err != nil {
 		return nil, err
 	}
-
-	convertback := model.MongoFields{}
-
-	wrappedback, _ := json.Marshal(result)
-    _ = json.Unmarshal(wrappedback,&convertback)
 	
-	
-	return &convertback, err
+	return result, err
 	
 	panic(fmt.Errorf("not implemented: LikeComment - LikeComment"))
 }
@@ -138,29 +96,16 @@ func (r *mutationResolver) ReplyComment(ctx context.Context, input model.ReplyCo
 	}
 	defer conn.Close()
 
-	c := GrpcModel.NewSocialGrpcClient(conn)
-
-	convert := GrpcModel.ReplyCommentInput{}
-
-	wrapped, _ := json.Marshal(input)
-    _ = json.Unmarshal(wrapped,&convert)
+	c := model.NewSocialGrpcClient(conn)
 
 
-	result, err := c.ReplyComment(context.Background(), &convert)
+	result, err := c.ReplyComment(context.Background(), &input)
 	
 	if err != nil {
 		return nil, err
 	}
 	
-	
-	convertback := model.MongoFields{}
-
-	wrappedback, _ := json.Marshal(result)
-    _ = json.Unmarshal(wrappedback,&convertback)
-	
-	
-	return &convertback, err
-	
+	return result, err
 }
 
 // NewComment is the resolver for the NewComment field.
@@ -175,30 +120,16 @@ func (r *mutationResolver) NewComment(ctx context.Context, input model.SendCmtIn
 	}
 	defer conn.Close()
 
-	c := GrpcModel.NewSocialGrpcClient(conn)
-
-	convert := GrpcModel.SendCmtInput{}
-
-	wrapped, _ := json.Marshal(input)
-    _ = json.Unmarshal(wrapped,&convert)
+	c := model.NewSocialGrpcClient(conn)
 
 
-	result, err := c.NewComment(context.Background(), &convert)
+	result, err := c.NewComment(context.Background(), &input)
 	
 	if err != nil {
 		return nil, err
 	}
 	
-	
-	convertback := model.MongoFields{}
-
-	wrappedback, _ := json.Marshal(result)
-    _ = json.Unmarshal(wrappedback,&convertback)
-	
-	
-	return &convertback, err
-	
-	
+	return result, err
 }
 
 // PostFile is the resolver for the PostFile field.
@@ -225,27 +156,15 @@ func (r *mutationResolver) UpdateBio(ctx context.Context, input model.UpdateBioI
 	}
 	defer conn.Close()
 
-	c := GrpcModel.NewSocialGrpcClient(conn)
+	c := model.NewSocialGrpcClient(conn)
 
-	convert := GrpcModel.UpdateBioInput{}
-
-	wrapped, _ := json.Marshal(input)
-    _ = json.Unmarshal(wrapped,&convert)
-
-
-	result, err := c.UpdateBio(context.Background(), &convert)
+	result, err := c.UpdateBio(context.Background(), &input)
 	
 	if err != nil {
 		return nil, err
 	}
 	
-	convertback := model.MongoFields{}
-
-	wrappedback, _ := json.Marshal(result)
-    _ = json.Unmarshal(wrappedback,&convertback)
-	
-	
-	return &convertback, err
+	return result, err
 }
 
 // Chkauth is the resolver for the Chkauth field.
@@ -258,33 +177,15 @@ func (r *queryResolver) Chkauth(ctx context.Context, input model.JwtdataInput) (
 	}
 	defer conn.Close()
 
-	//gql2rpc := GrpcModel.JwtdataInput(input)
+	c := model.NewSocialGrpcClient(conn)
 
-	// data, err := protobuf.Marshal(&gql2rpc)
-    // if err != nil {
-    //     log.Fatal("marshaling error: ", err)
-    // }
-
-	c := GrpcModel.NewSocialGrpcClient(conn)
-
-	test := GrpcModel.JwtdataInput{Token: input.Token}
-
-	result, err := c.Chkauth(context.Background(), &test)
+	result, err := c.Chkauth(context.Background(), &input)
 	
 	if err != nil {
 		return nil, err
 	}
 	
-	convertback := model.Authd{}
-
-	wrappedback, _ := json.Marshal(result)
-    _ = json.Unmarshal(wrappedback,&convertback)
-	
-	
-	return &convertback, err
-
-
-	panic(fmt.Errorf("not implemented: Chkauth - Chkauth"))
+	return result, err
 }
 
 // GetAllComments is the resolver for the GetAllComments field.
@@ -299,21 +200,15 @@ func (r *queryResolver) GetAllComments(ctx context.Context, username string) (*m
 	}
 	defer conn.Close()
 
-	c := GrpcModel.NewSocialGrpcClient(conn)
+	c := model.NewSocialGrpcClient(conn)
 
-	result, err := c.GetAllComments(context.Background(), &GrpcModel.GetComments{Username: username})
+	result, err := c.GetAllComments(context.Background(), &model.GetComments{Username: username})
 	
 	if err != nil {
 		return nil, err
 	}
 	
-	convertback := model.MongoFields{}
-
-	wrappedback, _ := json.Marshal(result)
-    _ = json.Unmarshal(wrappedback,&convertback)
-	
-	
-	return &convertback, err
+	return result, err
 	
 }
 
@@ -329,21 +224,15 @@ func (r *queryResolver) GetUserComments(ctx context.Context, username string) (*
 	}
 	defer conn.Close()
 
-	c := GrpcModel.NewSocialGrpcClient(conn)
+	c := model.NewSocialGrpcClient(conn)
 
-	result, err := c.GetUserComments(context.Background(), &GrpcModel.GetComments{Username: username})
+	result, err := c.GetUserComments(context.Background(), &model.GetComments{Username: username})
 	
 	if err != nil {
 		return nil, err
 	}
 	
-	convertback := model.MongoFields{}
-
-	wrappedback, _ := json.Marshal(result)
-    _ = json.Unmarshal(wrappedback,&convertback)
-	
-	
-	return &convertback, err
+	return result, err
 }
 
 // Mutation returns MutationResolver implementation.

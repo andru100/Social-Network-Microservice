@@ -13,7 +13,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	model "github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/graph/model1"
+	"github.com/andru100/Social-Network-Microservice/backend/GraphQL-Server/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -54,7 +54,7 @@ type ComplexityRoot struct {
 
 	GetUserCmts struct {
 		Page     func(childComplexity int) int
-		UserName func(childComplexity int) int
+		Username func(childComplexity int) int
 	}
 
 	Jwtdata struct {
@@ -173,12 +173,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.GetUserCmts.Page(childComplexity), true
 
-	case "GetUserCmts.UserName":
-		if e.complexity.GetUserCmts.UserName == nil {
+	case "GetUserCmts.Username":
+		if e.complexity.GetUserCmts.Username == nil {
 			break
 		}
 
-		return e.complexity.GetUserCmts.UserName(childComplexity), true
+		return e.complexity.GetUserCmts.Username(childComplexity), true
 
 	case "Jwtdata.Token":
 		if e.complexity.Jwtdata.Token == nil {
@@ -613,7 +613,7 @@ func (ec *executionContext) field_Mutation_LikeComment_args(ctx context.Context,
 	var arg0 model.SendLikeInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNSendLikeInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐSendLikeInput(ctx, tmp)
+		arg0, err = ec.unmarshalNSendLikeInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐSendLikeInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -628,7 +628,7 @@ func (ec *executionContext) field_Mutation_NewComment_args(ctx context.Context, 
 	var arg0 model.SendCmtInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNSendCmtInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐSendCmtInput(ctx, tmp)
+		arg0, err = ec.unmarshalNSendCmtInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐSendCmtInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -643,7 +643,7 @@ func (ec *executionContext) field_Mutation_ReplyComment_args(ctx context.Context
 	var arg0 model.ReplyCommentInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNReplyCommentInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐReplyCommentInput(ctx, tmp)
+		arg0, err = ec.unmarshalNReplyCommentInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐReplyCommentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -658,7 +658,7 @@ func (ec *executionContext) field_Mutation_SignIn_args(ctx context.Context, rawA
 	var arg0 model.UsrsigninInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUsrsigninInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐUsrsigninInput(ctx, tmp)
+		arg0, err = ec.unmarshalNUsrsigninInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐUsrsigninInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -673,7 +673,7 @@ func (ec *executionContext) field_Mutation_SignUp_args(ctx context.Context, rawA
 	var arg0 model.NewUserDataInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewUserDataInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐNewUserDataInput(ctx, tmp)
+		arg0, err = ec.unmarshalNNewUserDataInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐNewUserDataInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -688,7 +688,7 @@ func (ec *executionContext) field_Mutation_UpdateBio_args(ctx context.Context, r
 	var arg0 model.UpdateBioInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUpdateBioInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐUpdateBioInput(ctx, tmp)
+		arg0, err = ec.unmarshalNUpdateBioInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐUpdateBioInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -703,7 +703,7 @@ func (ec *executionContext) field_Query_Chkauth_args(ctx context.Context, rawArg
 	var arg0 model.JwtdataInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNJwtdataInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐJwtdataInput(ctx, tmp)
+		arg0, err = ec.unmarshalNJwtdataInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐJwtdataInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -927,8 +927,8 @@ func (ec *executionContext) fieldContext_GetUserCmts_Page(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _GetUserCmts_UserName(ctx context.Context, field graphql.CollectedField, obj *model.GetUserCmts) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_GetUserCmts_UserName(ctx, field)
+func (ec *executionContext) _GetUserCmts_Username(ctx context.Context, field graphql.CollectedField, obj *model.GetUserCmts) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_GetUserCmts_Username(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -941,7 +941,7 @@ func (ec *executionContext) _GetUserCmts_UserName(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserName, nil
+		return obj.Username, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -958,7 +958,7 @@ func (ec *executionContext) _GetUserCmts_UserName(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_GetUserCmts_UserName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_GetUserCmts_Username(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "GetUserCmts",
 		Field:      field,
@@ -1481,9 +1481,9 @@ func (ec *executionContext) _MongoFields_LastCommentNum(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int32)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt322int32(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MongoFields_LastCommentNum(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1493,7 +1493,7 @@ func (ec *executionContext) fieldContext_MongoFields_LastCommentNum(ctx context.
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int32 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1525,9 +1525,9 @@ func (ec *executionContext) _MongoFields_Posts(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]model.PostData)
+	res := resTmp.([]*model.PostData)
 	fc.Result = res
-	return ec.marshalNPostData2ᚕgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐPostDataᚄ(ctx, field.Selections, res)
+	return ec.marshalNPostData2ᚕᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐPostDataᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MongoFields_Posts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1713,13 +1713,14 @@ func (ec *executionContext) _Mutation_SignIn(ctx context.Context, field graphql.
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.Jwtdata)
 	fc.Result = res
-	return ec.marshalOJwtdata2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐJwtdata(ctx, field.Selections, res)
+	return ec.marshalOJwtdata2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐJwtdata(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_SignIn(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1768,13 +1769,14 @@ func (ec *executionContext) _Mutation_SignUp(ctx context.Context, field graphql.
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.Jwtdata)
 	fc.Result = res
-	return ec.marshalOJwtdata2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐJwtdata(ctx, field.Selections, res)
+	return ec.marshalOJwtdata2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐJwtdata(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_SignUp(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1823,13 +1825,14 @@ func (ec *executionContext) _Mutation_LikeComment(ctx context.Context, field gra
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.MongoFields)
 	fc.Result = res
-	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMongoFields(ctx, field.Selections, res)
+	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMongoFields(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_LikeComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1896,13 +1899,14 @@ func (ec *executionContext) _Mutation_ReplyComment(ctx context.Context, field gr
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.MongoFields)
 	fc.Result = res
-	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMongoFields(ctx, field.Selections, res)
+	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMongoFields(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_ReplyComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1969,13 +1973,14 @@ func (ec *executionContext) _Mutation_NewComment(ctx context.Context, field grap
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.MongoFields)
 	fc.Result = res
-	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMongoFields(ctx, field.Selections, res)
+	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMongoFields(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_NewComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2042,13 +2047,14 @@ func (ec *executionContext) _Mutation_UpdateBio(ctx context.Context, field graph
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.MongoFields)
 	fc.Result = res
-	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMongoFields(ctx, field.Selections, res)
+	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMongoFields(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_UpdateBio(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2255,9 +2261,9 @@ func (ec *executionContext) _PostData_PostNum(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int32)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt322int32(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PostData_PostNum(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2267,7 +2273,7 @@ func (ec *executionContext) fieldContext_PostData_PostNum(ctx context.Context, f
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int32 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2431,9 +2437,9 @@ func (ec *executionContext) _PostData_Comments(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]model.MsgCmts)
+	res := resTmp.([]*model.MsgCmts)
 	fc.Result = res
-	return ec.marshalNMsgCmts2ᚕgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMsgCmtsᚄ(ctx, field.Selections, res)
+	return ec.marshalNMsgCmts2ᚕᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMsgCmtsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PostData_Comments(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2483,9 +2489,9 @@ func (ec *executionContext) _PostData_Likes(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]model.Likes)
+	res := resTmp.([]*model.Likes)
 	fc.Result = res
-	return ec.marshalNLikes2ᚕgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐLikesᚄ(ctx, field.Selections, res)
+	return ec.marshalNLikes2ᚕᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐLikesᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PostData_Likes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2525,13 +2531,14 @@ func (ec *executionContext) _Query_Chkauth(ctx context.Context, field graphql.Co
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.Authd)
 	fc.Result = res
-	return ec.marshalOAuthd2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐAuthd(ctx, field.Selections, res)
+	return ec.marshalOAuthd2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐAuthd(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_Chkauth(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2580,13 +2587,14 @@ func (ec *executionContext) _Query_GetAllComments(ctx context.Context, field gra
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.MongoFields)
 	fc.Result = res
-	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMongoFields(ctx, field.Selections, res)
+	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMongoFields(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_GetAllComments(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2653,13 +2661,14 @@ func (ec *executionContext) _Query_GetUserComments(ctx context.Context, field gr
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.MongoFields)
 	fc.Result = res
-	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMongoFields(ctx, field.Selections, res)
+	return ec.marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMongoFields(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_GetUserComments(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2726,6 +2735,7 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -2799,6 +2809,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return graphql.Null
 	}
 	if resTmp == nil {
 		return graphql.Null
@@ -3081,9 +3092,9 @@ func (ec *executionContext) _Usrsignin_LastCommentNum(ctx context.Context, field
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int32)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt322int32(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Usrsignin_LastCommentNum(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3093,7 +3104,7 @@ func (ec *executionContext) fieldContext_Usrsignin_LastCommentNum(ctx context.Co
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int32 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3125,9 +3136,9 @@ func (ec *executionContext) _Usrsignin_Posts(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]model.PostData)
+	res := resTmp.([]*model.PostData)
 	fc.Result = res
-	return ec.marshalNPostData2ᚕgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐPostDataᚄ(ctx, field.Selections, res)
+	return ec.marshalNPostData2ᚕᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐPostDataᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Usrsignin_Posts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5094,7 +5105,7 @@ func (ec *executionContext) unmarshalInputReplyCommentInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PostIndx"))
-			it.PostIndx, err = ec.unmarshalNInt2int(ctx, v)
+			it.PostIndx, err = ec.unmarshalNInt322int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5230,7 +5241,7 @@ func (ec *executionContext) unmarshalInputSendLikeInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PostIndx"))
-			it.PostIndx, err = ec.unmarshalNInt2int(ctx, v)
+			it.PostIndx, err = ec.unmarshalNInt322int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5401,9 +5412,9 @@ func (ec *executionContext) _GetUserCmts(ctx context.Context, sel ast.SelectionS
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "UserName":
+		case "Username":
 
-			out.Values[i] = ec._GetUserCmts_UserName(ctx, field, obj)
+			out.Values[i] = ec._GetUserCmts_Username(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -5624,6 +5635,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	})
 
 	out := graphql.NewFieldSet(fields)
+	var invalids uint32
 	for i, field := range fields {
 		innerCtx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
 			Object: field.Name,
@@ -5674,6 +5686,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		}
 	}
 	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5770,6 +5785,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	})
 
 	out := graphql.NewFieldSet(fields)
+	var invalids uint32
 	for i, field := range fields {
 		innerCtx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
 			Object: field.Name,
@@ -5856,6 +5872,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		}
 	}
 	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -6277,13 +6296,13 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
+func (ec *executionContext) unmarshalNInt322int32(ctx context.Context, v interface{}) (int32, error) {
+	res, err := graphql.UnmarshalInt32(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
+func (ec *executionContext) marshalNInt322int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
+	res := graphql.MarshalInt32(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -6307,16 +6326,12 @@ func (ec *executionContext) marshalNInt642int64(ctx context.Context, sel ast.Sel
 	return res
 }
 
-func (ec *executionContext) unmarshalNJwtdataInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐJwtdataInput(ctx context.Context, v interface{}) (model.JwtdataInput, error) {
+func (ec *executionContext) unmarshalNJwtdataInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐJwtdataInput(ctx context.Context, v interface{}) (model.JwtdataInput, error) {
 	res, err := ec.unmarshalInputJwtdataInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNLikes2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐLikes(ctx context.Context, sel ast.SelectionSet, v model.Likes) graphql.Marshaler {
-	return ec._Likes(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNLikes2ᚕgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐLikesᚄ(ctx context.Context, sel ast.SelectionSet, v []model.Likes) graphql.Marshaler {
+func (ec *executionContext) marshalNLikes2ᚕᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐLikesᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Likes) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -6340,7 +6355,7 @@ func (ec *executionContext) marshalNLikes2ᚕgithubᚗcomᚋandru100ᚋGraphql�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNLikes2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐLikes(ctx, sel, v[i])
+			ret[i] = ec.marshalNLikes2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐLikes(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6360,11 +6375,17 @@ func (ec *executionContext) marshalNLikes2ᚕgithubᚗcomᚋandru100ᚋGraphql�
 	return ret
 }
 
-func (ec *executionContext) marshalNMsgCmts2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMsgCmts(ctx context.Context, sel ast.SelectionSet, v model.MsgCmts) graphql.Marshaler {
-	return ec._MsgCmts(ctx, sel, &v)
+func (ec *executionContext) marshalNLikes2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐLikes(ctx context.Context, sel ast.SelectionSet, v *model.Likes) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Likes(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMsgCmts2ᚕgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMsgCmtsᚄ(ctx context.Context, sel ast.SelectionSet, v []model.MsgCmts) graphql.Marshaler {
+func (ec *executionContext) marshalNMsgCmts2ᚕᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMsgCmtsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MsgCmts) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -6388,7 +6409,7 @@ func (ec *executionContext) marshalNMsgCmts2ᚕgithubᚗcomᚋandru100ᚋGraphql
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNMsgCmts2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMsgCmts(ctx, sel, v[i])
+			ret[i] = ec.marshalNMsgCmts2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMsgCmts(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6408,16 +6429,22 @@ func (ec *executionContext) marshalNMsgCmts2ᚕgithubᚗcomᚋandru100ᚋGraphql
 	return ret
 }
 
-func (ec *executionContext) unmarshalNNewUserDataInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐNewUserDataInput(ctx context.Context, v interface{}) (model.NewUserDataInput, error) {
+func (ec *executionContext) marshalNMsgCmts2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMsgCmts(ctx context.Context, sel ast.SelectionSet, v *model.MsgCmts) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MsgCmts(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNNewUserDataInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐNewUserDataInput(ctx context.Context, v interface{}) (model.NewUserDataInput, error) {
 	res, err := ec.unmarshalInputNewUserDataInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPostData2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐPostData(ctx context.Context, sel ast.SelectionSet, v model.PostData) graphql.Marshaler {
-	return ec._PostData(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNPostData2ᚕgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐPostDataᚄ(ctx context.Context, sel ast.SelectionSet, v []model.PostData) graphql.Marshaler {
+func (ec *executionContext) marshalNPostData2ᚕᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐPostDataᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PostData) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -6441,7 +6468,7 @@ func (ec *executionContext) marshalNPostData2ᚕgithubᚗcomᚋandru100ᚋGraphq
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPostData2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐPostData(ctx, sel, v[i])
+			ret[i] = ec.marshalNPostData2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐPostData(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6461,17 +6488,27 @@ func (ec *executionContext) marshalNPostData2ᚕgithubᚗcomᚋandru100ᚋGraphq
 	return ret
 }
 
-func (ec *executionContext) unmarshalNReplyCommentInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐReplyCommentInput(ctx context.Context, v interface{}) (model.ReplyCommentInput, error) {
+func (ec *executionContext) marshalNPostData2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐPostData(ctx context.Context, sel ast.SelectionSet, v *model.PostData) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._PostData(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNReplyCommentInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐReplyCommentInput(ctx context.Context, v interface{}) (model.ReplyCommentInput, error) {
 	res, err := ec.unmarshalInputReplyCommentInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNSendCmtInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐSendCmtInput(ctx context.Context, v interface{}) (model.SendCmtInput, error) {
+func (ec *executionContext) unmarshalNSendCmtInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐSendCmtInput(ctx context.Context, v interface{}) (model.SendCmtInput, error) {
 	res, err := ec.unmarshalInputSendCmtInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNSendLikeInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐSendLikeInput(ctx context.Context, v interface{}) (model.SendLikeInput, error) {
+func (ec *executionContext) unmarshalNSendLikeInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐSendLikeInput(ctx context.Context, v interface{}) (model.SendLikeInput, error) {
 	res, err := ec.unmarshalInputSendLikeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -6523,12 +6560,12 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) unmarshalNUpdateBioInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐUpdateBioInput(ctx context.Context, v interface{}) (model.UpdateBioInput, error) {
+func (ec *executionContext) unmarshalNUpdateBioInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐUpdateBioInput(ctx context.Context, v interface{}) (model.UpdateBioInput, error) {
 	res, err := ec.unmarshalInputUpdateBioInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUsrsigninInput2githubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐUsrsigninInput(ctx context.Context, v interface{}) (model.UsrsigninInput, error) {
+func (ec *executionContext) unmarshalNUsrsigninInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐUsrsigninInput(ctx context.Context, v interface{}) (model.UsrsigninInput, error) {
 	res, err := ec.unmarshalInputUsrsigninInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -6786,7 +6823,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAuthd2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐAuthd(ctx context.Context, sel ast.SelectionSet, v *model.Authd) graphql.Marshaler {
+func (ec *executionContext) marshalOAuthd2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐAuthd(ctx context.Context, sel ast.SelectionSet, v *model.Authd) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -6819,14 +6856,14 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOJwtdata2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐJwtdata(ctx context.Context, sel ast.SelectionSet, v *model.Jwtdata) graphql.Marshaler {
+func (ec *executionContext) marshalOJwtdata2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐJwtdata(ctx context.Context, sel ast.SelectionSet, v *model.Jwtdata) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Jwtdata(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋGraphqlᚑSocialᚑNetworkᚋgraphᚋmodelᚐMongoFields(ctx context.Context, sel ast.SelectionSet, v *model.MongoFields) graphql.Marshaler {
+func (ec *executionContext) marshalOMongoFields2ᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋGraphQLᚑServerᚋmodelᚐMongoFields(ctx context.Context, sel ast.SelectionSet, v *model.MongoFields) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

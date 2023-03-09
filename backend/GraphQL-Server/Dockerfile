@@ -6,8 +6,8 @@ COPY . .
 
 RUN go mod download
 
-RUN go build -o /Backend
+RUN go build -o /backend-graphql
 
-EXPOSE 8080 8081
+EXPOSE 8080 
 
-CMD ["/Backend"]
+CMD ["/backend-graphql"]
