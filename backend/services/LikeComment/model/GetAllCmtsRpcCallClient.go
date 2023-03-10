@@ -20,7 +20,7 @@ func Rpc2GetAllCmts (in *GetComments) (*MongoFields, error) {
 
 	var conn *grpc.ClientConn
 	
-	conn, err := grpc.Dial(":4009", grpc.WithInsecure())
+	conn, err := grpc.Dial(":4008", grpc.WithInsecure())
 	
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)

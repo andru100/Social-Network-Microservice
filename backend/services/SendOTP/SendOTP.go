@@ -2,10 +2,7 @@ package main
 
 import (
 	"fmt"
-	//"net/http"
-	//"crypto/rand"
 	"math/rand"
-    //"encoding/base32"
 	"time"
 
 	"github.com/andru100/Social-Network/backend/social"

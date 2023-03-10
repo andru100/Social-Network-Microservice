@@ -7,11 +7,11 @@ import (
 	"errors"
 	"time"
 	"net"
-	//"github.com/andru100/Social-Network-Microservices/Social"
-	"github.com/andru100/Social-Network/backend/social"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc"
-	"github.com/andru100/Social-Network-Microservices/SignUp/model"
+	"github.com/andru100/Social-Network-Microservices/backend/services/SignUp/model"
+	"github.com/andru100/Social-Network-Microservices/backend/services/SignUp/utils"
 )
 
 type Server struct {
@@ -42,7 +42,7 @@ func main() {
 
 func (s *Server) SignUp(ctx context.Context, newUserData *model.NewUserDataInput) (*model.Jwtdata, error) { // takes id and sets up bucket and mongodb
 
-	collection := social.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
+	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
 
 	ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
 
@@ -67,14 +67,14 @@ func (s *Server) SignUp(ctx context.Context, newUserData *model.NewUserDataInput
 	}
 
 
-	social.Createbucket(newUserData.Username) // create bucket to store users files
+	utils.Createbucket(newUserData.Username) // create bucket to store users files
 
 	//add error return when coial package gets pushed
-	token := social.MakeJwt(&newUserData.Username, true) // make jwt with user id and auth true
+	token, err2 := model.MakeJwt(&newUserData.Username, true) // make jwt with user id and auth true
 
-	if err != nil {
-		return nil, err
+	if err2 != nil {
+		return nil, err2
 	}
 
-	return &model.Jwtdata{Token: token}, err
+	return &model.Jwtdata{Token: token}, err2
 }

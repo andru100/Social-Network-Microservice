@@ -6,17 +6,12 @@ import (
 	"net"
 	"errors"
 	"log"
-	//"net/http"
 	"sort"
 	"time"
 	"google.golang.org/grpc"
-	//"github.com/andru100/Graphql-Social-Network/graph/model"
-	"github.com/andru100/Social-Network-Microservices/GetUserComments/model"
-	//"github.com/andru100/Graphql-Social-Network/graph/model"
-	"github.com/andru100/Social-Network/backend/social"
-	//"github.com/gin-gonic/gin"
+	"github.com/andru100/Social-Network-Microservices/backend/services/GetUserComments/model"
+	"github.com/andru100/Social-Network-Microservices/backend/services/GetUserComments/utils"
 	"go.mongodb.org/mongo-driver/bson"
-	//"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Server struct {
@@ -46,14 +41,15 @@ func main() {
 func (s *Server) GetUserComments(ctx context.Context, in *model.GetComments) (*model.MongoFields, error) {
 
 	
-	collection := social.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
+	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
 	currentDoc := model.MongoFields{}
 	ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
 
 	err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&currentDoc)
 	if err != nil {
-		err = errors.New("unable to find users data")
-		return nil, err
+		err5 := errors.New("unable to find users data")
+		fmt.Println(err5, err, in.Username)
+		return nil, err5
 	}
 
 	sort.Slice(currentDoc.Posts, func(i, j int) bool { // needs to be done on adding post and remove this

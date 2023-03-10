@@ -8,17 +8,16 @@ import (
 	"sort"
 	"time"
 	//"google.golang.org/grpc"
-	//"github.com/andru100/Graphql-Social-Network/graph/model"
-	//"github.com/andru100/Social-Network-Microservices/GetAllComments/model"
-	"github.com/andru100/Social-Network/backend/social"
+	"github.com/andru100/Social-Network-Microservices/backend/services/LikeComment/utils"
 	//"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+
 func (s *Server) GetAllComments(ctx context.Context, in *GetComments) (*MongoFields, error) { // gets comments for all friends/users, for the home page feed
 
-	collection := social.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
+	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
 
 	currentDoc := MongoFields{}
 

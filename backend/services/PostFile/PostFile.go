@@ -9,12 +9,13 @@ import (
 	"io/ioutil"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-    "github.com/andru100/Social-Network/backend/social"
+    "github.com/andru100/Social-Network-Microservices/backend/services/PostFile/utils"
+    "github.com/andru100/Social-Network-Microservices/backend/services/PostFile/model"
 )
 
 func main() {
     router := gin.New()  
-    router.Use(social.CORSMiddleware())
+    router.Use(utils.CORSMiddleware())
     router.POST("/postfile/:userid", Postfile)// posts profile pic and users media
     router.Run(":4010")
     //router.RunTLS(":4001", "./server.pem", "./server.key")
@@ -37,9 +38,9 @@ func Postfile(c *gin.Context) {//Takes file from request form, runs upload func,
     
     requestType := c.PostForm("type")
 
-    collection := Client.Database("datingapp").Collection("userdata")
+    collection := utils.Client.Database("datingapp").Collection("userdata")
 
-    imgaddress, err := Uploaditem(&userid, &filename, &fileread)// upload func returns uploaded img url
+    imgaddress, err := utils.Uploaditem(&userid, &filename, &fileread)// upload func returns uploaded img url
     
     if err != nil {
         c.IndentedJSON(http.StatusBadRequest, err)

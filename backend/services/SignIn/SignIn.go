@@ -12,8 +12,8 @@ import (
 	"golang.org/x/net/context"
 	//"github.com/andru100/Social-Network-Microservices/Social" once pushed
 
-	"github.com/andru100/Social-Network/backend/social"
-	"github.com/andru100/Social-Network-Microservices/SignIn/model"
+	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
+	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/model"
 	//jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -45,7 +45,7 @@ func main() {
 
 func (s *Server) SignIn(ctx context.Context, in *model.UsrsigninInput) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb
 
-	collection := social.Client.Database("datingapp").Collection("userdata") // connect to db and collection
+	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection
 
 	result := model.MongoFields{}
 
@@ -61,8 +61,8 @@ func (s *Server) SignIn(ctx context.Context, in *model.UsrsigninInput) (*model.J
 	}
 
 	if result.Password == in.Password {
-		token := social.MakeJwt(&in.Username, true)
-		return &model.Jwtdata{Token: token}, nil
+		token, err2 := model.MakeJwt(&in.Username, true)
+		return &model.Jwtdata{Token: token}, err2
 	} else {
 		return nil, errors.New("password does not match")
 	}

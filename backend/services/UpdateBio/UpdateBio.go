@@ -8,8 +8,8 @@ import (
 	"errors"
 	"time"
 	"google.golang.org/grpc"
-	"github.com/andru100/Social-Network-Microservices/UpdateBio/model"
-	"github.com/andru100/Social-Network/backend/social"
+	"github.com/andru100/Social-Network-Microservices/backend/services/UpdateBio/model"
+	"github.com/andru100/Social-Network-Microservices/backend/services/UpdateBio/utils"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -40,7 +40,7 @@ func main() {
 
 func (s *Server) UpdateBio (ctx context.Context, in *model.UpdateBioInput) (*model.MongoFields, error) { // updates user bio section
 	
-	collection := social.Client.Database("datingapp").Collection("userdata")
+	collection := utils.Client.Database("datingapp").Collection("userdata")
 
 	filter := bson.M{"Username": in.Username}
 

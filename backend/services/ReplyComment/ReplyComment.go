@@ -5,16 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net"
-	//"sort"
 	"time"
 	"errors"
-	//"github.com/andru100/Graphql-Social-Network/graph/model"
 	"google.golang.org/grpc"
-	"github.com/andru100/Social-Network-Microservices/ReplyComment/model"
-	"github.com/andru100/Social-Network/backend/social"
-	//"github.com/gin-gonic/gin"
+	"github.com/andru100/Social-Network-Microservices/backend/services/ReplyComment/model"
+	"github.com/andru100/Social-Network-Microservices/backend/services/ReplyComment/utils"
 	"go.mongodb.org/mongo-driver/bson"
-	//"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Server struct {
@@ -44,7 +40,7 @@ func main() {
 
 func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput) (*model.MongoFields, error) {// adds replies to users comments mongo doc
 
-	collection := social.Client.Database("datingapp").Collection("userdata")
+	collection := utils.Client.Database("datingapp").Collection("userdata")
 
 	currentDoc := model.MongoFields{}
 

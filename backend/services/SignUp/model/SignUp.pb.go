@@ -1097,13 +1097,13 @@ type Usrsignin struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username       string      `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty"`
-	Password       string      `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty"`
-	Email          string      `protobuf:"bytes,3,opt,name=Email,proto3" json:"Email,omitempty"`
-	Bio            string      `protobuf:"bytes,4,opt,name=Bio,proto3" json:"Bio,omitempty"`
-	Photos         []string    `protobuf:"bytes,5,rep,name=Photos,proto3" json:"Photos,omitempty"`
-	LastCommentNum int32       `protobuf:"varint,6,opt,name=LastCommentNum,proto3" json:"LastCommentNum,omitempty"`
-	Posts          []*PostData `protobuf:"bytes,7,rep,name=Posts,proto3" json:"Posts,omitempty"`
+	Username       string      `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty" bson:"Username"`
+	Password       string      `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty" bson:"Password"`
+	Email          string      `protobuf:"bytes,3,opt,name=Email,proto3" json:"Email,omitempty" bson:"Email`
+	Bio            string      `protobuf:"bytes,4,opt,name=Bio,proto3" json:"Bio,omitempty" bson:"Bio"`
+	Photos         []string    `protobuf:"bytes,5,rep,name=Photos,proto3" json:"Photos,omitempty" bson:"Photos`
+	LastCommentNum int32       `protobuf:"varint,6,opt,name=LastCommentNum,proto3" json:"LastCommentNum,omitempty" bson:"LastCommentNum"`
+	Posts          []*PostData `protobuf:"bytes,7,rep,name=Posts,proto3" json:"Posts,omitempty" bson:"Posts"`
 }
 
 func (x *Usrsignin) Reset() {

@@ -5,17 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net"
-	// "sort"
 	"time"
 	"errors"
 
 	"google.golang.org/grpc"
-	"github.com/andru100/Social-Network/backend/social"
-	"github.com/andru100/Social-Network-Microservices/NewComment/model"
-	
+	"github.com/andru100/Social-Network-Microservices/backend/services/NewComment/utils"
+	"github.com/andru100/Social-Network-Microservices/backend/services/NewComment/model"
 	"go.mongodb.org/mongo-driver/bson"
-	//"go.mongodb.org/mongo-driver/mongo/options"
-	//"github.com/andru100/Graphql-Social-Network/graph/model"
 )
 
 type Server struct {
@@ -45,7 +41,7 @@ func main() {
 
 func (s *Server) NewComment (ctx context.Context, in *model.SendCmtInput) (*model.MongoFields, error) {
 	
-	collection := social.Client.Database("datingapp").Collection("userdata")
+	collection := utils.Client.Database("datingapp").Collection("userdata")
 
 	currentDoc := model.MongoFields{}
 

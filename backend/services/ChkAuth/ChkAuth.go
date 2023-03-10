@@ -7,10 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 	"golang.org/x/net/context"
-
-
-	//"github.com/andru100/Social-Network-Microservices/Social"
-	"github.com/andru100/Social-Network-Microservices/ChkAuth/model"
+	"github.com/andru100/Social-Network-Microservices/backend/services/ChkAuth/model"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
