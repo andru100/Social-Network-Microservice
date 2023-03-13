@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN HOSTIP=${HOSTIP}
+ENV HOSTIP=${HOSTIP}
 
 RUN go mod download
 

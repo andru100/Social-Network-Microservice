@@ -370,16 +370,16 @@ type MongoFields struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key            string      `protobuf:"bytes,1,opt,name=Key,proto3" json:"Key,omitempty"`
-	ID             string      `protobuf:"bytes,2,opt,name=ID,proto3" json:"ID,omitempty"`
-	Username       string      `protobuf:"bytes,3,opt,name=Username,proto3" json:"Username,omitempty"`
-	Password       string      `protobuf:"bytes,4,opt,name=Password,proto3" json:"Password,omitempty"`
-	Email          string      `protobuf:"bytes,5,opt,name=Email,proto3" json:"Email,omitempty"`
-	Bio            string      `protobuf:"bytes,6,opt,name=Bio,proto3" json:"Bio,omitempty"`
-	Profpic        string      `protobuf:"bytes,7,opt,name=Profpic,proto3" json:"Profpic,omitempty"`
-	Photos         []string    `protobuf:"bytes,8,rep,name=Photos,proto3" json:"Photos,omitempty"`
-	LastCommentNum int32       `protobuf:"varint,9,opt,name=LastCommentNum,proto3" json:"LastCommentNum,omitempty"`
-	Posts          []*PostData `protobuf:"bytes,10,rep,name=Posts,proto3" json:"Posts,omitempty"` //         []PostData `json:"Posts"`
+	Key            string      `protobuf:"bytes,1,opt,name=Key,proto3" json:"Key,omitempty" bson:"Key,omitempty"`
+	ID             string      `protobuf:"bytes,2,opt,name=ID,proto3" json:"ID,omitempty" bson:"ID,omitempty"`
+	Username       string      `protobuf:"bytes,3,opt,name=Username,proto3" json:"Username,omitempty" bson:"Username,omitempty"`
+	Password       string      `protobuf:"bytes,4,opt,name=Password,proto3" json:"Password,omitempty" bson:"Password,omitempty"`
+	Email          string      `protobuf:"bytes,5,opt,name=Email,proto3" json:"Email,omitempty" bson:"Email,omitempty"`
+	Bio            string      `protobuf:"bytes,6,opt,name=Bio,proto3" json:"Bio,omitempty" bson:"Bio,omitempty"`
+	Profpic        string      `protobuf:"bytes,7,opt,name=Profpic,proto3" json:"Profpic,omitempty bson:"Profpic,omitempty"`
+	Photos         []string    `protobuf:"bytes,8,rep,name=Photos,proto3" json:"Photos,omitempty" bson:"Photos,omitempty"`
+	LastCommentNum int32       `protobuf:"varint,9,opt,name=LastCommentNum,proto3" json:"LastCommentNum,omitempty" bson:"LastCommentNum,omitempty"`
+	Posts          []*PostData `protobuf:"bytes,10,rep,name=Posts,proto3" json:"Posts,omitempty" bjson:"Posts,omitempty"` //         []PostData `json:"Posts"`
 }
 
 func (x *MongoFields) Reset() {
@@ -670,15 +670,15 @@ type PostData struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username    string     `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty"`
-	SessionUser string     `protobuf:"bytes,2,opt,name=SessionUser,proto3" json:"SessionUser,omitempty"`
-	MainCmt     string     `protobuf:"bytes,3,opt,name=MainCmt,proto3" json:"MainCmt,omitempty"`
-	PostNum     int32      `protobuf:"varint,4,opt,name=PostNum,proto3" json:"PostNum,omitempty"`
-	Time        string     `protobuf:"bytes,5,opt,name=Time,proto3" json:"Time,omitempty"`
-	TimeStamp   int64      `protobuf:"varint,6,opt,name=TimeStamp,proto3" json:"TimeStamp,omitempty"`
-	Date        string     `protobuf:"bytes,7,opt,name=Date,proto3" json:"Date,omitempty"`
-	Comments    []*MsgCmts `protobuf:"bytes,8,rep,name=Comments,proto3" json:"Comments,omitempty"` //    []MsgCmts `bson:"Comments" json:"Comments"`
-	Likes       []*Likes   `protobuf:"bytes,9,rep,name=Likes,proto3" json:"Likes,omitempty"`       //   []Likes   `bson:"Likes" json:"Likes"`
+	Username    string     `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty" bson:"Username"`
+	SessionUser string     `protobuf:"bytes,2,opt,name=SessionUser,proto3" json:"SessionUser,omitempty" bson:"SessionUser"`
+	MainCmt     string     `protobuf:"bytes,3,opt,name=MainCmt,proto3" json:"MainCmt,omitempty" bson:"MainCmt"`
+	PostNum     int32      `protobuf:"varint,4,opt,name=PostNum,proto3" json:"PostNum,omitempty" bson:"PostNum"` //    int32      `bson:"PostNum" json:"PostNum"
+	Time        string     `protobuf:"bytes,5,opt,name=Time,proto3" json:"Time,omitempty" bson:"Time"`
+	TimeStamp   int64      `protobuf:"varint,6,opt,name=TimeStamp,proto3" json:"TimeStamp,omitempty" bson:"TimeStamp"`
+	Date        string     `protobuf:"bytes,7,opt,name=Date,proto3" json:"Date,omitempty" bson:"Date"`
+	Comments    []*MsgCmts `protobuf:"bytes,8,rep,name=Comments,proto3" json:"Comments,omitempty" bson:"Comments"` //    []MsgCmts `bson:"Comments" json:"Comments"`
+	Likes       []*Likes   `protobuf:"bytes,9,rep,name=Likes,proto3" json:"Likes,omitempty" bson: "Likes" `       //   []Likes   `bson:"Likes" json:"Likes"`
 }
 
 func (x *PostData) Reset() {

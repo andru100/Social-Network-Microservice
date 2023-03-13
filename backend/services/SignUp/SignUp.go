@@ -58,9 +58,7 @@ func (s *Server) SignUp(ctx context.Context, newUserData *model.NewUserDataInput
 		return nil, err
 	}
 
-	
-
-	createuser := model.Usrsignin{Username: newUserData.Username, Email: newUserData.Email, Password: "depriciated", Photos: []string{}, LastCommentNum: 0, Posts: []*model.PostData{} }
+	createuser := model.MongoFields{Username: newUserData.Username, Email: newUserData.Email, Password: "depreciated", Profpic: "https://adminajh46unique.s3.eu-west-2.amazonaws.com/default-profile-pic.jpg", Photos: []string{}, LastCommentNum: 0, Posts: []*model.PostData{} }
 
 	//username not in use so add new userdata struct
 	_, err = collection.InsertOne(context.TODO(), createuser)

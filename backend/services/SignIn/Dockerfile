@@ -14,4 +14,4 @@ RUN go build -o /signin-service
 EXPOSE 4001
 
 #run executable when container is run
-CMD ["/signin-service'"]
+CMD ["/signin-service"]

@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	
 	"context"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -22,29 +22,3 @@ var Sess, Err2 = session.NewSession(&aws.Config{ //start a aws session by settin
 	Region: aws.String("eu-west-2")},
 )
 var Uniqueadr = "ajh46unique" // used to make s3 file upload filenames unique
-
-
-func SetupConnections() {
-
-	// connect db globally so all funcs can use client
-	var ClientOptions = options.Client().ApplyURI("mongodb+srv://andru:1q1q1q@cluster0.tccti.mongodb.net/cluster0?retryWrites=true&w=majority") // Set client options
-
-	var Client, _ = mongo.Connect(context.TODO(), ClientOptions) // Connect to MongoDB
-
-	var Err1 = Client.Ping(context.TODO(), nil) // Check the connection
-
-	if Err1 == nil {
-		fmt.Println("mongo is kl")
-	}
-
-	var Sess, Err2 = session.NewSession(&aws.Config{ //start a aws session by setting the region
-		Region: aws.String("eu-west-2")},
-	)
-
-	if Err2 != nil {
-		fmt.Println("err in create session", Err2, Sess)
-	}
-
-	//var Uniqueadr = "ajh46unique" // used to make s3 file upload filenames unique
-
-}

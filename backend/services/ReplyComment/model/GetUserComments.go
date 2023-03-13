@@ -2,21 +2,12 @@ package model
 
 import (
 	"context"
-	//"fmt"
-	//"net"
 	"errors"
-	//"log"
-	//"net/http"
 	"sort"
 	"time"
-	//"google.golang.org/grpc"
-	//"github.com/andru100/Graphql-Social-Network/graph/model"
-	//"github.com/andru100/Social-Network-Microservices/GetUserComments/model"
-	//"github.com/andru100/Graphql-Social-Network/graph/model"
+	
 	"github.com/andru100/Social-Network/backend/social"
-	//"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	//"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func (s *Server) GetUserComments(ctx context.Context, in *GetComments) (*MongoFields, error) {

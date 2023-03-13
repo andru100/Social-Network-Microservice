@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 	"net/http"
@@ -23,13 +22,11 @@ func main() {
 
 
 func Postfile(c *gin.Context) {//Takes file from request form, runs upload func, puts in s3, returns s3 address.
-    
-    go utils.SetupConnections()
 
     file, header, err := c.Request.FormFile("file") // get file from request body
     
     if err != nil {
-        fmt.Println(err)
+        log.Println(err)
     }
  
     filename := header.Filename
@@ -45,7 +42,6 @@ func Postfile(c *gin.Context) {//Takes file from request form, runs upload func,
     imgaddress, err := utils.Uploaditem(&userid, &filename, &fileread)// upload func returns uploaded img url
     
     if err != nil {
-        fmt.Println("upload err is", err)
         c.IndentedJSON(http.StatusBadRequest, err)
     }
 

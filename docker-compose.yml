@@ -3,10 +3,10 @@ services:
 
   frontend:
     build: 
-      context: ./Frontend-React
+      context: ./frontend-react
       args:
         - REACT_APP_BACKEND_GRAPHQL=${REACT_APP_BACKEND_GRAPHQL}
-        - REACT_APP_BACKEND_UPLOAD =${REACT_APP_BACKEND_UPLOAD} 
+        - REACT_APP_BACKEND_UPLOAD=${REACT_APP_BACKEND_UPLOAD} 
         - REACT_APP_FRONTEND=${REACT_APP_FRONTEND} 
 
     container_name: Frontend
@@ -46,17 +46,17 @@ services:
     ports:
       - 4009:4009
 
-#  backend-signin:
-#    build: ./backend/services/SignIn
-#    container_name: backend-signin
-#    ports:
-#      - 4001:4001
-
-  backend-signup:
-    build: ./backend/services/SignUp
-    container_name: backend-signup
+  backend-signin:
+    build: ./backend/services/SignIn
+    container_name: backend-signin
     ports:
-      - 4002:4002
+      - 4001:4001
+
+  # backend-signup:
+  #   build: ./backend/services/SignUp
+  #   container_name: backend-signup
+  #   ports:
+  #     - 4002:4002
 
   backend-likecomment:
     build: 
@@ -91,8 +91,8 @@ services:
     ports:
       - 4006:4006
 
-  backend-postfile-service:
-     build: ./backend/services/PostFile
-     container_name: backend-PostFile
-     ports:
-       - 4010:4010
+  # backend-postfile-service:
+  #    build: ./backend/services/PostFile
+  #    container_name: backend-PostFile
+  #    ports:
+  #      - 4010:4010

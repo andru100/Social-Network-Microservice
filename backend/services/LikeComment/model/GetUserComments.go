@@ -2,13 +2,10 @@ package model
 
 import (
 	"context"
-	//"fmt"
-	//"net"
 	"errors"
-	//"log"
 	"sort"
 	"time"
-	//"google.golang.org/grpc"
+	
 	"github.com/andru100/Social-Network-Microservices/backend/services/LikeComment/utils"
 	"go.mongodb.org/mongo-driver/bson"
 )
