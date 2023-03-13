@@ -1,16 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\backend",
-    "\\backend\\graphql-server",
-    "\\backend\\graphql-server\\graph",
-    "\\backend\\services",
-    "\\backend\\services\\ReplyComment",
-    "\\backend\\services\\SignIn",
-    "\\backend\\services\\SignIn\\model",
-    "\\backend\\services\\SignUp",
-    "\\backend\\services\\SignUp\\model"
+    ""
   ],
-  "SelectedNode": "\\backend\\graphql-server\\graph\\schema.resolvers.go",
+  "SelectedNode": "\\C:\\Users\\devteam\\Source\\Repos\\Social-Network-Microservice",
   "PreviewInSolutionExplorer": false
 }
