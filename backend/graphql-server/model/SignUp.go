@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"time"
+	"log"
+	"golang.org/x/crypto/bcrypt"
 	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -25,7 +27,7 @@ func (s *Server) SignUp(ctx context.Context, newUserData *NewUserDataInput) (*Jw
 		return nil, err
 	}
 
-	createuser := Usrsignin{Username: newUserData.Username, Email: newUserData.Email, Password: newUserData.Password, Photos: []string{}, LastCommentNum: 0, Posts: []*PostData{} }
+	createuser := Usrsignin{Username: newUserData.Username, Email: newUserData.Email, Password: "depreciated", Photos: []string{}, LastCommentNum: 0, Posts: []*PostData{} }
 
 	//username not in use so add new userdata struct
 	_, err = collection.InsertOne(context.TODO(), createuser)
@@ -34,14 +36,34 @@ func (s *Server) SignUp(ctx context.Context, newUserData *NewUserDataInput) (*Jw
 		return nil, err
 	}
 
+	password := hashAndSalt([]byte(newUserData.Password))
+	
+	db := utils.Client.Database("datingapp").Collection("security")
 
-	utils.Createbucket(newUserData.Username) // create bucket to store users files
+	security :=	Security{Username: newUserData.Username, Password: password, OTP: OTP{}}
 
-	token, err1 := MakeJwt(&newUserData.Username, true) // make jwt with user id and auth true
+	_ , err = db.InsertOne(context.TODO(), security)
+	if err != nil {
+		return nil, err
+	}
 
+
+	utils.Createbucket(newUserData.Username) 
+
+	token, err1 := MakeJwt(&newUserData.Username, true)
 	if err1 != nil {
 		return nil, err1
 	}
 
-	return &Jwtdata{Token: token}, err1 // or nil need to sort this
+	return &Jwtdata{Token: token}, err1
+}
+
+
+func hashAndSalt(pwd []byte) string {
+    
+    hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+    if err != nil {
+        log.Println(err)
+    }
+    return string(hash)
 }

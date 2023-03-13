@@ -4,23 +4,10 @@
 
 
 #scalar Upload
-#scalar Time
+scalar Time
 scalar Int64
 scalar Int32
 #scalar Map
-# scalar Authd
-# scalar AuthCheck
-# scalar GetUserCmts
-# scalar Claims
-# scalar Jwtdata
-# scalar MsgCmts
-# scalar Likes
-# scalar PasswordChk
-# scalar PostData
-# scalar NewUserData
-# scalar Usrsignin
-# scalar MongoFields
-# scalar Stdputstruct
 
 type Query {
   Chkauth(input: JwtdataInput!) : Authd
@@ -214,4 +201,15 @@ input UpdateBioInput  {
 # 	File: Upload!
 # 	#Type: String!
 # }
+
+type Security {
+	Username: String! 
+	Password: String! 
+	OTP: 	OTP!
+}	
+
+type OTP {
+	OTP: String
+	OTPExpire: Time
+}	
 

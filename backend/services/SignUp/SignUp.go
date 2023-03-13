@@ -10,6 +10,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc"
+	"golang.org/x/crypto/bcrypt"
 	"github.com/andru100/Social-Network-Microservices/backend/services/SignUp/model"
 	"github.com/andru100/Social-Network-Microservices/backend/services/SignUp/utils"
 )
@@ -57,12 +58,24 @@ func (s *Server) SignUp(ctx context.Context, newUserData *model.NewUserDataInput
 		return nil, err
 	}
 
-	createuser := model.Usrsignin{Username: newUserData.Username, Email: newUserData.Email, Password: newUserData.Password, Photos: []string{}, LastCommentNum: 0, Posts: []*model.PostData{} }
+	
+
+	createuser := model.Usrsignin{Username: newUserData.Username, Email: newUserData.Email, Password: "depriciated", Photos: []string{}, LastCommentNum: 0, Posts: []*model.PostData{} }
 
 	//username not in use so add new userdata struct
 	_, err = collection.InsertOne(context.TODO(), createuser)
 	if err != nil {
-		err = errors.New("problem creating user")
+		return nil, err
+	}
+
+	passwordHash := hashAndSalt([]byte(newUserData.Password))
+	
+	db := utils.Client.Database("datingapp").Collection("security")
+
+	security :=	model.Security{Username: newUserData.Username, Password: passwordHash, OTP :model.OTP{}}
+
+	_ , err = db.InsertOne(context.TODO(), security)
+	if err != nil {
 		return nil, err
 	}
 
@@ -77,4 +90,13 @@ func (s *Server) SignUp(ctx context.Context, newUserData *model.NewUserDataInput
 	}
 
 	return &model.Jwtdata{Token: token}, err2
+}
+
+func hashAndSalt(pwd []byte) string {
+    
+    hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+    if err != nil {
+        log.Println(err)
+    }
+    return string(hash)
 }

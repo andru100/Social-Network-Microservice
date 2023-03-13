@@ -17,11 +17,13 @@ services:
 # GraphQl Server
 
   backend-graphql:
-    build: ./backend/GraphQL-Server
+    build: 
+        context: ./backend/graphql-server
+        args:
+          - HOSTIP=${HOSTIP}
     container_name: graphql-server
     ports:
       - 8080:8080
-      #- 8081:8081
   
   
   # Backend Services
@@ -44,11 +46,11 @@ services:
     ports:
       - 4009:4009
 
-  backend-signin:
-    build: ./backend/services/SignIn
-    container_name: backend-signin
-    ports:
-      - 4001:4001
+#  backend-signin:
+#    build: ./backend/services/SignIn
+#    container_name: backend-signin
+#    ports:
+#      - 4001:4001
 
   backend-signup:
     build: ./backend/services/SignUp
@@ -57,19 +59,28 @@ services:
       - 4002:4002
 
   backend-likecomment:
-    build: ./backend/services/LikeComment
+    build: 
+        context: ./backend/services/LikeComment
+        args:
+          - HOSTIP=${HOSTIP}
     container_name: backend-likecomment
     ports:
       - 4003:4003
 
   backend-replycomment:
-    build: ./backend/services/ReplyComment
+    build: 
+        context: ./backend/services/ReplyComment
+        args:
+          - HOSTIP=${HOSTIP}
     container_name: backend-replycomment
     ports:
       - 4004:4004
       
   backend-newcomment:
-    build: ./backend/services/NewComment
+    build: 
+        context: ./backend/services/NewComment
+        args:
+          - HOSTIP=${HOSTIP}
     container_name: backend-newcomment
     ports:
       - 4005:4005
@@ -80,8 +91,8 @@ services:
     ports:
       - 4006:4006
 
-  # backend-PostFile-Service:
-  #   build: ./backend/services/PostFile
-  #   container_name: backend-PostFile
-  #   ports:
-  #     - 4010:4010
+  backend-postfile-service:
+     build: ./backend/services/PostFile
+     container_name: backend-PostFile
+     ports:
+       - 4010:4010

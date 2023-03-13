@@ -2,12 +2,9 @@ package model
 
 import (
 	"context"
-	//"fmt"
-	//"log"
-	//"net"
-	//"sort"
 	"time"
 	"errors"
+
 	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
 	"go.mongodb.org/mongo-driver/bson"
 )

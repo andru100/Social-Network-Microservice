@@ -2,16 +2,11 @@ package model
 
 import (
 	"context"
-	//"fmt"
 	"log"
-	//"net"
 	"sort"
 	"time"
-	//"google.golang.org/grpc"
-	//"github.com/andru100/Graphql-Social-Network/graph/model"
-	//"github.com/andru100/Social-Network-Microservices/GetAllComments/model"
+
 	"github.com/andru100/Social-Network/backend/social"
-	//"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend",
+    "\\backend\\graphql-server",
+    "\\backend\\graphql-server\\graph",
+    "\\backend\\services",
+    "\\backend\\services\\ReplyComment",
+    "\\backend\\services\\SignIn",
+    "\\backend\\services\\SignIn\\model",
+    "\\backend\\services\\SignUp",
+    "\\backend\\services\\SignUp\\model"
+  ],
+  "PreviewInSolutionExplorer": false
+}

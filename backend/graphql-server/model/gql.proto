@@ -134,3 +134,14 @@ message UsrsigninInput  {
 	string Username = 1 ; 
 	string Password = 2 ;
 }
+
+message Security {
+	string Username = 1;
+	string Password = 2;
+	OTP OTP = 3 ;
+}	
+
+message OTP {
+	string OTP = 1; 
+	time.Time OTPExpire = 2;
+}	

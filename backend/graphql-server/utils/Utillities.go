@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gin-gonic/gin"

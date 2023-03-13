@@ -3,6 +3,7 @@ package main
 import (
     "net/http"
     "fmt"
+
     "github.com/99designs/gqlgen/graphql/handler"
     "github.com/99designs/gqlgen/graphql/handler/transport"
     "github.com/99designs/gqlgen/graphql/playground"
@@ -12,9 +13,11 @@ import (
     "github.com/rs/cors"
 )
 
+
 func main() {
 
     fmt.Println("GQL Server is running!")
+
     router := chi.NewRouter()
 
     // Add CORS middleware around every request

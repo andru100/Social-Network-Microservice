@@ -30,7 +30,7 @@ func (s *Server) GetAllComments(ctx context.Context, in *GetComments) (*MongoFie
 		log.Fatal(err)
 	}
 
-	// Iterating through cursor decod documents one at a time
+	
 	for cur.Next(context.TODO()) {
 
 		var elem MongoFields
