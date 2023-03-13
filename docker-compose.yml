@@ -52,11 +52,11 @@ services:
     ports:
       - 4001:4001
 
-  # backend-signup:
-  #   build: ./backend/services/SignUp
-  #   container_name: backend-signup
-  #   ports:
-  #     - 4002:4002
+  backend-signup:
+    build: ./backend/services/SignUp
+    container_name: backend-signup
+    ports:
+      - 4002:4002
 
   backend-likecomment:
     build: 
@@ -91,8 +91,8 @@ services:
     ports:
       - 4006:4006
 
-  # backend-postfile-service:
-  #    build: ./backend/services/PostFile
-  #    container_name: backend-PostFile
-  #    ports:
-  #      - 4010:4010
+  backend-postfile-service:
+     build: ./backend/services/PostFile
+     container_name: backend-PostFile
+     ports:
+       - 4010:4010
