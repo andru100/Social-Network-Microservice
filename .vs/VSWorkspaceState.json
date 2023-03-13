@@ -11,5 +11,6 @@
     "\\backend\\services\\SignUp",
     "\\backend\\services\\SignUp\\model"
   ],
+  "SelectedNode": "\\backend\\graphql-server\\graph\\schema.resolvers.go",
   "PreviewInSolutionExplorer": false
 }
