@@ -21,6 +21,18 @@ type Security struct {
 }	
 
 type OTP struct {
-	OTP string `json:"OTP" bson:"OTP"`
-	OTPExpire time.Time `json:"OTPExpire" bson:"OTPExpire"`
+	Mobile Mobile `json:"Mobile" bson:"Mobile"`
+	Email Email `json:"Email" bson:"Email"`
 }	
+
+type Mobile struct {
+	Hash string `json:"OTP" bson:"OTP"`
+	Expiry time.Time `json:"Expiry" bson:"Expiry"`
+	Attempts int `json:"Attempts" bson:"Attempts"`
+}	
+
+type Email struct {
+	Hash string `json:"OTP" bson:"OTP"`
+	Expiry time.Time `json:"Expiry" bson:"Expiry"`
+	Attempts int `json:"Attempts" bson:"Attempts"`
+}		

@@ -9,6 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
+
 )
 
 func Connectedmngo(err error, err1 error) { // prints connected if all error checks passed
@@ -177,4 +179,15 @@ func CheckError(err error) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+
+
+func hashAndSalt(pwd []byte) string {
+    
+    hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+    if err != nil {
+        log.Println(err)
+    }
+    return string(hash)
 }

@@ -66,11 +66,11 @@ func (s *Server) SignUp(ctx context.Context, newUserData *model.NewUserDataInput
 		return nil, err
 	}
 
-	passwordHash := hashAndSalt([]byte(newUserData.Password))
+	passwordHash := utils.hashAndSalt([]byte(newUserData.Password))
 	
 	db := utils.Client.Database("datingapp").Collection("security")
 
-	security :=	model.Security{Username: newUserData.Username, Password: passwordHash, OTP :model.OTP{}}
+	security :=	model.Security{Username: newUserData.Username, Password: passwordHash, OTP: model.OTP{}}
 
 	_ , err = db.InsertOne(context.TODO(), security)
 	if err != nil {
@@ -88,13 +88,4 @@ func (s *Server) SignUp(ctx context.Context, newUserData *model.NewUserDataInput
 	}
 
 	return &model.Jwtdata{Token: token}, err2
-}
-
-func hashAndSalt(pwd []byte) string {
-    
-    hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
-    if err != nil {
-        log.Println(err)
-    }
-    return string(hash)
 }

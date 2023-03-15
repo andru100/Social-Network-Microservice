@@ -1,29 +1,27 @@
 package main
 
 import (
-	"time"
-	"errors"
 	"fmt"
-	"log"
+	"errors"
+	"time"
+	"context"
 	"net"
+	"log"
 
-	"go.mongodb.org/mongo-driver/bson"
+	
 	"google.golang.org/grpc"
 	"golang.org/x/net/context"
 	"golang.org/x/crypto/bcrypt"
+	"go.mongodb.org/mongo-driver/bson"
 	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
 	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/model"
 )
 
-type Server struct {
-	model.UnimplementedSocialGrpcServer
-}
-
 func main() {
 
-	fmt.Println("SignIn running!")
+	fmt.Println("ConfirmOTP running!")
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 4001))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 4012))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -39,15 +37,32 @@ func main() {
 	}
 }
 
+type Server struct {
+	model.UnimplementedSocialGrpcServer
+}
 
+func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb doc
 
-func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheck) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb doc
-
-	securityScore , err := model.SecurityCheck(in)
+	
+	securityScore , err := utils.SecurityCheck(in)
 
 	if securityScore >= 2 && err == nil {
+		filter := bson.M{"Username": in.Username} 
+ 
+		Updatetype := "$set"
+		Key2updt := in.UpdateType
+		update := bson.D{
+			{Updatetype, bson.D{
+				{Key2updt, result.OTP},
+			}},
+		}
 
-		//generate jwt
+		//put to db
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			return nil, err
+		}
+
 		token, err1 := model.MakeJwt(&in.Username, true)
 		return &model.Jwtdata{Token: token}, err1
 
@@ -55,5 +70,4 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheck) (*model.Jw
 
 		return nil, errors.New("security check failed: %v", err)
 	}
-
 }

@@ -6,13 +6,39 @@ service SocialGrpc {
   //rpc Chkauth(JwtdataInput) returns (Authd) {}
   // rpc GetAllComments(GetComments) returns (MongoFields) {}
   // rpc GetUserComments(GetComments) returns (MongoFields) {}
-  rpc SignIn(UsrsigninInput) returns (Jwtdata) {}
+  rpc SignIn(SecurityCheck) returns (Jwtdata) {}
   // rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
   // rpc LikeComment(SendLikeInput) returns (MongoFields) {}
   // rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
   // rpc NewComment(SendCmtInput)returns (MongoFields) {}
   // rpc PostFile(Upload) returns (MongoFields) {} 
   // rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
+//   rpc RequestOtp(SendOtpInput) returns (Confirmation) {}
+//   rpc RequestOtp(SendOtpInput) returns (Jwtdata) {}
+
+}
+
+
+message SecurityCheckInput  {
+	string Username = 1 ; 
+	string OTP_Mobile = 2 ; 
+	string OTP_Email = 3 ;
+	string Password = 4 ;
+	string Token = 5 ;
+	string UpdateType = 6 ;
+	string UpdateData = 7 ;
+}
+
+message RequestOtpInput  {
+	string Username = 1 ; 
+	string Mobile = 2 ;
+	string Email = 3 ;
+	string RequestType = 4 ;
+}
+
+message Confirmation {
+	string Username = 1;
+	string RequestType = 2;
 }
 
 

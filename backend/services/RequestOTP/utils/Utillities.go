@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"golang.org/x/crypto/bcrypt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gin-gonic/gin"
@@ -171,6 +173,15 @@ func CORSMiddleware() gin.HandlerFunc { // cors func to allow body and acces fro
 		c.Next()
 	}
 
+}
+
+func HashAndSalt(pwd []byte) string {
+    
+    hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+    if err != nil {
+        log.Println(err)
+    }
+    return string(hash)
 }
 
 func CheckError(err error) {

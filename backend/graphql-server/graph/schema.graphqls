@@ -23,6 +23,31 @@ type Mutation {
   NewComment(input: SendCmtInput!) : MongoFields
   #PostFile(file: Upload!): MongoFields
   UpdateBio(input: UpdateBioInput!) : MongoFields
+  RequestOTP(input: RequestOtpInput) :Confirmation
+  SecureUpdate(input: SecurityCheckInput) : Jwtdata
+  
+}
+
+input SecurityCheckInput  {
+	Username: String! 
+	OTP_Mobile: String!
+	OTP_Email: String!
+	Password: String!
+	Token: String!
+	UpdateType: String!
+	UpdateData: String!
+}
+
+input RequestOtpInput  {
+	Username: String! 
+	Mobile: String!
+	Email: String!
+	RequestType: String!
+}
+
+input Confirmation {
+	Username: String!
+	RequestType: String!
 }
 
 input MutationInput {

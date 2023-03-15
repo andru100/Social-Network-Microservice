@@ -7,11 +7,10 @@ import (
 	"os"
 	"strings"
 
+	"golang.org/x/crypto/bcrypt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
-
 )
 
 func Connectedmngo(err error, err1 error) { // prints connected if all error checks passed
@@ -176,12 +175,6 @@ func CORSMiddleware() gin.HandlerFunc { // cors func to allow body and acces fro
 
 }
 
-func CheckError(err error) {
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
 func HashAndSalt(pwd []byte) string {
     
     hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
@@ -189,4 +182,10 @@ func HashAndSalt(pwd []byte) string {
         log.Println(err)
     }
     return string(hash)
+}
+
+func CheckError(err error) {
+	if err != nil {
+		fmt.Println(err)
+	}
 }
