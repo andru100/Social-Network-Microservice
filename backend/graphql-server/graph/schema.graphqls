@@ -16,7 +16,7 @@ type Query {
 }
 
 type Mutation {
-  SignIn(input: UsrsigninInput!) : Jwtdata
+  SignIn(input: SecurityCheckInput!) : Jwtdata
   SignUp(input: NewUserDataInput!) : Jwtdata
   LikeComment(input: SendLikeInput!) : MongoFields
   ReplyComment(input: ReplyCommentInput!) : MongoFields
@@ -45,7 +45,7 @@ input RequestOtpInput  {
 	RequestType: String!
 }
 
-input Confirmation {
+type Confirmation {
 	Username: String!
 	RequestType: String!
 }
@@ -77,10 +77,6 @@ type Jwtdata  {
 	Token: String! 
 }
 
-# type Qry  {
-#   Page:     String! 
-#   UserName: String! 
-# }
 
 type MsgCmts  {
 	Username: String! 
@@ -92,15 +88,6 @@ type Likes  {
 	Username: String! 
 	Profpic:  String!
 }
-
-#Holds retrived mongo doc to check signin password
-# type PasswordChk  {
-# 	Key:      String!            
-# 	#ID:       primitive.Object#ID 
-# 	ID: 	  ID!
-# 	Username: String!             
-# 	Password: String!   
-# }
 
 type PostData  {
 	Username:    String!    	
@@ -120,15 +107,6 @@ type PostData  {
 # 	Email:          String!  
 # }
 
-type Usrsignin  {
-	Username:       String!     
-	Password:       String!    
-	Email:          String!    
-	Bio:            String!   
-	Photos:         [String!]!
-	LastCommentNum: Int32!     
-	Posts:          [PostData!]! 
-}
 
 #  to hold retrived mongo doc
 type MongoFields  {
@@ -145,17 +123,6 @@ type MongoFields  {
 	Posts:          [PostData!]!       #   
 }
 
-# with data inputs of incoming json object- used to find out what input of query is needed
-# type Stdput  {
-# 	Username:   String!   
-# 	UpdateInput: String!   
-# 	IsReply:    String!  
-# 	LikeSent:   Likes! #  
-# 	ReplyCmt:   MsgCmts! #  
-# 	PostIndx:   Int32!      
-# 	Key2updt:   String!  
-# 	Value2updt: PostData! # 
-# }
 
 
 
@@ -171,23 +138,6 @@ input NewUserDataInput  {
 	Email:          String!  
 }
 
-input UsrsigninInput  {
-	Username:       String!     
-	Password:       String!
-}
-
-
-# with data inputs of incoming json object- used to find out what input of query is needed
-# input StdputInput  {
-# 	Username:   String!   
-# 	Updateinput: String!   
-# 	IsReply:    String!  
-# 	LikeSent:   Likes #  
-# 	ReplyCmt:   MsgCmts #  
-# 	PostIndx:   Int32      
-# 	Key2updt:   String!  
-# 	Value2updt: PostData # 
-# }
 
 input SendLikeInput  {
 	Username:   String!  
