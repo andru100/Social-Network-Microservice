@@ -6,7 +6,7 @@ import (
 	
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sns"
-	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
+	"github.com/andru100/Social-Network-Microservices/backend/services/RequestOTP/utils"
 )
 
 func SendSMS(mobile *string, otp *string) (bool, error) {

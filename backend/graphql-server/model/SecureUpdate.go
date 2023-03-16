@@ -1,19 +1,19 @@
-package main
+package model
 
 import (
+	"fmt"
 	"errors"
 	"context"
-	
-	"golang.org/x/net/context"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
-
 )
 
 func (s *Server) SecureUpdate (ctx context.Context, in *SecurityCheckInput) (*Jwtdata, error) {// takes id and sets up bucket and mongodb doc
 
-	
-	securityScore , err := utils.SecurityCheck(in)
+	db := utils.Client.Database("datingapp").Collection("security")
+
+	securityScore , err := SecurityCheck(in)
 
 	if securityScore >= 2 && err == nil {
 		filter := bson.M{"Username": in.Username} 
@@ -22,12 +22,12 @@ func (s *Server) SecureUpdate (ctx context.Context, in *SecurityCheckInput) (*Jw
 		Key2updt := in.UpdateType
 		update := bson.D{
 			{Updatetype, bson.D{
-				{Key2updt, result.OTP},
+				{Key2updt, in.UpdateData},
 			}},
 		}
 
 		//put to db
-		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		_, err = db.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
 			return nil, err
 		}
@@ -37,6 +37,6 @@ func (s *Server) SecureUpdate (ctx context.Context, in *SecurityCheckInput) (*Jw
 
 	} else {
 
-		return nil, errors.New("security check failed: %v", err)
+		return nil, errors.New(fmt.Sprintf("security check failed: %v", err))
 	}
 }

@@ -1,17 +1,14 @@
 package main
 
 import (
-	"time"
 	"errors"
 	"fmt"
 	"log"
 	"net"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc"
 	"golang.org/x/net/context"
-	"golang.org/x/crypto/bcrypt"
-	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
+	//"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
 	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/model"
 )
 
@@ -41,7 +38,7 @@ func main() {
 
 
 
-func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheck) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb doc
+func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb doc
 
 	securityScore , err := model.SecurityCheck(in)
 
@@ -53,7 +50,7 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheck) (*model.Jw
 
 	} else {
 
-		return nil, errors.New("security check failed: %v", err)
+		return nil, errors.New(fmt.Sprintf("security check failed: %v", err))
 	}
 
 }

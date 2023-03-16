@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"go.mongodb.org/mongo-driver/bson"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
+	"github.com/andru100/Social-Network-Microservices/backend/services/RequestOTP/utils"
 )
 
 func SecurityCheck (in *SecurityCheckInput) (int, error) {

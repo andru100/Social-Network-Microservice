@@ -66,7 +66,7 @@ func (s *Server) SignUp(ctx context.Context, newUserData *model.NewUserDataInput
 		return nil, err
 	}
 
-	passwordHash := utils.hashAndSalt([]byte(newUserData.Password))
+	passwordHash := utils.HashAndSalt([]byte(newUserData.Password))
 	
 	db := utils.Client.Database("datingapp").Collection("security")
 

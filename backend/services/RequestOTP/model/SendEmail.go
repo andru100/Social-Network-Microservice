@@ -5,7 +5,7 @@ import (
 	"os"
 
 	//go get -u github.com/aws/aws-sdk-go
-	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
+	"github.com/andru100/Social-Network-Microservices/backend/services/RequestOTP/utils"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/ses"

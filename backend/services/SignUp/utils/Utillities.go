@@ -183,7 +183,7 @@ func CheckError(err error) {
 
 
 
-func hashAndSalt(pwd []byte) string {
+func HashAndSalt(pwd []byte) string {
     
     hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
     if err != nil {

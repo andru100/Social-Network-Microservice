@@ -35,4 +35,5 @@ type Email struct {
 	Hash string `json:"OTP" bson:"OTP"`
 	Expiry time.Time `json:"Expiry" bson:"Expiry"`
 	Attempts int `json:"Attempts" bson:"Attempts"`
-}		
+}	
+

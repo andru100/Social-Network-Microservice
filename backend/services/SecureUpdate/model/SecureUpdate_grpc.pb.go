@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: model/SignIn.proto
+// source: model/SecureUpdate.proto
 
 package model
 
@@ -25,7 +25,15 @@ type SocialGrpcClient interface {
 	// rpc Chkauth(JwtdataInput) returns (Authd) {}
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
-	SignIn(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
+	// rpc SignIn(UsrsigninInput) returns (Jwtdata) {}
+	// rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
+	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
+	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
+	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
+	// rpc PostFile(Upload) returns (MongoFields) {}
+	// rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
+	// rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
+	SecureUpdate(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
 }
 
 type socialGrpcClient struct {
@@ -36,9 +44,9 @@ func NewSocialGrpcClient(cc grpc.ClientConnInterface) SocialGrpcClient {
 	return &socialGrpcClient{cc}
 }
 
-func (c *socialGrpcClient) SignIn(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error) {
+func (c *socialGrpcClient) SecureUpdate(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error) {
 	out := new(Jwtdata)
-	err := c.cc.Invoke(ctx, "/SocialGrpc/SignIn", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/SocialGrpc/SecureUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +60,15 @@ type SocialGrpcServer interface {
 	// rpc Chkauth(JwtdataInput) returns (Authd) {}
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
-	SignIn(context.Context, *SecurityCheckInput) (*Jwtdata, error)
+	// rpc SignIn(UsrsigninInput) returns (Jwtdata) {}
+	// rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
+	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
+	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
+	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
+	// rpc PostFile(Upload) returns (MongoFields) {}
+	// rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
+	// rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
+	SecureUpdate(context.Context, *SecurityCheckInput) (*Jwtdata, error)
 	mustEmbedUnimplementedSocialGrpcServer()
 }
 
@@ -60,8 +76,8 @@ type SocialGrpcServer interface {
 type UnimplementedSocialGrpcServer struct {
 }
 
-func (UnimplementedSocialGrpcServer) SignIn(context.Context, *SecurityCheckInput) (*Jwtdata, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
+func (UnimplementedSocialGrpcServer) SecureUpdate(context.Context, *SecurityCheckInput) (*Jwtdata, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SecureUpdate not implemented")
 }
 func (UnimplementedSocialGrpcServer) mustEmbedUnimplementedSocialGrpcServer() {}
 
@@ -76,20 +92,20 @@ func RegisterSocialGrpcServer(s grpc.ServiceRegistrar, srv SocialGrpcServer) {
 	s.RegisterService(&SocialGrpc_ServiceDesc, srv)
 }
 
-func _SocialGrpc_SignIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _SocialGrpc_SecureUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SecurityCheckInput)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SocialGrpcServer).SignIn(ctx, in)
+		return srv.(SocialGrpcServer).SecureUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/SocialGrpc/SignIn",
+		FullMethod: "/SocialGrpc/SecureUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SocialGrpcServer).SignIn(ctx, req.(*SecurityCheckInput))
+		return srv.(SocialGrpcServer).SecureUpdate(ctx, req.(*SecurityCheckInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -102,10 +118,10 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*SocialGrpcServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SignIn",
-			Handler:    _SocialGrpc_SignIn_Handler,
+			MethodName: "SecureUpdate",
+			Handler:    _SocialGrpc_SecureUpdate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "model/SignIn.proto",
+	Metadata: "model/SecureUpdate.proto",
 }

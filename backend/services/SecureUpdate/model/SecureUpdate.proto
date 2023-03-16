@@ -6,7 +6,7 @@ service SocialGrpc {
   //rpc Chkauth(JwtdataInput) returns (Authd) {}
   // rpc GetAllComments(GetComments) returns (MongoFields) {}
   // rpc GetUserComments(GetComments) returns (MongoFields) {}
-  // rpc SignIn(UsrsigninInput) returns (Jwtdata) {}
+  // rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
   // rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
   // rpc LikeComment(SendLikeInput) returns (MongoFields) {}
   // rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
@@ -143,29 +143,3 @@ message UpdateBioInput  {
 	string Username = 1 ;
 	string Bio  = 2 ;     
 }
-
-message Usrsignin  {
-	string Username = 1 ;
-	string Password = 2 ;
-	string Email = 3 ; 
-	string Bio = 4 ; 
-	repeated string Photos = 5 ;
-	int32 LastCommentNum = 6 ;
-	repeated PostData Posts = 7 ;
-}
-
-message UsrsigninInput  {
-	string Username = 1 ; 
-	string Password = 2 ;
-}
-
-message Security {
-	string Username = 1;
-	string Password = 2;
-	OTP OTP = 3 ;
-}	
-
-message OTP {
-	string OTP = 1; 
-	time.Time OTPExpire = 2;
-}	

@@ -10,11 +10,9 @@ import (
 
 	
 	"google.golang.org/grpc"
-	"golang.org/x/net/context"
-	"golang.org/x/crypto/bcrypt"
 	"go.mongodb.org/mongo-driver/bson"
-	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
-	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/model"
+	"github.com/andru100/Social-Network-Microservices/backend/services/RequestOTP/utils"
+	"github.com/andru100/Social-Network-Microservices/backend/services/RequestOTP/model"
 )
 
 func main() {
@@ -72,12 +70,6 @@ func (s *Server) RequestOTP (ctx context.Context, in *model.RequestOtpInput) (*m
 		return nil, err
 	}
 
-	result.OTP[in.RequestType].Hash = passwordHash
-
-	result.OTP[in.RequestType].Expiry = time.Now().Add(time.Minute * 5)
-
-	result.OTP[in.RequestType].Attempts = 0
-
 	filter := bson.M{"Username": in.Username} 
 
 	//add new comment to DB 
@@ -89,29 +81,50 @@ func (s *Server) RequestOTP (ctx context.Context, in *model.RequestOtpInput) (*m
 		}},
 	}
 
-	//put to db
-	_, err = db.UpdateOne(context.TODO(), filter, update)
-	if err != nil {
-		return nil, err
+	switch in.RequestType {
+		case "sms":
+			result.OTP.Mobile.Hash = passwordHash
+
+			result.OTP.Mobile.Expiry = time.Now().Add(time.Minute * 5)
+
+			result.OTP.Mobile.Attempts = 0
+
+			//put to db
+			_, err = db.UpdateOne(context.TODO(), filter, update)
+			if err != nil {
+				return nil, err
+			}
+
+			_, err := model.SendSMS(&in.Mobile, &otp)
+			if err != nil {
+				return nil, err
+			}
+
+			return &model.Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
+		
+		case "email":
+			result.OTP.Email.Hash = passwordHash
+
+			result.OTP.Email.Expiry = time.Now().Add(time.Minute * 5)
+
+			result.OTP.Email.Attempts = 0
+
+			//put to db
+			_, err = db.UpdateOne(context.TODO(), filter, update)
+			if err != nil {
+				return nil, err
+			}
+
+			_, err := model.SendEmail(&in.Email, &otp)
+			if err != nil {
+				return nil, err
+			}
+
+			return &model.Confirmation{Username: in.Username, RequestType: in.RequestType}, nil		
+	
+		default:
+			return nil, fmt.Errorf("Request type not supported")
+
+	
 	}
-
-	//send otp
-	if in.requestType == "sms" {
-		_, err := utils.SendSMS(in.Mobile, otp)
-		if err != nil {
-			return nil, err
-		}
-
-		return &model.Confirmation{Username: in.UserName, RequestType: in.RequestType}, nil
-
-	} else if in.requestType == "email" {
-		_, err := utils.SendEmail(in.Email, otp)
-		if err != nil {
-			return nil, err
-		}
-
-		return &model.Confirmation{Username: in.UserName, RequestType: in.RequestType}, nil		
-	}
-
-
 }

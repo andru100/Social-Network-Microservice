@@ -3,23 +3,20 @@ package main
 import (
 	"fmt"
 	"errors"
-	"time"
 	"context"
 	"net"
 	"log"
 
 	
 	"google.golang.org/grpc"
-	"golang.org/x/net/context"
-	"golang.org/x/crypto/bcrypt"
 	"go.mongodb.org/mongo-driver/bson"
-	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
-	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/model"
+	"github.com/andru100/Social-Network-Microservices/backend/services/SecureUpdate/utils"
+	"github.com/andru100/Social-Network-Microservices/backend/services/SecureUpdate/model"
 )
 
 func main() {
 
-	fmt.Println("ConfirmOTP running!")
+	fmt.Println("SecureUpdate running!")
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 4012))
 	if err != nil {
@@ -43,8 +40,9 @@ type Server struct {
 
 func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb doc
 
-	
-	securityScore , err := utils.SecurityCheck(in)
+	db := utils.Client.Database("datingapp").Collection("security")
+
+	securityScore , err := model.SecurityCheck(in)
 
 	if securityScore >= 2 && err == nil {
 		filter := bson.M{"Username": in.Username} 
@@ -53,12 +51,12 @@ func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput
 		Key2updt := in.UpdateType
 		update := bson.D{
 			{Updatetype, bson.D{
-				{Key2updt, result.OTP},
+				{Key2updt, in.UpdateData},
 			}},
 		}
 
 		//put to db
-		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		_, err = db.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
 			return nil, err
 		}
@@ -68,6 +66,6 @@ func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput
 
 	} else {
 
-		return nil, errors.New("security check failed: %v", err)
+		return nil, errors.New(fmt.Sprintf("security check failed: %v", err))
 	}
 }
