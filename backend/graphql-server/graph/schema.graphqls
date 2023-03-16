@@ -175,16 +175,5 @@ input UpdateBioInput  {
 # 	#Username: String!
 # 	File: Upload!
 # 	#Type: String!
-# }
-
-type Security {
-	Username: String! 
-	Password: String! 
-	OTP: 	OTP!
-}	
-
-type OTP {
-	OTP: String
-	OTPExpire: Time
-}	
+# }	
 

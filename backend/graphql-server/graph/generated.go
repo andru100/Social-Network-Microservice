@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"strconv"
 	"sync"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -38,7 +37,6 @@ type Config struct {
 
 type ResolverRoot interface {
 	Mutation() MutationResolver
-	OTP() OTPResolver
 	Query() QueryResolver
 }
 
@@ -103,11 +101,6 @@ type ComplexityRoot struct {
 		UpdateBio    func(childComplexity int, input model.UpdateBioInput) int
 	}
 
-	OTP struct {
-		OTPExpire func(childComplexity int) int
-		Otp       func(childComplexity int) int
-	}
-
 	PostData struct {
 		Comments    func(childComplexity int) int
 		Date        func(childComplexity int) int
@@ -125,12 +118,6 @@ type ComplexityRoot struct {
 		GetAllComments  func(childComplexity int, input string) int
 		GetUserComments func(childComplexity int, input string) int
 	}
-
-	Security struct {
-		OTP      func(childComplexity int) int
-		Password func(childComplexity int) int
-		Username func(childComplexity int) int
-	}
 }
 
 type MutationResolver interface {
@@ -142,10 +129,6 @@ type MutationResolver interface {
 	UpdateBio(ctx context.Context, input model.UpdateBioInput) (*model.MongoFields, error)
 	RequestOtp(ctx context.Context, input model.RequestOtpInput) (*model.Confirmation, error)
 	SecureUpdate(ctx context.Context, input model.SecurityCheckInput) (*model.Jwtdata, error)
-}
-type OTPResolver interface {
-	Otp(ctx context.Context, obj *model.OTP) (*string, error)
-	OTPExpire(ctx context.Context, obj *model.OTP) (*time.Time, error)
 }
 type QueryResolver interface {
 	Chkauth(ctx context.Context, input model.JwtdataInput) (*model.Authd, error)
@@ -418,20 +401,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateBio(childComplexity, args["input"].(model.UpdateBioInput)), true
 
-	case "OTP.OTPExpire":
-		if e.complexity.OTP.OTPExpire == nil {
-			break
-		}
-
-		return e.complexity.OTP.OTPExpire(childComplexity), true
-
-	case "OTP.OTP":
-		if e.complexity.OTP.Otp == nil {
-			break
-		}
-
-		return e.complexity.OTP.Otp(childComplexity), true
-
 	case "PostData.Comments":
 		if e.complexity.PostData.Comments == nil {
 			break
@@ -530,27 +499,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetUserComments(childComplexity, args["input"].(string)), true
-
-	case "Security.OTP":
-		if e.complexity.Security.OTP == nil {
-			break
-		}
-
-		return e.complexity.Security.OTP(childComplexity), true
-
-	case "Security.Password":
-		if e.complexity.Security.Password == nil {
-			break
-		}
-
-		return e.complexity.Security.Password(childComplexity), true
-
-	case "Security.Username":
-		if e.complexity.Security.Username == nil {
-			break
-		}
-
-		return e.complexity.Security.Username(childComplexity), true
 
 	}
 	return 0, false
@@ -2376,88 +2324,6 @@ func (ec *executionContext) fieldContext_Mutation_SecureUpdate(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _OTP_OTP(ctx context.Context, field graphql.CollectedField, obj *model.OTP) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OTP_OTP(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OTP().Otp(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OTP_OTP(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OTP",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OTP_OTPExpire(ctx context.Context, field graphql.CollectedField, obj *model.OTP) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OTP_OTPExpire(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OTP().OTPExpire(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	fc.Result = res
-	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OTP_OTPExpire(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OTP",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _PostData_Username(ctx context.Context, field graphql.CollectedField, obj *model.PostData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PostData_Username(ctx, field)
 	if err != nil {
@@ -3196,144 +3062,6 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Security_Username(ctx context.Context, field graphql.CollectedField, obj *model.Security) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Security_Username(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Username, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Security_Username(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Security",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Security_Password(ctx context.Context, field graphql.CollectedField, obj *model.Security) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Security_Password(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Password, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Security_Password(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Security",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Security_OTP(ctx context.Context, field graphql.CollectedField, obj *model.Security) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Security_OTP(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OTP, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(model.OTP)
-	fc.Result = res
-	return ec.marshalNOTP2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋgraphqlᚑserverᚋmodelᚐOTP(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Security_OTP(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Security",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "OTP":
-				return ec.fieldContext_OTP_OTP(ctx, field)
-			case "OTPExpire":
-				return ec.fieldContext_OTP_OTPExpire(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type OTP", field.Name)
 		},
 	}
 	return fc, nil
@@ -5996,61 +5724,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	return out
 }
 
-var oTPImplementors = []string{"OTP"}
-
-func (ec *executionContext) _OTP(ctx context.Context, sel ast.SelectionSet, obj *model.OTP) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, oTPImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("OTP")
-		case "OTP":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OTP_OTP(ctx, field, obj)
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "OTPExpire":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OTP_OTPExpire(ctx, field, obj)
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var postDataImplementors = []string{"PostData"}
 
 func (ec *executionContext) _PostData(ctx context.Context, sel ast.SelectionSet, obj *model.PostData) graphql.Marshaler {
@@ -6226,48 +5899,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				return ec._Query___schema(ctx, field)
 			})
 
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var securityImplementors = []string{"Security"}
-
-func (ec *executionContext) _Security(ctx context.Context, sel ast.SelectionSet, obj *model.Security) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, securityImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Security")
-		case "Username":
-
-			out.Values[i] = ec._Security_Username(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "Password":
-
-			out.Values[i] = ec._Security_Password(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "OTP":
-
-			out.Values[i] = ec._Security_OTP(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6775,10 +6406,6 @@ func (ec *executionContext) unmarshalNNewUserDataInput2githubᚗcomᚋandru100�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNOTP2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋgraphqlᚑserverᚋmodelᚐOTP(ctx context.Context, sel ast.SelectionSet, v model.OTP) graphql.Marshaler {
-	return ec._OTP(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNPostData2ᚕᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋgraphqlᚑserverᚋmodelᚐPostDataᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PostData) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -7230,22 +6857,6 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	res := graphql.MarshalString(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalTime(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalTime(*v)
 	return res
 }
 
