@@ -101,12 +101,6 @@ type PostData  {
 	Likes:       [Likes!]!  #
 }
 
-# type NewUserData  {
-# 	Username:       String!     
-# 	Password:       String! 
-# 	Email:          String!  
-# }
-
 
 #  to hold retrived mongo doc
 type MongoFields  {
@@ -133,9 +127,14 @@ input JwtdataInput  {
 
 
 input NewUserDataInput  {
-	Username:       String!     
-	Password:       String! 
-	Email:          String!  
+	Username: String! ;
+	Password: String! ;
+	DOB: String ;
+	Email: String! ;
+	Mobile: String! ;
+	OTP_Email: String ;
+	OTP_Mobile: String ;
+	RequestType: String! ;
 }
 
 

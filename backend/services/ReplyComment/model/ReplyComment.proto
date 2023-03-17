@@ -73,7 +73,12 @@ message MutationInput  {
 message NewUserDataInput  {
 	string Username = 1 ; 
 	string Password = 2 ;
-	string Email = 3 ;
+	string DOB = 3 ;
+	string Email = 4 ;
+	string Mobile = 5 ;
+	string OTP_Email = 6 ;
+	string OTP_Mobile = 7 ;
+	string RequestType = 8 ;
 }
 
 message PostData  {

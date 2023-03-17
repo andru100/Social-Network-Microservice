@@ -4,25 +4,48 @@ import (
 	"errors"
 	"fmt"
 
+	"google.golang.org/grpc"
 	"golang.org/x/net/context"
-	//"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
-)
 
+)
 
 
 func (s *Server) SignIn(ctx context.Context, in *SecurityCheckInput) (*Jwtdata, error) {// takes id and sets up bucket and mongodb doc
 
-	securityScore , err := SecurityCheck(in)
+	// check username and password are correct and return security score. 
 
-	if securityScore >= 2 && err == nil {
+	switch in.UpdateType {
+		case "stage1":
+			securityScore , err := SecurityCheck(in)
+			// error will be throw if username or password is incorrect
+			if err != nil {
+				return nil, err
+			}
+			if securityScore >= 1 {
+				result, err := RequestOtpRpc(&RequestOtpInput{Username: in.Username, Mobile: in.Mobile, RequestType: "sms"})
 
-		//generate jwt
-		token, err1 := MakeJwt(&in.Username, true)
-		return &Jwtdata{Token: token}, err1
+				if err != nil {
+					return nil, err
+				}
+				return &Jwtdata{Token: "proceed"}, nil
+			}
+		case "stage2":
 
-	} else {
+			securityScore , err := SecurityCheck(in)
 
-		return nil, errors.New(fmt.Sprintf("security check failed: %v", err))
+			if securityScore >= 2 && err == nil {
+
+				//generate jwt
+				token, err1 := MakeJwt(&in.Username, true)
+				return &Jwtdata{Token: token}, err1
+
+			} else {
+
+				return nil, errors.New(fmt.Sprintf("security check failed: %v", err))
+			}
+		default:
+			return nil, errors.New("invalid stage")
 	}
+	return nil, errors.New("invalid stage")
 
 }

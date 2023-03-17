@@ -5,7 +5,11 @@ import (
 	"math/rand"
 	"time"
 	"context"
+	"net"
+	"log"
 
+	
+	"google.golang.org/grpc"
 	"go.mongodb.org/mongo-driver/bson"
 	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
 )
@@ -27,7 +31,7 @@ func (s *Server) RequestOTP (ctx context.Context, in *RequestOtpInput) (*Confirm
 	fmt.Println("randon otp is", otp, "this isnt safe, wiill need some secret key to truly randomize")
 
 	//save otp to db
-	passwordHash := utils.HashAndSalt([]byte(otp))
+	otpHash := utils.HashAndSalt([]byte(otp))
 
 	db := utils.Client.Database("datingapp").Collection("security")
 
@@ -54,7 +58,7 @@ func (s *Server) RequestOTP (ctx context.Context, in *RequestOtpInput) (*Confirm
 
 	switch in.RequestType {
 		case "sms":
-			result.OTP.Mobile.Hash = passwordHash
+			result.OTP.Mobile.Hash = otpHash
 
 			result.OTP.Mobile.Expiry = time.Now().Add(time.Minute * 5)
 
@@ -74,7 +78,8 @@ func (s *Server) RequestOTP (ctx context.Context, in *RequestOtpInput) (*Confirm
 			return &Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
 		
 		case "email":
-			result.OTP.Email.Hash = passwordHash
+
+			result.OTP.Email.Hash = otpHash
 
 			result.OTP.Email.Expiry = time.Now().Add(time.Minute * 5)
 
@@ -92,6 +97,49 @@ func (s *Server) RequestOTP (ctx context.Context, in *RequestOtpInput) (*Confirm
 			}
 
 			return &Confirmation{Username: in.Username, RequestType: in.RequestType}, nil		
+
+		case "signup":
+
+			result.OTP.Mobile.Hash = otpHash
+
+			result.OTP.Mobile.Expiry = time.Now().Add(time.Minute * 5)
+
+			result.OTP.Mobile.Attempts = 0
+
+			//add email otp
+			c := make([]rune, 6)
+			for i := range b {
+				c[i] = nums[rand.Intn(len(nums))]
+			}
+
+			otp2 := string(c) 
+
+			//save otp to db
+			EmailHash := utils.HashAndSalt([]byte(otp2))
+
+			result.OTP.Email.Hash = EmailHash
+
+			result.OTP.Email.Expiry = time.Now().Add(time.Minute * 5)
+
+			result.OTP.Email.Attempts = 0
+
+			//put to db
+			_, err = db.UpdateOne(context.TODO(), filter, update)
+			if err != nil {
+				return nil, err
+			}
+
+			_, err = SendSMS(&in.Mobile, &otp)
+			if err != nil {
+				return nil, err
+			}
+
+			_, err = SendEmail(&in.Email, &otp)
+			if err != nil {
+				return nil, err
+			}
+
+			return &Confirmation{Username: in.Username, RequestType: in.RequestType}, nil	
 	
 		default:
 			return nil, fmt.Errorf("Request type not supported")

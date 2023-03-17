@@ -40,17 +40,40 @@ func main() {
 
 func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb doc
 
-	securityScore , err := model.SecurityCheck(in)
+	// check username and password are correct and return security score. 
 
-	if securityScore >= 2 && err == nil {
+	switch in.UpdateType {
+		case "stage1":
+			securityScore , err := model.SecurityCheck(in)
+			// error will be throw if username or password is incorrect
+			if err != nil {
+				return nil, err
+			}
+			if securityScore >= 1 {
+				result, err := model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Mobile: in.Mobile, RequestType: "sms"})
 
-		//generate jwt
-		token, err1 := model.MakeJwt(&in.Username, true)
-		return &model.Jwtdata{Token: token}, err1
+				if err != nil {
+					return nil, err
+				}
+				return &model.Jwtdata{Token: "proceed"}, nil
+			}
+		case "stage2":
 
-	} else {
+			securityScore , err := model.SecurityCheck(in)
 
-		return nil, errors.New(fmt.Sprintf("security check failed: %v", err))
+			if securityScore >= 2 && err == nil {
+
+				//generate jwt
+				token, err1 := model.MakeJwt(&in.Username, true)
+				return &model.Jwtdata{Token: token}, err1
+
+			} else {
+
+				return nil, errors.New(fmt.Sprintf("security check failed: %v", err))
+			}
+		default:
+			return nil, errors.New("invalid stage")
 	}
+	return nil, errors.New("invalid stage")
 
 }

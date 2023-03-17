@@ -10,8 +10,8 @@ ENV SENDER_EMAIL=${SENDER_EMAIL}
 
 RUN go mod download
 
-RUN go build -o /sendotp-service
+RUN go build -o /secureupdate-service
 
-EXPOSE 4005
+EXPOSE 4012
 
-CMD ["/sendotp-service"]
+CMD ["/secureupdate-service"]

@@ -29,7 +29,7 @@ export default function RenderSignin () {
 			}
 		}
 
-		let gqlRequest = "mutation SignIn ($data: UsrsigninInput!){ SignIn(input: $data) { Token } }"
+		let gqlRequest = "mutation SignIn ($data: SecurityCheckInput!){ SignIn(input: $data) { Token } }"
 		
 		let response = await SendData(gqlRequest, signindata, 'signin')
 

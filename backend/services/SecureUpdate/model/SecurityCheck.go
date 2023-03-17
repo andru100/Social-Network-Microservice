@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"errors"
 	"time"
 	"context"
@@ -34,11 +33,11 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 	
 	if in.OTP_Mobile != "" {
 		if result.OTP.Mobile.Expiry.Unix() < time.Now().Unix() {
-			return securityScore, errors.New("OTP expired")
+			return securityScore, errors.New("Mobile OTP expired")
 		}
 
 		if result.OTP.Mobile.Attempts > 5 {
-			return securityScore, errors.New("too many failed attempts, please request another OTP")
+			return securityScore, errors.New("too many failed attempts, please request another Mobile OTP")
 		}
 
 		err = bcrypt.CompareHashAndPassword([]byte(result.OTP.Mobile.Hash), []byte(in.OTP_Mobile))
@@ -67,7 +66,7 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 				return securityScore, err
 			}
 
-			return securityScore, errors.New("OTP does not match")
+			return securityScore, errors.New("mobile OTP does not match")
 
 		} else {
 
@@ -78,11 +77,11 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 
 	if in.OTP_Email != "" {
 		if result.OTP.Email.Expiry.Unix() < time.Now().Unix() {
-			return securityScore, errors.New("OTP expired")
+			return securityScore, errors.New("Email OTP expired")
 		}
 
 		if result.OTP.Email.Attempts > 5 {
-			return securityScore, errors.New("too many failed attempts, please request another OTP")
+			return securityScore, errors.New("too many failed attempts, please request another Email OTP")
 		}
 
 		err = bcrypt.CompareHashAndPassword([]byte(result.OTP.Email.Hash), []byte(in.OTP_Email))
@@ -111,7 +110,7 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 				return securityScore, err
 			}
 
-			return securityScore, errors.New("OTP does not match")
+			return securityScore, errors.New("Email OTP does not match")
 
 		} else {
 
@@ -121,16 +120,37 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 	}
 
 	if in.Password != "" {
-		err = bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(in.Password))
+
+		if result.Password.Attempts > 5 {
+			return securityScore, errors.New("too many failed password attempts, please reset your password")
+		}
+
+		err = bcrypt.CompareHashAndPassword([]byte(result.Password.Hash), []byte(in.Password))
 		if err != nil {
-			log.Println(err)
+
+			result.Password.Attempts += 1
+
+			filter := bson.M{"Username": result.Username} 
+
+			Updatetype := "$set"
+			Key2updt := "Password"
+			update := bson.D{
+				{Updatetype, bson.D{
+					{Key2updt, result.Password},
+				}},
+			}
+
+			_, err = db.UpdateOne(context.TODO(), filter, update)
+			if err != nil {
+				return securityScore, err
+			}
 			return securityScore, errors.New("password does not match")
 		} 
+		
 		securityScore += 1
 	}
 
 	if in.Token != "" {
-		fmt.Println("token iss", in.Token)
 
 		var jwtKey = []byte("AllYourBase")
 
@@ -141,10 +161,10 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 		})
 
 		if err != nil {
-			return securityScore, err
+			return securityScore, errors.New("JWT token error")
 		}
 		if !tkn.Valid {
-			return securityScore, err
+			return securityScore, errors.New("JWT token invalid")
 		} 
 
 		securityScore += 1

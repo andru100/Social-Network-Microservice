@@ -1,17 +1,17 @@
 version: '3'
 services:
 
-  frontend:
-    build: 
-      context: ./frontend-react
-      args:
-        - REACT_APP_BACKEND_GRAPHQL=${REACT_APP_BACKEND_GRAPHQL}
-        - REACT_APP_BACKEND_UPLOAD=${REACT_APP_BACKEND_UPLOAD} 
-        - REACT_APP_FRONTEND=${REACT_APP_FRONTEND} 
+  # frontend:
+  #   build: 
+  #     context: ./frontend-react
+  #     args:
+  #       - REACT_APP_BACKEND_GRAPHQL=${REACT_APP_BACKEND_GRAPHQL}
+  #       - REACT_APP_BACKEND_UPLOAD=${REACT_APP_BACKEND_UPLOAD} 
+  #       - REACT_APP_FRONTEND=${REACT_APP_FRONTEND} 
 
-    container_name: Frontend
-    ports:
-      - 80:80
+  #   container_name: Frontend
+  #   ports:
+  #     - 80:80
 
 
 # GraphQl Server
@@ -96,3 +96,23 @@ services:
   #    container_name: backend-PostFile
   #    ports:
   #      - 4010:4010
+
+  # backend-requestotp:
+  #   build: 
+  #       context: ./backend/services/RequestOTP
+  #       args:
+  #         - HOSTIP=${HOSTIP}
+  #         - SENDER_EMAIL=${SENDER_EMAIL}
+  #   container_name: backend-requestotp
+  #   ports:
+  #     - 4011:4011
+  
+  # backend-secureupdate:
+  #   build: 
+  #       context: ./backend/services/SecureUpdate
+  #       args:
+  #         - HOSTIP=${HOSTIP}
+  #         - SENDER_EMAIL=${SENDER_EMAIL}
+  #   container_name: backend-secureupdate
+  #   ports:
+  #     - 4012:4012

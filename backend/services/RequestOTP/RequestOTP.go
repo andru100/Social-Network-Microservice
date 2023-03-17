@@ -56,7 +56,7 @@ func (s *Server) RequestOTP (ctx context.Context, in *model.RequestOtpInput) (*m
 	fmt.Println("randon otp is", otp, "this isnt safe, wiill need some secret key to truly randomize")
 
 	//save otp to db
-	passwordHash := utils.HashAndSalt([]byte(otp))
+	otpHash := utils.HashAndSalt([]byte(otp))
 
 	db := utils.Client.Database("datingapp").Collection("security")
 
@@ -83,7 +83,7 @@ func (s *Server) RequestOTP (ctx context.Context, in *model.RequestOtpInput) (*m
 
 	switch in.RequestType {
 		case "sms":
-			result.OTP.Mobile.Hash = passwordHash
+			result.OTP.Mobile.Hash = otpHash
 
 			result.OTP.Mobile.Expiry = time.Now().Add(time.Minute * 5)
 
@@ -103,7 +103,8 @@ func (s *Server) RequestOTP (ctx context.Context, in *model.RequestOtpInput) (*m
 			return &model.Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
 		
 		case "email":
-			result.OTP.Email.Hash = passwordHash
+
+			result.OTP.Email.Hash = otpHash
 
 			result.OTP.Email.Expiry = time.Now().Add(time.Minute * 5)
 
@@ -121,6 +122,49 @@ func (s *Server) RequestOTP (ctx context.Context, in *model.RequestOtpInput) (*m
 			}
 
 			return &model.Confirmation{Username: in.Username, RequestType: in.RequestType}, nil		
+
+		case "signup":
+
+			result.OTP.Mobile.Hash = otpHash
+
+			result.OTP.Mobile.Expiry = time.Now().Add(time.Minute * 5)
+
+			result.OTP.Mobile.Attempts = 0
+
+			//add email otp
+			c := make([]rune, 6)
+			for i := range b {
+				c[i] = nums[rand.Intn(len(nums))]
+			}
+
+			otp2 := string(c) 
+
+			//save otp to db
+			EmailHash := utils.HashAndSalt([]byte(otp2))
+
+			result.OTP.Email.Hash = EmailHash
+
+			result.OTP.Email.Expiry = time.Now().Add(time.Minute * 5)
+
+			result.OTP.Email.Attempts = 0
+
+			//put to db
+			_, err = db.UpdateOne(context.TODO(), filter, update)
+			if err != nil {
+				return nil, err
+			}
+
+			_, err = model.SendSMS(&in.Mobile, &otp)
+			if err != nil {
+				return nil, err
+			}
+
+			_, err = model.SendEmail(&in.Email, &otp)
+			if err != nil {
+				return nil, err
+			}
+
+			return &model.Confirmation{Username: in.Username, RequestType: in.RequestType}, nil	
 	
 		default:
 			return nil, fmt.Errorf("Request type not supported")

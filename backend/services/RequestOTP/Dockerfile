@@ -10,8 +10,8 @@ ENV SENDER_EMAIL=${SENDER_EMAIL}
 
 RUN go mod download
 
-RUN go build -o /sendotp-service
+RUN go build -o /requestotp-service
 
-EXPOSE 4005
+EXPOSE 4011
 
-CMD ["/sendotp-service"]
+CMD ["/requestotp-service"]
