@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: model/SignIn.proto
+// source: model/SignUp.proto
 
 package model
 
@@ -25,8 +25,8 @@ type SocialGrpcClient interface {
 	// rpc Chkauth(JwtdataInput) returns (Authd) {}
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
-	SignIn(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
-	// rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
+	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
+	SignUp(ctx context.Context, in *NewUserDataInput, opts ...grpc.CallOption) (*Jwtdata, error)
 	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
@@ -43,9 +43,9 @@ func NewSocialGrpcClient(cc grpc.ClientConnInterface) SocialGrpcClient {
 	return &socialGrpcClient{cc}
 }
 
-func (c *socialGrpcClient) SignIn(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error) {
+func (c *socialGrpcClient) SignUp(ctx context.Context, in *NewUserDataInput, opts ...grpc.CallOption) (*Jwtdata, error) {
 	out := new(Jwtdata)
-	err := c.cc.Invoke(ctx, "/SocialGrpc/SignIn", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/SocialGrpc/SignUp", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,8 +68,8 @@ type SocialGrpcServer interface {
 	// rpc Chkauth(JwtdataInput) returns (Authd) {}
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
-	SignIn(context.Context, *SecurityCheckInput) (*Jwtdata, error)
-	// rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
+	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
+	SignUp(context.Context, *NewUserDataInput) (*Jwtdata, error)
 	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
@@ -83,8 +83,8 @@ type SocialGrpcServer interface {
 type UnimplementedSocialGrpcServer struct {
 }
 
-func (UnimplementedSocialGrpcServer) SignIn(context.Context, *SecurityCheckInput) (*Jwtdata, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
+func (UnimplementedSocialGrpcServer) SignUp(context.Context, *NewUserDataInput) (*Jwtdata, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SignUp not implemented")
 }
 func (UnimplementedSocialGrpcServer) RequestOTP(context.Context, *RequestOtpInput) (*Confirmation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RequestOTP not implemented")
@@ -102,20 +102,20 @@ func RegisterSocialGrpcServer(s grpc.ServiceRegistrar, srv SocialGrpcServer) {
 	s.RegisterService(&SocialGrpc_ServiceDesc, srv)
 }
 
-func _SocialGrpc_SignIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SecurityCheckInput)
+func _SocialGrpc_SignUp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewUserDataInput)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SocialGrpcServer).SignIn(ctx, in)
+		return srv.(SocialGrpcServer).SignUp(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/SocialGrpc/SignIn",
+		FullMethod: "/SocialGrpc/SignUp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SocialGrpcServer).SignIn(ctx, req.(*SecurityCheckInput))
+		return srv.(SocialGrpcServer).SignUp(ctx, req.(*NewUserDataInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -146,8 +146,8 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*SocialGrpcServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SignIn",
-			Handler:    _SocialGrpc_SignIn_Handler,
+			MethodName: "SignUp",
+			Handler:    _SocialGrpc_SignUp_Handler,
 		},
 		{
 			MethodName: "RequestOTP",
@@ -155,5 +155,5 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "model/SignIn.proto",
+	Metadata: "model/SignUp.proto",
 }
