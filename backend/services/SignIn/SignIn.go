@@ -42,7 +42,7 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*mod
 
 	// check username and password are correct and return security score. 
 
-	switch in.UpdateType {
+	switch in.RequestType {
 		case "stage1":
 			securityScore , err := model.SecurityCheck(in)
 			// error will be throw if username or password is incorrect

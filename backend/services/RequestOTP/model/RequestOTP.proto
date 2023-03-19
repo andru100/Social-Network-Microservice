@@ -7,7 +7,7 @@ service SocialGrpc {
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
-	// rpc SignUp(SecurityCheckInput) returns (Jwtdata) {}
+	// rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
 	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
@@ -25,7 +25,9 @@ message SecurityCheckInput  {
 	string Mobile = 5 ;
 	string OTP_Email = 6 ;
 	string OTP_Mobile = 7 ;
-	string RequestType = 8 ;
+	string Token = 8 ;
+	string RequestType = 9 ;
+	string UpdateData = 10 ;
 }
 
 message RequestOtpInput  {

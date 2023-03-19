@@ -30,7 +30,7 @@ type SocialGrpcClient interface {
 	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
-	// rpc PostFile(Upload) returns (MongoFields) {}
+	// //rpc PostFile(Upload) returns (MongoFields) {}
 	// rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
 	RequestOTP(ctx context.Context, in *RequestOtpInput, opts ...grpc.CallOption) (*Confirmation, error)
 }
@@ -64,7 +64,7 @@ type SocialGrpcServer interface {
 	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
-	// rpc PostFile(Upload) returns (MongoFields) {}
+	// //rpc PostFile(Upload) returns (MongoFields) {}
 	// rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
 	RequestOTP(context.Context, *RequestOtpInput) (*Confirmation, error)
 	mustEmbedUnimplementedSocialGrpcServer()

@@ -26,7 +26,7 @@ type SocialGrpcClient interface {
 	GetAllComments(ctx context.Context, in *GetComments, opts ...grpc.CallOption) (*MongoFields, error)
 	GetUserComments(ctx context.Context, in *GetComments, opts ...grpc.CallOption) (*MongoFields, error)
 	SignIn(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
-	SignUp(ctx context.Context, in *NewUserDataInput, opts ...grpc.CallOption) (*Jwtdata, error)
+	SignUp(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
 	LikeComment(ctx context.Context, in *SendLikeInput, opts ...grpc.CallOption) (*MongoFields, error)
 	ReplyComment(ctx context.Context, in *ReplyCommentInput, opts ...grpc.CallOption) (*MongoFields, error)
 	NewComment(ctx context.Context, in *SendCmtInput, opts ...grpc.CallOption) (*MongoFields, error)
@@ -80,7 +80,7 @@ func (c *socialGrpcClient) SignIn(ctx context.Context, in *SecurityCheckInput, o
 	return out, nil
 }
 
-func (c *socialGrpcClient) SignUp(ctx context.Context, in *NewUserDataInput, opts ...grpc.CallOption) (*Jwtdata, error) {
+func (c *socialGrpcClient) SignUp(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error) {
 	out := new(Jwtdata)
 	err := c.cc.Invoke(ctx, "/SocialGrpc/SignUp", in, out, opts...)
 	if err != nil {
@@ -151,7 +151,7 @@ type SocialGrpcServer interface {
 	GetAllComments(context.Context, *GetComments) (*MongoFields, error)
 	GetUserComments(context.Context, *GetComments) (*MongoFields, error)
 	SignIn(context.Context, *SecurityCheckInput) (*Jwtdata, error)
-	SignUp(context.Context, *NewUserDataInput) (*Jwtdata, error)
+	SignUp(context.Context, *SecurityCheckInput) (*Jwtdata, error)
 	LikeComment(context.Context, *SendLikeInput) (*MongoFields, error)
 	ReplyComment(context.Context, *ReplyCommentInput) (*MongoFields, error)
 	NewComment(context.Context, *SendCmtInput) (*MongoFields, error)
@@ -178,7 +178,7 @@ func (UnimplementedSocialGrpcServer) GetUserComments(context.Context, *GetCommen
 func (UnimplementedSocialGrpcServer) SignIn(context.Context, *SecurityCheckInput) (*Jwtdata, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
 }
-func (UnimplementedSocialGrpcServer) SignUp(context.Context, *NewUserDataInput) (*Jwtdata, error) {
+func (UnimplementedSocialGrpcServer) SignUp(context.Context, *SecurityCheckInput) (*Jwtdata, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignUp not implemented")
 }
 func (UnimplementedSocialGrpcServer) LikeComment(context.Context, *SendLikeInput) (*MongoFields, error) {
@@ -285,7 +285,7 @@ func _SocialGrpc_SignIn_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 func _SocialGrpc_SignUp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NewUserDataInput)
+	in := new(SecurityCheckInput)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -297,7 +297,7 @@ func _SocialGrpc_SignUp_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: "/SocialGrpc/SignUp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SocialGrpcServer).SignUp(ctx, req.(*NewUserDataInput))
+		return srv.(SocialGrpcServer).SignUp(ctx, req.(*SecurityCheckInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }

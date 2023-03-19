@@ -11,7 +11,7 @@ import (
 )
 
 
-func (s *Server) SignUp(ctx context.Context, in *NewUserDataInput) (*Jwtdata, error) { // takes id and sets up bucket and mongodb
+func (s *Server) SignUp(ctx context.Context, in *SecurityCheckInput) (*Jwtdata, error) { // takes id and sets up bucket and mongodb
 
 	switch in.RequestType {
 		case "stage1":

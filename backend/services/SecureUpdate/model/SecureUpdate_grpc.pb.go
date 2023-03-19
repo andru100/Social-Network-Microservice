@@ -26,7 +26,7 @@ type SocialGrpcClient interface {
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
-	// rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
+	// rpc SignUp(SecurityCheckInput) returns (Jwtdata) {}
 	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
@@ -61,7 +61,7 @@ type SocialGrpcServer interface {
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
-	// rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
+	// rpc SignUp(SecurityCheckInput) returns (Jwtdata) {}
 	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}

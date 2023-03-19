@@ -19,7 +19,7 @@ func (s *Server) SecureUpdate (ctx context.Context, in *SecurityCheckInput) (*Jw
 		filter := bson.M{"Username": in.Username} 
  
 		Updatetype := "$set"
-		Key2updt := in.UpdateType
+		Key2updt := in.RequestType
 		update := bson.D{
 			{Updatetype, bson.D{
 				{Key2updt, in.UpdateData},
