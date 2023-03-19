@@ -3,19 +3,18 @@ option go_package = "model/";
 //package GrpcMicroservice;
 
 service SocialGrpc {
-  rpc Chkauth(JwtdataInput) returns (Authd) {}
-  rpc GetAllComments(GetComments) returns (MongoFields) {}
-  rpc GetUserComments(GetComments) returns (MongoFields) {}
-  rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
-  rpc SignUp(SecurityCheckInput) returns (Jwtdata) {}
-  rpc LikeComment(SendLikeInput) returns (MongoFields) {}
-  rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
-  rpc NewComment(SendCmtInput)returns (MongoFields) {}
-  //rpc PostFile(Upload) returns (MongoFields) {} 
-  rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
-  rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
-  rpc SecureUpdate(SecurityCheckInput) returns (Jwtdata) {}
-
+	// rpc Chkauth(JwtdataInput) returns (Authd) {}
+	// rpc GetAllComments(GetComments) returns (MongoFields) {}
+	// rpc GetUserComments(GetComments) returns (MongoFields) {}
+	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
+	// rpc SignUp(SecurityCheckInput) returns (Jwtdata) {}
+	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
+	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
+	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
+	// //rpc PostFile(Upload) returns (MongoFields) {} 
+	// rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
+	rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
+	// rpc SecureUpdate(SecurityCheckInput) returns (Jwtdata) {}
 }
 
 message SecurityCheckInput  {
@@ -40,7 +39,6 @@ message Confirmation {
 	string Username = 1;
 	string RequestType = 2;
 }
-
 
 message GetComments {
 	string Username = 1 ;
@@ -139,4 +137,3 @@ message UpdateBioInput  {
 	string Username = 1 ;
 	string Bio  = 2 ;     
 }
-

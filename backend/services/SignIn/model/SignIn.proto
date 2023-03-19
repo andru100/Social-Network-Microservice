@@ -7,7 +7,7 @@ service SocialGrpc {
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
-	// rpc SignUp(NewUserDataInput) returns (Jwtdata) {}
+	// rpc SignUp(SecurityCheckInput) returns (Jwtdata) {}
 	// rpc LikeComment(SendLikeInput) returns (MongoFields) {}
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
@@ -17,15 +17,15 @@ service SocialGrpc {
 	// rpc SecureUpdate(SecurityCheckInput) returns (Jwtdata) {}
 }
 
-
 message SecurityCheckInput  {
 	string Username = 1 ; 
-	string OTP_Mobile = 2 ; 
-	string OTP_Email = 3 ;
-	string Password = 4 ;
-	string Token = 5 ;
-	string UpdateType = 6 ;
-	string UpdateData = 7 ;
+	string Password = 2 ;
+	string DOB = 3 ;
+	string Email = 4 ;
+	string Mobile = 5 ;
+	string OTP_Email = 6 ;
+	string OTP_Mobile = 7 ;
+	string RequestType = 8 ;
 }
 
 message RequestOtpInput  {
@@ -93,17 +93,6 @@ message MsgCmts  {
 message MutationInput  {
 	string Name = 1 ; 
 	string ID = 2;
-}
-
-message NewUserDataInput  {
-	string Username = 1 ; 
-	string Password = 2 ;
-	string DOB = 3 ;
-	string Email = 4 ;
-	string Mobile = 5 ;
-	string OTP_Email = 6 ;
-	string OTP_Mobile = 7 ;
-	string RequestType = 8 ;
 }
 
 message PostData  {
