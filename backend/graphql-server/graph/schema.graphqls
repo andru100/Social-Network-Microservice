@@ -30,18 +30,18 @@ type Mutation {
 
 input SecurityCheckInput  {
 	Username: String! 
-	OTP_Mobile: String!
-	OTP_Email: String!
-	Password: String!
-	Token: String!
+	OTP_Mobile: String
+	OTP_Email: String
+	Password: String
+	Token: String
 	UpdateType: String!
-	UpdateData: String!
+	UpdateData: String
 }
 
 input RequestOtpInput  {
 	Username: String! 
-	Mobile: String!
-	Email: String!
+	Mobile: String
+	Email: String
 	RequestType: String!
 }
 
@@ -126,15 +126,15 @@ input JwtdataInput  {
 }
 
 
-input NewUserDataInput  {
-	Username: String! ;
-	Password: String! ;
-	DOB: String ;
-	Email: String! ;
-	Mobile: String! ;
-	OTP_Email: String ;
-	OTP_Mobile: String ;
-	RequestType: String! ;
+input NewUserDataInput {
+	Username: String! 
+	Password: String! 
+	DOB: String 
+	Email: String! 
+	Mobile: String! 
+	OTP_Email: String 
+	OTP_Mobile: String 
+	RequestType: String! 
 }
 
 
