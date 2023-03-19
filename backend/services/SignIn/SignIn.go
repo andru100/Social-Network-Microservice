@@ -50,7 +50,7 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*mod
 				return nil, err
 			}
 			if securityScore >= 1 {
-				result, err := model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Mobile: in.Mobile, RequestType: "sms"})
+				result, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Mobile: in.Mobile, RequestType: "sms"})
 
 				if err != nil {
 					return nil, err

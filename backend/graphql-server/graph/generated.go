@@ -97,7 +97,7 @@ type ComplexityRoot struct {
 		RequestOtp   func(childComplexity int, input model.RequestOtpInput) int
 		SecureUpdate func(childComplexity int, input model.SecurityCheckInput) int
 		SignIn       func(childComplexity int, input model.SecurityCheckInput) int
-		SignUp       func(childComplexity int, input model.NewUserDataInput) int
+		SignUp       func(childComplexity int, input model.SecurityCheckInput) int
 		UpdateBio    func(childComplexity int, input model.UpdateBioInput) int
 	}
 
@@ -122,7 +122,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	SignIn(ctx context.Context, input model.SecurityCheckInput) (*model.Jwtdata, error)
-	SignUp(ctx context.Context, input model.NewUserDataInput) (*model.Jwtdata, error)
+	SignUp(ctx context.Context, input model.SecurityCheckInput) (*model.Jwtdata, error)
 	LikeComment(ctx context.Context, input model.SendLikeInput) (*model.MongoFields, error)
 	ReplyComment(ctx context.Context, input model.ReplyCommentInput) (*model.MongoFields, error)
 	NewComment(ctx context.Context, input model.SendCmtInput) (*model.MongoFields, error)
@@ -387,7 +387,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.SignUp(childComplexity, args["input"].(model.NewUserDataInput)), true
+		return e.complexity.Mutation.SignUp(childComplexity, args["input"].(model.SecurityCheckInput)), true
 
 	case "Mutation.UpdateBio":
 		if e.complexity.Mutation.UpdateBio == nil {
@@ -510,7 +510,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputJwtdataInput,
 		ec.unmarshalInputMutationInput,
-		ec.unmarshalInputNewUserDataInput,
 		ec.unmarshalInputReplyCommentInput,
 		ec.unmarshalInputRequestOtpInput,
 		ec.unmarshalInputSecurityCheckInput,
@@ -689,10 +688,10 @@ func (ec *executionContext) field_Mutation_SignIn_args(ctx context.Context, rawA
 func (ec *executionContext) field_Mutation_SignUp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewUserDataInput
+	var arg0 model.SecurityCheckInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewUserDataInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋgraphqlᚑserverᚋmodelᚐNewUserDataInput(ctx, tmp)
+		arg0, err = ec.unmarshalNSecurityCheckInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋgraphqlᚑserverᚋmodelᚐSecurityCheckInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1872,7 +1871,7 @@ func (ec *executionContext) _Mutation_SignUp(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().SignUp(rctx, fc.Args["input"].(model.NewUserDataInput))
+		return ec.resolvers.Mutation().SignUp(rctx, fc.Args["input"].(model.SecurityCheckInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4904,90 +4903,6 @@ func (ec *executionContext) unmarshalInputMutationInput(ctx context.Context, obj
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputNewUserDataInput(ctx context.Context, obj interface{}) (model.NewUserDataInput, error) {
-	var it model.NewUserDataInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"Username", "Password", "DOB", "Email", "Mobile", "OTP_Email", "OTP_Mobile", "RequestType"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "Username":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Username"))
-			it.Username, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Password":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Password"))
-			it.Password, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "DOB":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DOB"))
-			it.DOB, err = ec.unmarshalOString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Email":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Email"))
-			it.Email, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Mobile":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Mobile"))
-			it.Mobile, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "OTP_Email":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OTP_Email"))
-			it.OTP_Email, err = ec.unmarshalOString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "OTP_Mobile":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OTP_Mobile"))
-			it.OTP_Mobile, err = ec.unmarshalOString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "RequestType":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RequestType"))
-			it.RequestType, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputReplyCommentInput(ctx context.Context, obj interface{}) (model.ReplyCommentInput, error) {
 	var it model.ReplyCommentInput
 	asMap := map[string]interface{}{}
@@ -5115,7 +5030,7 @@ func (ec *executionContext) unmarshalInputSecurityCheckInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"Username", "OTP_Mobile", "OTP_Email", "Password", "Token", "UpdateType", "UpdateData"}
+	fieldsInOrder := [...]string{"Username", "Password", "DOB", "Email", "Mobile", "OTP_Email", "OTP_Mobile", "Token", "RequestType", "UpdateData"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -5130,11 +5045,35 @@ func (ec *executionContext) unmarshalInputSecurityCheckInput(ctx context.Context
 			if err != nil {
 				return it, err
 			}
-		case "OTP_Mobile":
+		case "Password":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OTP_Mobile"))
-			it.OTP_Mobile, err = ec.unmarshalOString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Password"))
+			it.Password, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "DOB":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DOB"))
+			it.DOB, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Email":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Email"))
+			it.Email, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Mobile":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Mobile"))
+			it.Mobile, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5146,11 +5085,11 @@ func (ec *executionContext) unmarshalInputSecurityCheckInput(ctx context.Context
 			if err != nil {
 				return it, err
 			}
-		case "Password":
+		case "OTP_Mobile":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Password"))
-			it.Password, err = ec.unmarshalOString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("OTP_Mobile"))
+			it.OTP_Mobile, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5162,11 +5101,11 @@ func (ec *executionContext) unmarshalInputSecurityCheckInput(ctx context.Context
 			if err != nil {
 				return it, err
 			}
-		case "UpdateType":
+		case "RequestType":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdateType"))
-			it.UpdateType, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RequestType"))
+			it.RequestType, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6439,11 +6378,6 @@ func (ec *executionContext) marshalNMsgCmts2ᚖgithubᚗcomᚋandru100ᚋSocial�
 		return graphql.Null
 	}
 	return ec._MsgCmts(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNNewUserDataInput2githubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋgraphqlᚑserverᚋmodelᚐNewUserDataInput(ctx context.Context, v interface{}) (model.NewUserDataInput, error) {
-	res, err := ec.unmarshalInputNewUserDataInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNPostData2ᚕᚖgithubᚗcomᚋandru100ᚋSocialᚑNetworkᚑMicroserviceᚋbackendᚋgraphqlᚑserverᚋmodelᚐPostDataᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PostData) graphql.Marshaler {

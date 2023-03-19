@@ -114,7 +114,7 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 
 			// send otps
 
-			result, err := model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Email: in.Email, Mobile: in.Mobile, RequestType: "signup"})
+			_, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Email: in.Email, Mobile: in.Mobile, RequestType: "signup"})
 
 			if err != nil {
 				return nil, err
@@ -128,7 +128,7 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 
 		case "stage2":
 
-			securityScore , err := model.SecurityCheck(&model.SecurityCheckInput{Username: in.Username, OTP_Mobile: in.OTP_Mobile, OTP_Email: in.OTP_Email})
+			securityScore , err := model.SecurityCheck(in)
 
 			if securityScore >= 2 && err == nil {
 

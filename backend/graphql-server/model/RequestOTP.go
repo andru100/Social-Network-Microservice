@@ -5,11 +5,8 @@ import (
 	"math/rand"
 	"time"
 	"context"
-	"net"
-	"log"
 
 	
-	"google.golang.org/grpc"
 	"go.mongodb.org/mongo-driver/bson"
 	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
 )

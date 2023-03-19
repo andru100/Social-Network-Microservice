@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"google.golang.org/grpc"
 	"golang.org/x/net/context"
 
 )
@@ -22,7 +21,7 @@ func (s *Server) SignIn(ctx context.Context, in *SecurityCheckInput) (*Jwtdata, 
 				return nil, err
 			}
 			if securityScore >= 1 {
-				result, err := RequestOtpRpc(&RequestOtpInput{Username: in.Username, Mobile: in.Mobile, RequestType: "sms"})
+				_, err = RequestOtpRpc(&RequestOtpInput{Username: in.Username, Mobile: in.Mobile, RequestType: "sms"})
 
 				if err != nil {
 					return nil, err

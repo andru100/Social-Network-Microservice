@@ -17,7 +17,7 @@ type Query {
 
 type Mutation {
   SignIn(input: SecurityCheckInput!) : Jwtdata
-  SignUp(input: NewUserDataInput!) : Jwtdata
+  SignUp(input: SecurityCheckInput!) : Jwtdata
   LikeComment(input: SendLikeInput!) : MongoFields
   ReplyComment(input: ReplyCommentInput!) : MongoFields
   NewComment(input: SendCmtInput!) : MongoFields
@@ -28,13 +28,16 @@ type Mutation {
   
 }
 
-input SecurityCheckInput  {
+input SecurityCheckInput {
 	Username: String! 
-	OTP_Mobile: String
-	OTP_Email: String
 	Password: String
+	DOB: String 
+	Email: String 
+	Mobile: String
+	OTP_Email: String 
+	OTP_Mobile: String 
 	Token: String
-	UpdateType: String!
+	RequestType: String! 
 	UpdateData: String
 }
 
@@ -123,18 +126,6 @@ type MongoFields  {
 
 input JwtdataInput  { 
 	Token: String! 
-}
-
-
-input NewUserDataInput {
-	Username: String! 
-	Password: String! 
-	DOB: String 
-	Email: String! 
-	Mobile: String! 
-	OTP_Email: String 
-	OTP_Mobile: String 
-	RequestType: String! 
 }
 
 

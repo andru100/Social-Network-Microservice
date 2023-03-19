@@ -5,7 +5,6 @@ import (
 	"errors"
 	"time"
 	"go.mongodb.org/mongo-driver/bson"
-	"google.golang.org/grpc"
 	//"golang.org/x/crypto/bcrypt"
 	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
 )
@@ -84,7 +83,7 @@ func (s *Server) SignUp(ctx context.Context, in *SecurityCheckInput) (*Jwtdata, 
 
 			// send otps
 
-			result, err := RequestOtpRpc(&RequestOtpInput{Username: in.Username, Email: in.Email, Mobile: in.Mobile, RequestType: "signup"})
+			_, err = RequestOtpRpc(&RequestOtpInput{Username: in.Username, Email: in.Email, Mobile: in.Mobile, RequestType: "signup"})
 
 			if err != nil {
 				return nil, err
@@ -98,7 +97,7 @@ func (s *Server) SignUp(ctx context.Context, in *SecurityCheckInput) (*Jwtdata, 
 
 		case "stage2":
 
-			securityScore , err := SecurityCheck(&SecurityCheckInput{Username: in.Username, OTP_Mobile: in.OTP_Mobile, OTP_Email: in.OTP_Email})
+			securityScore , err := SecurityCheck(in)
 
 			if securityScore >= 2 && err == nil {
 
