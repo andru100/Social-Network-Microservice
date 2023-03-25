@@ -1,147 +1,188 @@
 package model
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"math/rand"
 	"time"
-	"context"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"github.com/andru100/Social-Network-Microservices/backend/services/SignUp/utils"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
-
-
-func (s *Server) RequestOTP (ctx context.Context, in *RequestOtpInput) (*Confirmation, error) {// takes id and sets up bucket and mongodb doc
-
+func (s *Server) RequestOTP(ctx context.Context, in *RequestOtpInput) (*Confirmation, error) { // takes id and sets up bucket and mongodb doc
+	fmt.Println("request otp called")
 	//create otp
 	nums := []rune("123456789")
 
 	rand.Seed(time.Now().UnixNano())
 
-    b := make([]rune, 6)
-    for i := range b {
-        b[i] = nums[rand.Intn(len(nums))]
-    }
+	b := make([]rune, 6)
+	for i := range b {
+		b[i] = nums[rand.Intn(len(nums))]
+	}
 
-	otp := string(b) 
+	otp := string(b)
 
 	fmt.Println("randon otp is", otp, "this isnt safe, will need some secret key to truly randomize")
 
 	//save otp to db
 	otpHash := utils.HashAndSalt([]byte(otp))
 
-	db := utils.Client.Database("datingapp").Collection("security")
-
-	result := Security{}
-
-	ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
-
-	err := db.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&result)
-
-	if err != nil {
-		return nil, err
-	}
-
-	filter := bson.M{"Username": in.Username} 
-
-	//add new comment to DB 
-	Updatetype := "$set"
-	Key2updt := "OTP"
-	update := bson.D{
-		{Updatetype, bson.D{
-			{Key2updt, result.OTP},
-		}},
-	}
-
 	switch in.RequestType {
-		case "sms":
-			result.OTP.Mobile.Hash = otpHash
+	case "sms":
 
-			result.OTP.Mobile.Expiry = time.Now().Add(time.Minute * 5)
+		db := utils.Client.Database("datingapp").Collection("security")
 
-			result.OTP.Mobile.Attempts = 0
+		MobileOTP := &Mobile{}
 
-			//put to db
-			_, err = db.UpdateOne(context.TODO(), filter, update)
-			if err != nil {
-				return nil, err
-			}
+		MobileOTP.Hash = otpHash
 
-			_, err := SendSMS(&in.Mobile, &otp)
-			if err != nil {
-				return nil, err
-			}
+		MobileOTP.Expiry = time.Now().Add(time.Minute * 5)
 
-			return &Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
-		
-		case "email":
+		MobileOTP.Attempts = 0
 
-			result.OTP.Email.Hash = otpHash
+		filter := bson.M{"Username": in.Username}
 
-			result.OTP.Email.Expiry = time.Now().Add(time.Minute * 5)
+		//add new comment to DB
+		Updatetype := "$set"
+		Key2updt := "OTP.Mobile"
+		update := bson.D{
+			{Updatetype, bson.D{
+				{Key2updt, MobileOTP},
+			}},
+		}
 
-			result.OTP.Email.Attempts = 0
+		//put to db
+		_, err := db.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			return nil, errors.New("its updateone on requestotp 1")
+		}
 
-			//put to db
-			_, err = db.UpdateOne(context.TODO(), filter, update)
-			if err != nil {
-				return nil, err
-			}
+		_, err = SendSMS(&in.Mobile, &otp)
+		if err != nil {
+			return nil, err
+		}
 
-			_, err := SendEmail(&in.Email, &otp)
-			if err != nil {
-				return nil, err
-			}
+		return &Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
 
-			return &Confirmation{Username: in.Username, RequestType: in.RequestType}, nil		
+	case "email":
 
-		case "signup":
+		fmt.Println("email otp requested")
 
-			result.OTP.Mobile.Hash = otpHash
+		db := utils.Client.Database("datingapp").Collection("security")
 
-			result.OTP.Mobile.Expiry = time.Now().Add(time.Minute * 5)
+		EmailOTP := &Email{}
 
-			result.OTP.Mobile.Attempts = 0
+		EmailOTP.Hash = otpHash
 
-			//add email otp
-			c := make([]rune, 6)
-			for i := range b {
-				c[i] = nums[rand.Intn(len(nums))]
-			}
+		EmailOTP.Expiry = time.Now().Add(time.Minute * 5)
 
-			otp2 := string(c) 
+		EmailOTP.Attempts = 0
 
-			//save otp to db
-			EmailHash := utils.HashAndSalt([]byte(otp2))
+		filter := bson.M{"Username": in.Username}
 
-			result.OTP.Email.Hash = EmailHash
+		//add new comment to DB
+		Updatetype := "$set"
+		Key2updt := "OTP.Email"
+		update := bson.D{
+			{Updatetype, bson.D{
+				{Key2updt, EmailOTP},
+			}},
+		}
 
-			result.OTP.Email.Expiry = time.Now().Add(time.Minute * 5)
+		//put to db
+		_, err := db.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			return nil, errors.New("its updateone on requestotp2")
+		}
 
-			result.OTP.Email.Attempts = 0
+		_, err = SendEmail(&in.Email, &otp)
+		if err != nil {
+			return nil, err
+		}
 
-			//put to db
-			_, err = db.UpdateOne(context.TODO(), filter, update)
-			if err != nil {
-				return nil, err
-			}
+		return &Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
 
-			_, err = SendSMS(&in.Mobile, &otp)
-			if err != nil {
-				return nil, err
-			}
+	case "signup":
 
-			_, err = SendEmail(&in.Email, &otp)
-			if err != nil {
-				return nil, err
-			}
+		//send sms otp
 
-			return &Confirmation{Username: in.Username, RequestType: in.RequestType}, nil	
-	
-		default:
-			return nil, fmt.Errorf("Request type not supported")
+		db := utils.Client.Database("datingapp").Collection("tempuser")
 
-	
+		MobileOTP := &Mobile{}
+
+		MobileOTP.Hash = otpHash
+
+		MobileOTP.Expiry = time.Now().Add(time.Minute * 5)
+
+		MobileOTP.Attempts = 0
+
+		filter := bson.M{"Username": in.Username}
+
+		//add new comment to DB
+		Updatetype := "$set"
+		Key2updt := "OTP.Mobile"
+		update := bson.D{
+			{Updatetype, bson.D{
+				{Key2updt, MobileOTP},
+			}},
+		}
+
+		//put to db
+		_, err := db.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			fmt.Println("its updateone on requestotp3")
+			return nil, errors.New("its updateone on requestotp3")
+		}
+
+		//send email otp
+		c := make([]rune, 6)
+		for i := range b {
+			c[i] = nums[rand.Intn(len(nums))]
+		}
+
+		otp2 := string(c)
+
+		EmailOTP := &Email{}
+
+		EmailOTP.Hash = otp2
+
+		EmailOTP.Expiry = time.Now().Add(time.Minute * 5)
+
+		EmailOTP.Attempts = 0
+
+		Key2updt = "OTP.Email"
+		update = bson.D{
+			{Updatetype, bson.D{
+				{Key2updt, EmailOTP},
+			}},
+		}
+
+		//put to db
+		_, err = db.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			fmt.Println("its updateone on requestotp4")
+			return nil, errors.New("its updateone on requestotp4")
+		}
+
+		_, err = SendSMS(&in.Mobile, &otp)
+		if err != nil {
+			fmt.Println("its send sms on requestotp4")
+			return nil, err
+		}
+
+		_, err = SendEmail(&in.Email, &otp2)
+		if err != nil {
+			fmt.Println("its send email on requestotp4")
+			return nil, err
+		}
+
+		return &Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
+
+	default:
+		return nil, fmt.Errorf("Request type not supported")
+
 	}
 }

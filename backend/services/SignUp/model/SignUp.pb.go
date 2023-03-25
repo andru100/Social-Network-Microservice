@@ -615,16 +615,16 @@ type MongoFields struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key            string      `protobuf:"bytes,1,opt,name=Key,proto3" json:"Key,omitempty"`
-	ID             string      `protobuf:"bytes,2,opt,name=ID,proto3" json:"ID,omitempty"`
-	Username       string      `protobuf:"bytes,3,opt,name=Username,proto3" json:"Username,omitempty"`
-	Password       string      `protobuf:"bytes,4,opt,name=Password,proto3" json:"Password,omitempty"`
-	Email          string      `protobuf:"bytes,5,opt,name=Email,proto3" json:"Email,omitempty"`
-	Bio            string      `protobuf:"bytes,6,opt,name=Bio,proto3" json:"Bio,omitempty"`
-	Profpic        string      `protobuf:"bytes,7,opt,name=Profpic,proto3" json:"Profpic,omitempty"`
-	Photos         []string    `protobuf:"bytes,8,rep,name=Photos,proto3" json:"Photos,omitempty"`
-	LastCommentNum int32       `protobuf:"varint,9,opt,name=LastCommentNum,proto3" json:"LastCommentNum,omitempty"`
-	Posts          []*PostData `protobuf:"bytes,10,rep,name=Posts,proto3" json:"Posts,omitempty"` //         []PostData `json:"Posts"`
+	Key            string      `protobuf:"bytes,1,opt,name=Key,proto3" json:"Key,omitempty" bson:"Key,omitempty"`
+	ID             string      `protobuf:"bytes,2,opt,name=ID,proto3" json:"ID,omitempty" bson:"ID,omitempty"`
+	Username       string      `protobuf:"bytes,3,opt,name=Username,proto3" json:"Username,omitempty" bson:"Username,omitempty"`
+	Password       string      `protobuf:"bytes,4,opt,name=Password,proto3" json:"Password,omitempty" bson:"Password,omitempty"`
+	Email          string      `protobuf:"bytes,5,opt,name=Email,proto3" json:"Email,omitempty" bson:"Email,omitempty"`
+	Bio            string      `protobuf:"bytes,6,opt,name=Bio,proto3" json:"Bio,omitempty" bson:"Bio,omitempty"`
+	Profpic        string      `protobuf:"bytes,7,opt,name=Profpic,proto3" json:"Profpic,omitempty" bson:"Profpic,omitempty"`
+	Photos         []string    `protobuf:"bytes,8,rep,name=Photos,proto3" json:"Photos,omitempty" bson:"Photos,omitempty"`
+	LastCommentNum int32       `protobuf:"varint,9,opt,name=LastCommentNum,proto3" json:"LastCommentNum,omitempty" bson:"LastCommentNum,omitempty"`
+	Posts          []*PostData `protobuf:"bytes,10,rep,name=Posts,proto3" json:"Posts,omitempty" bson:"Posts"` //         []PostData `json:"Posts"`
 }
 
 func (x *MongoFields) Reset() {

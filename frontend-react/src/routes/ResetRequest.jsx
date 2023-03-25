@@ -4,10 +4,12 @@ import { useNavigate, Link } from 'react-router-dom';
 import ChkAuth from './chkAuth';
 import Google from '../images/icons/icon-google.png'
 import SendData from './SendData';
+import ResetPassword from './ResetPassword';
 
 export default function RenderResetPassword () {
 
 	const Navigate = useNavigate();
+	const [updateType, setUpdateType] = React.useState("init");
 
 	useEffect( () => { //check if signed in and go to profile page
 		ChkAuth().then(user => {
@@ -18,64 +20,58 @@ export default function RenderResetPassword () {
 	},[]);
 
 	
-	async function resetpassword(){
-		
-		const username = document.getElementById('username').value;
-		const password = document.getElementById('pass').value;
+	
+
+	async function RequestOTP (requestType) {
 			
 		let signindata = {data: {
 			Username: username,
-			Password: password
+			RequestType: requestType
 			}
 		}
 
-		let gqlRequest = "mutation SignIn ($data: UsrsigninInput!){ SignIn(input: $data) { Token } }"
+		let gqlRequest = "mutation SecureUpdate ($data: SecurityCheckInput!){ SecureUpdate(input: $data) { Token } }"
 		
-		let response = await SendData(gqlRequest, signindata, 'signin')
+		let response = await SendData(gqlRequest, signindata, 'secureupdate')
 
 		
-		if ( response ){ // if password is a match redirect to profile page
-			localStorage.setItem('jwt_token', response.data.SignIn.Token) // Store JWT in storage
-			Navigate ("/Profile/" + username + "/home")
+		if ( "errors" in response ){ // if password is a match redirect to profile page
+			console.log("Unable to re-send OTP", response.errors[0].message )
+			alertError(response.errors[0].message)
+			
+		} else { // if password is a match redirect to profile page
+			alert.show("We have re-sent your code")
+			//setStage("stage2")
+			
 		} 
-		
-		
+
 	}
 	
   return (  
     <>
-      <span className="login100-form-title p-b-53">
-						Confirm your details
-					</span>
-					<div className="p-t-31 p-b-9">
-						<span className="txt1">
-							Username
-						</span>
-					</div>
-					<div className="wrap-input100 validate-input" data-validate = "Username is required">
-						<input className="input100" type="text" name="username" id="username"/>
-						<span className="focus-input100"></span>
-					</div>
-					<div className="p-t-13 p-b-9">
-						<span className="txt1">
-							Mobile no.
-						</span>
-						{/* <a href="/" className="txt2 bo1 m-l-5">
-							Forgot?
-						</a> */}
-					</div>
-					<div className="wrap-input100 validate-input" data-validate = "Mobile no. is required">
-						<input className="input100" type="password" name="pass" id="pass" />
-						<span className="focus-input100"></span>
-					</div>
-					<div className="container-login100-form-btn m-t-17">
-						<button className="login100-form-btn" type="button" onClick={resetpassword}>
-							Send verification sms
-						</button>
-					</div>
-					<div className="w-full text-center p-t-55">
-						<Link to="/signIn">Back to log in</Link>
-					</div>
-    </>
+	{updateType === "Password" ?
+
+	<ConfirmSmsSignIn username={username} password={password} />
+	:
+	<>
+			<span className="login100-form-title p-b-53">
+			<h3><i class="fa fa-lock fa-4x"></i></h3>
+			</span>
+			<div className="container-login100-form-btn m-t-17">
+				<button className="login100-form-btn" type="button" onClick={verify}>
+					Authenticate
+				</button>
+			</div>
+			<div className="w-full text-center p-t-55">
+				<button onClick={() => window.location.reload(false)}>Back to log in</button>
+			</div>
+
+			
+		</>
+
+	}
+	</>
+
+
   )
 };

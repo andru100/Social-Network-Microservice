@@ -23,6 +23,10 @@ func SendSMS(mobile *string, otp *string) (bool, error) {
 	// Send the request
 	resp, err := svc.Publish(params)
 
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	// Log the response
 	fmt.Println(resp)
 

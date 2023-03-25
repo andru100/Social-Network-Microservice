@@ -59,7 +59,12 @@ export default function RenderProfileSetup () {
 
     let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
     let response = await SendData(gqlRequest, data)
-    if (response) {
+    if ( "errors" in response ){ // if password is a match redirect to profile page
+      //{ProcessErrorAlerts("hi", "hi")}
+      console.log("error retrieving data", response.errors[0].message )
+      return false
+      
+    } else {
        return response.data[queryType] 
     }
  }
@@ -76,7 +81,12 @@ export default function RenderProfileSetup () {
 		let response = await SendData(gqlRequest, variables)
 
 		
-		if ( response ){ // if password is a match redirect to profile page
+		if ( "errors" in response ){ // if password is a match redirect to profile page
+      //{ProcessErrorAlerts("hi", "hi")}
+      console.log("error updating bio", response.errors[0].message )
+      return false
+      
+    } else { // if password is a match redirect to profile page
 			console.log("saved bio")
       setcmt(response.data.UpdateBio) // store users data object
       setDp(!dp) // show bio edit box

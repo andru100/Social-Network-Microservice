@@ -36,7 +36,12 @@ export default function RenderVerify () {
 		let response = await SendData(gqlRequest, signindata, 'signin')
 
 		
-		if ( response ){ // if password is a match redirect to profile page
+		if ( "errors" in response ){ // if password is a match redirect to profile page
+			//{ProcessErrorAlerts("hi", "hi")}
+			console.log("error verifying", response.errors[0].message )
+			return false
+			
+		  } else { // if password is a match redirect to profile page
 			localStorage.setItem('jwt_token', response.data.SignIn.Token) // Store JWT in storage
 			Navigate ("/Profile/" + username + "/home")
 		} 

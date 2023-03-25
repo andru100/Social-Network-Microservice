@@ -6,10 +6,16 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
+	"errors"
+	"context"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+
 )
 
 func Connectedmngo(err error, err1 error) { // prints connected if all error checks passed
@@ -181,6 +187,46 @@ func HashAndSalt(pwd []byte) string {
         log.Println(err)
     }
     return string(hash)
+}
+
+func ExpireOTP(username *string, requestType string) (error) { // expires otp after 5 minutes
+	filter := bson.M{"Username": username}
+
+	db := Client.Database("datingapp").Collection("security")
+
+	switch requestType {
+	case "sms":
+		update := bson.D{
+			{"$set", bson.D{
+				{"OTP.Mobile.Expiry", time.Now()},
+			}},
+		}
+		
+		_, err := db.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			errors.New(fmt.Sprintf("Error expiring mobile otp for user %v", err))
+		}
+
+	case "email":
+		update := bson.D{
+			{"$set", bson.D{
+				{"OTP.Email.Expiry", time.Now()},
+			}},
+		}
+		
+		_, err := db.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			errors.New(fmt.Sprintf("Error expiring email otp for user %v", err))
+		}
+
+	default:
+		errors.New("Invalid request type")
+
+	
+	
+	}
+
+	return nil
 }
 
 func CheckError(err error) {

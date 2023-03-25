@@ -1,24 +1,24 @@
 package model
 
 import (
-	"errors"
-	"time"
 	"context"
+	"errors"
+	"fmt"
 	"log"
+	"time"
 
-	
 	//"google.golang.org/grpc"
-	"golang.org/x/crypto/bcrypt"
-	"go.mongodb.org/mongo-driver/bson"
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/andru100/Social-Network-Microservices/backend/services/SignUp/utils"
+	jwt "github.com/dgrijalva/jwt-go"
+	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func SecurityCheck (in *SecurityCheckInput) (int, error) {
 
 	securityScore := 0
 
-	db := utils.Client.Database("datingapp").Collection("security")
+	db := utils.Client.Database("datingapp").Collection("tempuser")
 
 	result := Security{}
 
@@ -32,6 +32,7 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 
 	
 	if in.OTP_Mobile != "" {
+		fmt.Println("security checking Mobile OTP is", in.OTP_Mobile)
 		if result.OTP.Mobile.Expiry.Unix() < time.Now().Unix() {
 			return securityScore, errors.New("Mobile OTP expired")
 		}
@@ -76,6 +77,7 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 	}
 
 	if in.OTP_Email != "" {
+		fmt.Println("security checking Email OTP is", in.OTP_Email)
 		if result.OTP.Email.Expiry.Unix() < time.Now().Unix() {
 			return securityScore, errors.New("Email OTP expired")
 		}
@@ -120,6 +122,7 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 	}
 
 	if in.Password != "" {
+		fmt.Println("security checking password is", in.Password)
 
 		if result.Password.Attempts > 5 {
 			return securityScore, errors.New("too many failed password attempts, please reset your password")

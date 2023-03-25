@@ -13,7 +13,7 @@ service SocialGrpc {
   // rpc NewComment(SendCmtInput)returns (MongoFields) {}
   // rpc PostFile(Upload) returns (MongoFields) {} 
   // rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
-  // rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
+  rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
   rpc SecureUpdate(SecurityCheckInput) returns (Jwtdata) {}
 
 }
@@ -28,7 +28,8 @@ message SecurityCheckInput  {
 	string OTP_Mobile = 7 ;
 	string Token = 8 ;
 	string RequestType = 9 ;
-	string UpdateData = 10 ;
+	string UpdateType = 10 ;
+	string UpdateData = 11 ;
 }
 
 message RequestOtpInput  {

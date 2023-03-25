@@ -1,0 +1,70 @@
+unlockaccount funcs called seperate with db shared in arg :
+
+ 468141033 ns/op
+
+  468465467 ns/op
+
+476191100
+
+469098333 ns/op
+
+470474533
+
+468327033
+
+
+unlockaccount each func calling new connection
+
+470018367
+
+470913067
+
+469767000
+
+473637767
+
+473060100
+
+ 466041267
+
+
+ go func conurrent.. return ignored 
+
+ 105316 
+
+ 110054 ns/op
+
+ 334270
+
+ 112831
+
+ 418759
+
+ 272776
+
+ no go call standard call fun ignore return errror
+
+ 470148400
+
+ 1287644700
+
+ 1639694800
+
+ 1526433500
+
+ 476097067
+
+ 473254400 ns/o
+
+ // next test: is it better to pull data already there eg whole security type.. every funcc works on it in place and makes one request to update whoe doc.. or dnt pull it and update 1x1 sub fields.
+ // assuming here that if any of your ifs need to pull data to =+1 it. then its better to pull doc, work on it in place and send 1 reuest back to update
+ //next test: if you need data eg to +=1 to attempts, is it better to pull whole doc, or just pull the field you need and +=1 to it and update it, and then others.
+
+
+
+
+
+
+
+
+

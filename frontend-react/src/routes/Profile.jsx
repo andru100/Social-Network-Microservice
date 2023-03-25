@@ -51,7 +51,11 @@ function Home () {
 
       let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
       let response = await SendData(gqlRequest, data)
-      if (response) {
+      if ( "errors" in response ){ // if password is a match redirect to profile page
+			//{ProcessErrorAlerts("hi", "hi")}
+			console.log("Error retrieving user data", response.errors[0].message )
+			
+		} else {
          return response.data[queryType] 
       }
    }
@@ -77,7 +81,7 @@ function Home () {
 
          let gqlRequest = "mutation NewComment ($data: SendCmtInput!){ NewComment (input: $data) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
          
-         SendData(gqlRequest, NewCmtInput).then((response)=> response ? setcmt(response.data.NewComment) :  console.log("error posting new comment") ); 
+         SendData(gqlRequest, NewCmtInput).then((response)=> ("errors" in response) ? console.log("error posting data") : setcmt(response.data.NewComment) ); 
       }
       
 
@@ -96,7 +100,7 @@ function Home () {
          const reply = await getCmt(sessionUser)
          CommentResponse.data.ReplyProfpic = reply.Profpic
          
-         SendData(gqlRequest, CommentResponse).then((response)=> response ? setcmt(response.data.ReplyComment) :  console.log("error sending response to comment") )
+         SendData(gqlRequest, CommentResponse).then((response)=> ("errors" in response) ? console.log("error sending response to comment") : setcmt(response.data.ReplyComment))
       }
 
 
@@ -110,7 +114,7 @@ function Home () {
             }
          }
          let gqlRequest = "mutation LikeComment ($data: SendLikeInput!){ LikeComment (input: $data) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
-         getCmt(sessionUser).then((repliersData)=> {SendLikeInput.data.LikeByPic = repliersData.Profpic; SendData(gqlRequest, SendLikeInput).then((response)=> response ? setcmt(response.data.LikeComment) :  console.log("error when sending comment like") ); })
+         getCmt(sessionUser).then((repliersData)=> {SendLikeInput.data.LikeByPic = repliersData.Profpic; SendData(gqlRequest, SendLikeInput).then((response)=> ( "errors" in response) ? console.log("error adding like") : setcmt(response.data.LikeComment) ) ; })
       }
 
    }

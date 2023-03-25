@@ -20,12 +20,19 @@ type Security struct {
 	Email string `json:"Email" bson:"Email"`
 	Mobile	string `json:"Mobile" bson:"Mobile"`
 	DOB string `json:"DOB" bson:"DOB"`
+	SecurityLock  SecurityLock `json:"SecurityLock" bson:"SecurityLock"`
 	OTP 	OTP `json:"OTP" bson:"OTP"`
 }	
 
 type Password struct {
 	Hash string `json:"Hash" bson:"Hash"`
 	Attempts int `json:"Attempts" bson:"Attempts"`
+}
+
+type SecurityLock struct {
+	Status bool `json:"Status" bson:"Status"`
+	Stage int `json:"Stage" bson:"Stage"`
+	Expiry time.Time `json:"Expiry" bson:"Expiry"`
 }
 
 type OTP struct {

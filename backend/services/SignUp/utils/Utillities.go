@@ -191,3 +191,51 @@ func HashAndSalt(pwd []byte) string {
     }
     return string(hash)
 }
+
+func ExpireOTP(username string, requestType string) (error) { // expires otp after 5 minutes
+	filter := bson.M{"Username": username}
+
+	db := Client.Database("datingapp").Collection("security")
+
+	switch requestType {
+	case "sms":
+		Updatetype := "$set"
+		Key2updt := "OTP.Mobile.Expiry"
+		update := bson.D{
+			{Updatetype, bson.D{
+				{Key2updt, time.Now()},
+			}},
+		}
+		
+
+		//put to db
+		_, err := db.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			errors.New(fmt.Sprintf("Error expiring mobile otp for user %v", err))
+		}
+
+	case "email":
+		Updatetype := "$set"
+		Key2updt := "OTP.Email.Expiry"
+		update := bson.D{
+			{Updatetype, bson.D{
+				{Key2updt, time.Now()},
+			}},
+		}
+		
+
+		//put to db
+		_, err := db.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			errors.New(fmt.Sprintf("Error expiring email otp for user %v", err))
+		}
+
+	default:
+		errors.New("Invalid request type")
+
+	
+	
+	}
+
+	return nil
+}

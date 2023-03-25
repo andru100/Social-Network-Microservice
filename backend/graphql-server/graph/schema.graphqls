@@ -38,6 +38,7 @@ input SecurityCheckInput {
 	OTP_Mobile: String 
 	Token: String
 	RequestType: String! 
+	UpdateType: String
 	UpdateData: String
 }
 

@@ -1,0 +1,76 @@
+package model
+
+import (
+	"errors"
+	"fmt"
+	"time"
+
+	"golang.org/x/net/context"
+	"go.mongodb.org/mongo-driver/bson"
+	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
+)
+
+
+func  UnlockAccount(Username *string) (error) { // reset account locks
+
+	resetSecurity := SecurityLock{Status: "Unlocked", Stage: 0,Expiry: time.Now()}
+	
+	filter := bson.M{"Username": Username}
+
+	update := bson.D{
+		{"$set", bson.D{
+			{"SecurityLock", resetSecurity},
+		}},
+	}
+	
+	db := utils.Client.Database("datingapp").Collection("security")
+
+	_, err := db.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return  errors.New(fmt.Sprintf("Error unlocking account %v", err))
+	}
+
+	//reset attempts
+
+	update = bson.D{
+		{"$set", bson.D{
+			{"Password.Attempts", 0},
+		}},
+	}
+
+	_, err = db.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return  errors.New(fmt.Sprintf("Error resetting password attempts %v", err))
+	}
+
+	update = bson.D{
+		{"$set", bson.D{
+			{"OTP.Mobile.Attempts", 0},
+		}},
+	}
+
+	_, err = db.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return  errors.New(fmt.Sprintf("Error resetting mobile otp attempts %v", err))
+	}
+
+	update = bson.D{
+		{"$set", bson.D{
+			{"OTP.Email.Attempts", 0},
+		}},
+	}
+
+	_, err = db.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return  errors.New(fmt.Sprintf("Error resetting email otp attempts %v", err))
+	}
+
+	// expire otps
+	err = utils.ExpireOTP(Username, "sms")
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}

@@ -1,19 +1,22 @@
-package model 
+package model
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
 	"google.golang.org/grpc"
 )
 
-func RequestOtpRpc (in *RequestOtpInput) (*Confirmation, error) {
+func RequestOtpRpc(in *RequestOtpInput) (*Confirmation, error) {
+
+	fmt.Println("request otp rpc called")
 
 	var conn *grpc.ClientConn
-	
+
 	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4011", grpc.WithInsecure())
-	
+
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)
 	}
@@ -22,12 +25,11 @@ func RequestOtpRpc (in *RequestOtpInput) (*Confirmation, error) {
 	c := NewSocialGrpcClient(conn)
 
 	result, err := c.RequestOTP(context.Background(), in)
-	
+
 	if err != nil {
+		fmt.Println("error in request otp rpc", err)
 		return nil, err
 	}
-	
-	
+
 	return result, err
-	
 }

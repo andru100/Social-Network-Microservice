@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"google.golang.org/grpc"
 	"golang.org/x/net/context"
-	//"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
+	"go.mongodb.org/mongo-driver/bson"
+	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/utils"
 	"github.com/andru100/Social-Network-Microservices/backend/services/SignIn/model"
 )
 
@@ -47,10 +49,26 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*mod
 			securityScore , err := model.SecurityCheck(in)
 			// error will be throw if username or password is incorrect
 			if err != nil {
-				return nil, err
+				return nil , errors.New(fmt.Sprintf("security check failed: %v", err))
 			}
 			if securityScore >= 1 {
-				result, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Mobile: in.Mobile, RequestType: "sms"})
+				collection := utils.Client.Database("datingapp").Collection("security") // connect to db and collection.
+
+				ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
+
+				// search for duplicate username
+				//TODO change this to a map rather than search all docs
+				sendSms := model.Security{}
+
+				err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&sendSms)
+
+				fmt.Println("sendSms.Mobile: ", sendSms.Mobile)
+
+				if err != nil {
+					err = errors.New(fmt.Sprintf("unable to locate sms no.: %v", err))
+					return nil, err
+				}
+				_, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Mobile: sendSms.Mobile, RequestType: "sms"})
 
 				if err != nil {
 					return nil, err
@@ -62,6 +80,11 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*mod
 			securityScore , err := model.SecurityCheck(in)
 
 			if securityScore >= 2 && err == nil {
+
+				err = model.UnlockAccount(&in.Username)
+				if err != nil {
+					return nil, err
+				}
 
 				//generate jwt
 				token, err1 := model.MakeJwt(&in.Username, true)

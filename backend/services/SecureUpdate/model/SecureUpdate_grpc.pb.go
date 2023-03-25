@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SocialGrpcClient interface {
-	// rpc Chkauth(JwtdataInput) returns (Authd) {}
+	//rpc Chkauth(JwtdataInput) returns (Authd) {}
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
@@ -32,7 +32,7 @@ type SocialGrpcClient interface {
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
 	// rpc PostFile(Upload) returns (MongoFields) {}
 	// rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
-	// rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
+	RequestOTP(ctx context.Context, in *RequestOtpInput, opts ...grpc.CallOption) (*Confirmation, error)
 	SecureUpdate(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
 }
 
@@ -42,6 +42,15 @@ type socialGrpcClient struct {
 
 func NewSocialGrpcClient(cc grpc.ClientConnInterface) SocialGrpcClient {
 	return &socialGrpcClient{cc}
+}
+
+func (c *socialGrpcClient) RequestOTP(ctx context.Context, in *RequestOtpInput, opts ...grpc.CallOption) (*Confirmation, error) {
+	out := new(Confirmation)
+	err := c.cc.Invoke(ctx, "/SocialGrpc/RequestOTP", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *socialGrpcClient) SecureUpdate(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error) {
@@ -57,7 +66,7 @@ func (c *socialGrpcClient) SecureUpdate(ctx context.Context, in *SecurityCheckIn
 // All implementations must embed UnimplementedSocialGrpcServer
 // for forward compatibility
 type SocialGrpcServer interface {
-	// rpc Chkauth(JwtdataInput) returns (Authd) {}
+	//rpc Chkauth(JwtdataInput) returns (Authd) {}
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
@@ -67,7 +76,7 @@ type SocialGrpcServer interface {
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
 	// rpc PostFile(Upload) returns (MongoFields) {}
 	// rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
-	// rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
+	RequestOTP(context.Context, *RequestOtpInput) (*Confirmation, error)
 	SecureUpdate(context.Context, *SecurityCheckInput) (*Jwtdata, error)
 	mustEmbedUnimplementedSocialGrpcServer()
 }
@@ -76,6 +85,9 @@ type SocialGrpcServer interface {
 type UnimplementedSocialGrpcServer struct {
 }
 
+func (UnimplementedSocialGrpcServer) RequestOTP(context.Context, *RequestOtpInput) (*Confirmation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RequestOTP not implemented")
+}
 func (UnimplementedSocialGrpcServer) SecureUpdate(context.Context, *SecurityCheckInput) (*Jwtdata, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SecureUpdate not implemented")
 }
@@ -90,6 +102,24 @@ type UnsafeSocialGrpcServer interface {
 
 func RegisterSocialGrpcServer(s grpc.ServiceRegistrar, srv SocialGrpcServer) {
 	s.RegisterService(&SocialGrpc_ServiceDesc, srv)
+}
+
+func _SocialGrpc_RequestOTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestOtpInput)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SocialGrpcServer).RequestOTP(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/SocialGrpc/RequestOTP",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SocialGrpcServer).RequestOTP(ctx, req.(*RequestOtpInput))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _SocialGrpc_SecureUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -117,6 +147,10 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "SocialGrpc",
 	HandlerType: (*SocialGrpcServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "RequestOTP",
+			Handler:    _SocialGrpc_RequestOTP_Handler,
+		},
 		{
 			MethodName: "SecureUpdate",
 			Handler:    _SocialGrpc_SecureUpdate_Handler,
