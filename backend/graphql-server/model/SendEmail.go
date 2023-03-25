@@ -2,7 +2,6 @@ package model
 
 import (
 	"fmt"
-	"os"
 
 	//go get -u github.com/aws/aws-sdk-go
 	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
