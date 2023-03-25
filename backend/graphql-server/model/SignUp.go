@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"time"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	//"golang.org/x/crypto/bcrypt"
 	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
@@ -78,7 +79,7 @@ func (s *Server) SignUp(ctx context.Context, in *SecurityCheckInput) (*Jwtdata, 
 
 			_ , err = tempDB.InsertOne(context.TODO(), tempUser)
 			if err != nil {
-				return nil, err
+				return nil, errors.New("its insertone on signup that is failing")
 			}
 
 			// send otps
@@ -86,7 +87,8 @@ func (s *Server) SignUp(ctx context.Context, in *SecurityCheckInput) (*Jwtdata, 
 			_, err = RequestOtpRpc(&RequestOtpInput{Username: in.Username, Email: in.Email, Mobile: in.Mobile, RequestType: "signup"})
 
 			if err != nil {
-				return nil, err
+				fmt.Println(err)
+				return nil, errors.New("its requestotp on signup that is failing")
 			}
 
 			return &Jwtdata{Token: "proceed"}, err
@@ -130,14 +132,14 @@ func (s *Server) SignUp(ctx context.Context, in *SecurityCheckInput) (*Jwtdata, 
 
 				_ , err = db.InsertOne(context.TODO(), temp2real)
 				if err != nil {
-					return nil, err
+					return nil, errors.New("its insertone on signup that is failing")
 				}
 
 				// delete from tempuser
 
 				_, err = tempDB.DeleteOne(context.TODO(), bson.M{"Username": in.Username})
 				if err != nil {
-					return nil, err
+					return nil, errors.New("its deleteone on signup that is failing")
 				}
 
 

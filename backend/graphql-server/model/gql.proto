@@ -28,7 +28,8 @@ message SecurityCheckInput  {
 	string OTP_Mobile = 7 ;
 	string Token = 8 ;
 	string RequestType = 9 ;
-	string UpdateData = 10 ;
+	string UpdateType = 10 ;
+	string UpdateData = 11 ;
 }
 
 message RequestOtpInput  {

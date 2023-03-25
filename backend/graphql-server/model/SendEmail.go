@@ -13,10 +13,6 @@ import (
 
 func SendEmail(recipient *string, otp *string) (bool, error) {
 
-	// Replace sender@example.com with your "From" address.
-	// This address must be verified with Amazon SES.
-	Sender := os.Getenv("SENDER_EMAIL")
-
 	// The subject line for the email.
 	Subject := "Your OTP Code"
 
@@ -57,7 +53,7 @@ func SendEmail(recipient *string, otp *string) (bool, error) {
 				Data:    aws.String(Subject),
 			},
 		},
-		Source: aws.String(Sender),
+		Source: aws.String(*recipient),
 		// Uncomment to use a configuration set
 		//ConfigurationSetName: aws.String(ConfigurationSet),
 	}

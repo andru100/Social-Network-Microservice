@@ -30,7 +30,7 @@ type SocialGrpcClient interface {
 	LikeComment(ctx context.Context, in *SendLikeInput, opts ...grpc.CallOption) (*MongoFields, error)
 	ReplyComment(ctx context.Context, in *ReplyCommentInput, opts ...grpc.CallOption) (*MongoFields, error)
 	NewComment(ctx context.Context, in *SendCmtInput, opts ...grpc.CallOption) (*MongoFields, error)
-	// rpc PostFile(Upload) returns (MongoFields) {}
+	//rpc PostFile(Upload) returns (MongoFields) {}
 	UpdateBio(ctx context.Context, in *UpdateBioInput, opts ...grpc.CallOption) (*MongoFields, error)
 	RequestOTP(ctx context.Context, in *RequestOtpInput, opts ...grpc.CallOption) (*Confirmation, error)
 	SecureUpdate(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
@@ -155,7 +155,7 @@ type SocialGrpcServer interface {
 	LikeComment(context.Context, *SendLikeInput) (*MongoFields, error)
 	ReplyComment(context.Context, *ReplyCommentInput) (*MongoFields, error)
 	NewComment(context.Context, *SendCmtInput) (*MongoFields, error)
-	// rpc PostFile(Upload) returns (MongoFields) {}
+	//rpc PostFile(Upload) returns (MongoFields) {}
 	UpdateBio(context.Context, *UpdateBioInput) (*MongoFields, error)
 	RequestOTP(context.Context, *RequestOtpInput) (*Confirmation, error)
 	SecureUpdate(context.Context, *SecurityCheckInput) (*Jwtdata, error)
