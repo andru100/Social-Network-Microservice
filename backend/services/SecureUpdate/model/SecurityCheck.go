@@ -16,6 +16,8 @@ import (
 
 func SecurityCheck (in *SecurityCheckInput) (int, error) {
 
+	fmt.Println("jwt is", in.Token, "in data is", in)
+
 	securityScore := 0
 	
 
@@ -43,9 +45,12 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 	}
 
 	if in.Password != "" {
+		fmt.Println("performing seurity check on password", in.Password)
 
 		err = bcrypt.CompareHashAndPassword([]byte(result.Password.Hash), []byte(in.Password))
 		if err != nil {
+
+			fmt.Println("err in decrypt is:", err)
 
 			result.Password.Attempts += 1
 
@@ -73,11 +78,13 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 			if err != nil {
 				return securityScore, err
 			}
-
+			fmt.Println("password incorrect, security sore: ", securityScore)
 			return securityScore, errors.New("password does not match")
 		} 
 		
+		
 		securityScore += 1
+		fmt.Println("password correct: security score +1 now is: ", securityScore)
 	}
 
 	
@@ -122,19 +129,22 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 			if err != nil {
 				return securityScore, err
 			}
-
+			fmt.Println("mobileotp incorrect, security score: ", securityScore)
 			return securityScore, errors.New("mobile OTP does not match")
 
 		} else {
-
 			securityScore += 1
+			fmt.Println("mobileotp correct, security score +1 is: ", securityScore)
+			
 
 		}
 	}
 
 	if in.OTP_Email != "" {
 		fmt.Println("security checking Email OTP is", in.OTP_Email)
+		
 		if result.OTP.Email.Expiry.Unix() < time.Now().Unix() {
+			fmt.Println("email otp expired", "result is", result.OTP.Email.Expiry.Unix() < time.Now().Unix(), "time now is", time.Now().Unix(), "expiry is", result.OTP.Email.Expiry.Unix())
 			return securityScore, errors.New("Email OTP expired")
 		}
 
@@ -172,18 +182,19 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 			if err != nil {
 				return securityScore, err
 			}
-
+			fmt.Println("emailotp incorrect, security score: ", securityScore)
 			return securityScore, errors.New("Email OTP does not match")
 
 		} else {
 
 			securityScore += 1
-
+			fmt.Println("emailotp correct, security score +1 is: ", securityScore)
 		}
 	}
 
 
-	if in.Token != "" {
+	if in.Token != "null" { //for forgot password where only way you an be there is if no token/session allows components to be modular and always look for token
+		fmt.Println("security checking token is", in.Token)
 
 		var jwtKey = []byte("AllYourBase")
 
@@ -194,15 +205,21 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 		})
 
 		if err != nil {
-			return securityScore, errors.New("JWT token error")
+			fmt.Println("Token check failed, has expired", securityScore)
+				return securityScore, errors.New("Your session has expired, please login again")
 		}
 		if !tkn.Valid {
+			fmt.Println("Token check failed, is invalid.", securityScore)
 			return securityScore, errors.New("JWT token invalid")
 		} 
 
-		securityScore += 1
+		//if err == nil && tkn.Valid {
+			securityScore += 1
+			fmt.Println("token correct: security score +1 is: ", securityScore)
+		//}
 	}
 
+	fmt.Println("final security score is: ", securityScore)
 	return securityScore, err
 			
 }

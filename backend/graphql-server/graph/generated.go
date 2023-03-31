@@ -63,7 +63,10 @@ type ComplexityRoot struct {
 	}
 
 	Jwtdata struct {
-		Token func(childComplexity int) int
+		AuthType  func(childComplexity int) int
+		EmailClue func(childComplexity int) int
+		MobClue   func(childComplexity int) int
+		Token     func(childComplexity int) int
 	}
 
 	Likes struct {
@@ -192,6 +195,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.GetUserCmts.Username(childComplexity), true
+
+	case "Jwtdata.AuthType":
+		if e.complexity.Jwtdata.AuthType == nil {
+			break
+		}
+
+		return e.complexity.Jwtdata.AuthType(childComplexity), true
+
+	case "Jwtdata.EmailClue":
+		if e.complexity.Jwtdata.EmailClue == nil {
+			break
+		}
+
+		return e.complexity.Jwtdata.EmailClue(childComplexity), true
+
+	case "Jwtdata.MobClue":
+		if e.complexity.Jwtdata.MobClue == nil {
+			break
+		}
+
+		return e.complexity.Jwtdata.MobClue(childComplexity), true
 
 	case "Jwtdata.Token":
 		if e.complexity.Jwtdata.Token == nil {
@@ -1121,6 +1145,129 @@ func (ec *executionContext) fieldContext_Jwtdata_Token(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _Jwtdata_MobClue(ctx context.Context, field graphql.CollectedField, obj *model.Jwtdata) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Jwtdata_MobClue(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MobClue, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Jwtdata_MobClue(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Jwtdata",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Jwtdata_EmailClue(ctx context.Context, field graphql.CollectedField, obj *model.Jwtdata) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Jwtdata_EmailClue(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EmailClue, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Jwtdata_EmailClue(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Jwtdata",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Jwtdata_AuthType(ctx context.Context, field graphql.CollectedField, obj *model.Jwtdata) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Jwtdata_AuthType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AuthType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Jwtdata_AuthType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Jwtdata",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Likes_Username(ctx context.Context, field graphql.CollectedField, obj *model.Likes) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Likes_Username(ctx, field)
 	if err != nil {
@@ -1839,6 +1986,12 @@ func (ec *executionContext) fieldContext_Mutation_SignIn(ctx context.Context, fi
 			switch field.Name {
 			case "Token":
 				return ec.fieldContext_Jwtdata_Token(ctx, field)
+			case "MobClue":
+				return ec.fieldContext_Jwtdata_MobClue(ctx, field)
+			case "EmailClue":
+				return ec.fieldContext_Jwtdata_EmailClue(ctx, field)
+			case "AuthType":
+				return ec.fieldContext_Jwtdata_AuthType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Jwtdata", field.Name)
 		},
@@ -1895,6 +2048,12 @@ func (ec *executionContext) fieldContext_Mutation_SignUp(ctx context.Context, fi
 			switch field.Name {
 			case "Token":
 				return ec.fieldContext_Jwtdata_Token(ctx, field)
+			case "MobClue":
+				return ec.fieldContext_Jwtdata_MobClue(ctx, field)
+			case "EmailClue":
+				return ec.fieldContext_Jwtdata_EmailClue(ctx, field)
+			case "AuthType":
+				return ec.fieldContext_Jwtdata_AuthType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Jwtdata", field.Name)
 		},
@@ -2305,6 +2464,12 @@ func (ec *executionContext) fieldContext_Mutation_SecureUpdate(ctx context.Conte
 			switch field.Name {
 			case "Token":
 				return ec.fieldContext_Jwtdata_Token(ctx, field)
+			case "MobClue":
+				return ec.fieldContext_Jwtdata_MobClue(ctx, field)
+			case "EmailClue":
+				return ec.fieldContext_Jwtdata_EmailClue(ctx, field)
+			case "AuthType":
+				return ec.fieldContext_Jwtdata_AuthType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Jwtdata", field.Name)
 		},
@@ -4978,7 +5143,7 @@ func (ec *executionContext) unmarshalInputRequestOtpInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"Username", "Mobile", "Email", "RequestType"}
+	fieldsInOrder := [...]string{"Username", "Mobile", "Email", "RequestType", "UserType"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -5014,6 +5179,14 @@ func (ec *executionContext) unmarshalInputRequestOtpInput(ctx context.Context, o
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RequestType"))
 			it.RequestType, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UserType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UserType"))
+			it.UserType, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5454,6 +5627,18 @@ func (ec *executionContext) _Jwtdata(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "MobClue":
+
+			out.Values[i] = ec._Jwtdata_MobClue(ctx, field, obj)
+
+		case "EmailClue":
+
+			out.Values[i] = ec._Jwtdata_EmailClue(ctx, field, obj)
+
+		case "AuthType":
+
+			out.Values[i] = ec._Jwtdata_AuthType(ctx, field, obj)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

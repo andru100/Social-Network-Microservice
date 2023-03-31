@@ -47,6 +47,7 @@ input RequestOtpInput  {
 	Mobile: String
 	Email: String
 	RequestType: String!
+	UserType: String!
 }
 
 type Confirmation {
@@ -78,7 +79,10 @@ type Claims  {
 }
 
 type Jwtdata  { 
-	Token: String! 
+	Token: String! 	
+	MobClue: String
+	EmailClue: String
+	AuthType: String
 }
 
 
@@ -118,7 +122,7 @@ type MongoFields  {
 	Profpic:        String!   
 	Photos:         [String!]!         
 	LastCommentNum: Int32!             
-	Posts:          [PostData!]!       #   
+	Posts:          [PostData!]!       
 }
 
 

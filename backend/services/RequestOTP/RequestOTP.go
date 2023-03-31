@@ -40,7 +40,14 @@ type Server struct {
 }
 
 func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*model.Confirmation, error) { // takes id and sets up bucket and mongodb doc
-	fmt.Println("request otp called request type is", in.RequestType)
+	fmt.Println("request otp called request: %v user type: %v", in.RequestType, in.UserType)
+	
+	dbtype := "security"
+	// switch in.UserType {
+	// case "temp":
+	// 	dbtype = "tempuser"
+	
+	
 	
 	//create otp
 	nums := []rune("123456789")
@@ -54,7 +61,7 @@ func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*mo
 
 	otp := string(b)
 
-	fmt.Println("randon otp is", otp, "this isnt safe, will need some secret key to truly randomize")
+	fmt.Println("1st otp is", otp, "this isnt safe, will need some secret key to truly randomize")
 
 	//save otp to db
 	otpHash := utils.HashAndSalt([]byte(otp))
@@ -62,7 +69,7 @@ func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*mo
 	switch in.RequestType {
 	case "sms":
 
-		db := utils.Client.Database("datingapp").Collection("security")
+		db := utils.Client.Database("datingapp").Collection(dbtype)
 
 		MobileOTP := &model.Mobile{}
 
@@ -89,10 +96,10 @@ func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*mo
 			return nil, errors.New("its updateone on requestotp 1")
 		}
 
-		_, err = model.SendSMS(&in.Mobile, &otp)
-		if err != nil {
-			return nil, err
-		}
+		// _, err = model.SendSMS(&in.Mobile, &otp)
+		// if err != nil {
+		// 	return nil, err
+		// }
 
 		return &model.Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
 
@@ -100,13 +107,15 @@ func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*mo
 
 		fmt.Println("email otp requested")
 
-		db := utils.Client.Database("datingapp").Collection("security")
+		db := utils.Client.Database("datingapp").Collection(dbtype)
 
 		EmailOTP := &model.Email{}
 
 		EmailOTP.Hash = otpHash
 
 		EmailOTP.Expiry = time.Now().Add(time.Minute * 5)
+
+		fmt.Println("creating otp: email otp expiry created is: ", EmailOTP.Expiry)
 
 		EmailOTP.Attempts = 0
 
@@ -127,20 +136,20 @@ func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*mo
 			return nil, errors.New("its updateone on requestotp2")
 		}
 
-		_, err = model.SendEmail(&in.Email, &otp)
-		if err != nil {
-			return nil, err
-		}
+		// _, err = model.SendEmail(&in.Email, &otp)
+		// if err != nil {
+		// 	return nil, err
+		// }
 
 		return &model.Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
 
-	case "signup":
+	case "both":
 
 		//send sms otp
 
 		fmt.Println("signup otp requested")
 
-		db := utils.Client.Database("datingapp").Collection("tempuser")
+		db := utils.Client.Database("datingapp").Collection(dbtype)
 
 		MobileOTP := &model.Mobile{}
 
@@ -176,6 +185,8 @@ func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*mo
 
 		otp2 := string(c)
 
+		fmt.Println("2nd otp is", otp2, "this isnt safe, will need some secret key to truly randomize")
+
 		otpHash = utils.HashAndSalt([]byte(otp2))
 
 		EmailOTP := &model.Email{}
@@ -200,17 +211,17 @@ func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*mo
 			return nil, errors.New("its updateone on requestotp4")
 		}
 
-		_, err = model.SendSMS(&in.Mobile, &otp)
-		if err != nil {
-			fmt.Println("its send sms on requestotp4", err)
-			return nil, err
-		}
+		// _, err = model.SendSMS(&in.Mobile, &otp)
+		// if err != nil {
+		// 	fmt.Println("its send sms on requestotp4", err)
+		// 	return nil, err
+		// }
 
-		_, err = model.SendEmail(&in.Email, &otp2)
-		if err != nil {
-			fmt.Println("its send email on requestotp4")
-			return nil, err
-		}
+		// _, err = model.SendEmail(&in.Email, &otp2)
+		// if err != nil {
+		// 	fmt.Println("its send email on requestotp4")
+		// 	return nil, err
+		// }
 
 		return &model.Confirmation{Username: in.Username, RequestType: in.RequestType}, nil
 
@@ -218,4 +229,7 @@ func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*mo
 		return nil, fmt.Errorf("Request type not supported")
 
 	}
-}
+ 	}
+	
+
+

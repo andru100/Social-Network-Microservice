@@ -4,11 +4,14 @@ import (
 	"context"
 	"log"
 	"os"
+	"fmt"
 
 	"google.golang.org/grpc"
 )
 
 func RequestOtpRpc (in *RequestOtpInput) (*Confirmation, error) {
+
+	fmt.Println("request otp rpc called")
 
 	var conn *grpc.ClientConn
 	
@@ -24,6 +27,7 @@ func RequestOtpRpc (in *RequestOtpInput) (*Confirmation, error) {
 	result, err := c.RequestOTP(context.Background(), in)
 	
 	if err != nil {
+		fmt.Println("error in request otp rpc", err)
 		return nil, err
 	}
 	

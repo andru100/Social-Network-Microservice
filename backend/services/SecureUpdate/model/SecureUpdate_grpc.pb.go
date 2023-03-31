@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SocialGrpcClient interface {
-	//rpc Chkauth(JwtdataInput) returns (Authd) {}
+	// rpc Chkauth(JwtdataInput) returns (Authd) {}
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
@@ -66,7 +66,7 @@ func (c *socialGrpcClient) SecureUpdate(ctx context.Context, in *SecurityCheckIn
 // All implementations must embed UnimplementedSocialGrpcServer
 // for forward compatibility
 type SocialGrpcServer interface {
-	//rpc Chkauth(JwtdataInput) returns (Authd) {}
+	// rpc Chkauth(JwtdataInput) returns (Authd) {}
 	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}

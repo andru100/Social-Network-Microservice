@@ -46,11 +46,14 @@ services:
     ports:
       - 4009:4009
 
-  # backend-signin:
-  #   build: ./backend/services/SignIn
-  #   container_name: backend-signin
-  #   ports:
-  #     - 4001:4001
+  backend-signin:
+    build:  
+        context: ./backend/services/SignIn
+        args:
+          - HOSTIP=${HOSTIP}
+    container_name: backend-signin
+    ports:
+      - 4001:4001
 
   # backend-signup:
   #   build: ./backend/services/SignUp
@@ -97,22 +100,24 @@ services:
   #    ports:
   #      - 4010:4010
 
-  # backend-requestotp:
-  #   build: 
-  #       context: ./backend/services/RequestOTP
-  #       args:
-  #         - HOSTIP=${HOSTIP}
-  #         - SENDER_EMAIL=${SENDER_EMAIL}
-  #   container_name: backend-requestotp
-  #   ports:
-  #     - 4011:4011
+  backend-requestotp:
+    build: 
+        context: ./backend/services/RequestOTP
+        args:
+          - HOSTIP=${HOSTIP}
+          - SENDER_EMAIL=${SENDER_EMAIL}
+    container_name: backend-requestotp
+    volumes:
+      - /home/dev/.aws:/root/.aws
+    ports:
+      - 4011:4011
   
-  # backend-secureupdate:
-  #   build: 
-  #       context: ./backend/services/SecureUpdate
-  #       args:
-  #         - HOSTIP=${HOSTIP}
-  #         - SENDER_EMAIL=${SENDER_EMAIL}
-  #   container_name: backend-secureupdate
-  #   ports:
-  #     - 4012:4012
+  backend-secureupdate:
+    build: 
+        context: ./backend/services/SecureUpdate
+        args:
+          - HOSTIP=${HOSTIP}
+          - SENDER_EMAIL=${SENDER_EMAIL}
+    container_name: backend-secureupdate
+    ports:
+      - 4012:4012

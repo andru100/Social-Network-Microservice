@@ -58,26 +58,33 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*mod
 
 				// search for duplicate username
 				//TODO change this to a map rather than search all docs
-				sendSms := model.Security{}
+				securitydata := model.Security{}
 
-				err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&sendSms)
+				err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&securitydata)
 
-				fmt.Println("sendSms.Mobile: ", sendSms.Mobile)
+				fmt.Println("securitydata.Mobile: ", securitydata.Mobile)
 
 				if err != nil {
 					err = errors.New(fmt.Sprintf("unable to locate sms no.: %v", err))
 					return nil, err
 				}
-				_, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Mobile: sendSms.Mobile, RequestType: "sms"})
+				_, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Mobile: securitydata.Mobile, RequestType: securitydata.AuthType, UserType: "user"})
 
 				if err != nil {
 					return nil, err
 				}
-				return &model.Jwtdata{Token: "proceed"}, nil
+
+				mobileclue := securitydata.Mobile[len(securitydata.Mobile)-3:] 
+				emailclue := securitydata.Email[0:3]
+		
+				return &model.Jwtdata{Token: "proceed", AuthType: securitydata.AuthType, MobClue: mobileclue, EmailClue: emailclue}, nil
+				
 			}
 		case "stage2":
 
 			securityScore , err := model.SecurityCheck(in)
+
+			fmt.Printf("sign satge 2 data is %v securtiy score is %f\n", in, securityScore)
 
 			if securityScore >= 2 && err == nil {
 

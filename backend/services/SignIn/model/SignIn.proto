@@ -35,6 +35,7 @@ message RequestOtpInput  {
 	string Mobile = 2 ;
 	string Email = 3 ;
 	string RequestType = 4 ;
+	string UserType = 5 ;
 }
 
 message Confirmation {
@@ -62,10 +63,9 @@ message GetUserCmts  {
 
 message Jwtdata  {
 	string Token = 1 ;
-}
-
-message JwtdataInput  {
-	string Token = 1 ; 
+	string MobClue = 2 ;
+	string EmailClue = 3 ;
+	string AuthType = 4 ;
 }
 
 message Likes  {

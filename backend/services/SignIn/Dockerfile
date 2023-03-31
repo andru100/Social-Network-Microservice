@@ -1,7 +1,11 @@
 FROM golang:1.18-alpine
 
+ARG HOSTIP
+
 # set a directory for the app
 WORKDIR /usr/src/app
+
+ENV HOSTIP=${HOSTIP}
 
 # copy all the files to the container
 COPY . .

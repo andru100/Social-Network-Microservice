@@ -4,17 +4,26 @@ import { useNavigate, Link } from 'react-router-dom';
 import ChkAuth from './chkAuth';
 import Google from '../images/icons/icon-google.png'
 import SendData from './SendData';
-import ConfirmSmsSignIn from './ConfirmSmsSignIn';
+import ConfirmSmsSignIn from './SigninHybrid';
+import ConfirmEmailSignIn from './ConfirmEmailSignIn';
+import ResetRequest from './UpdateDetails';
+import ResetPassword from './ResetPassword';
+import RequestOTP from './RequestOTP';
 import { useAlert } from "react-alert";
+import UpdateHybrid from './UpdateHybrid';
+import SigninHybrid from './SigninHybrid';
 
 export default function RenderSignin () {
 
 	const Navigate = useNavigate();
-	const [stage, setStage] = React.useState("stage1");
+	const [page, setPage] = React.useState("init");
+	const [authtype, setAuthType] = React.useState("");
 	const [username, setUsername] = React.useState("");
 	const [password, setPassword] = React.useState("");
+	const [address, setAddress] = React.useState("")
 	const [email, setEmail] = React.useState("");
 	const [mobile, setMobile] = React.useState("");
+	
 	const alert = useAlert()
 
 	useEffect( () => { //check if signed in and go to profile page
@@ -26,7 +35,7 @@ export default function RenderSignin () {
 	},[]);
 
 	
-	async function signin(){ // Sign in, check password, get token
+	async function SignIn(){ // Sign in, check password, get token
 		
 		const username = document.getElementById('username').value;
 		const password = document.getElementById('pass').value;
@@ -38,7 +47,7 @@ export default function RenderSignin () {
 			}
 		}
 
-		let gqlRequest = "mutation SignIn ($data: SecurityCheckInput!){ SignIn(input: $data) { Token } }"
+		let gqlRequest = "mutation SignIn ($data: SecurityCheckInput!){ SignIn(input: $data) { Token AuthType MobClue EmailClue} }"
 		
 		let response = await SendData(gqlRequest, signindata, 'signin')
 
@@ -47,32 +56,61 @@ export default function RenderSignin () {
 			console.log("Unable to sign in", response.errors[0].message )
 			alertError(response.errors[0].message)
 			
-		} else { // if password is a match redirect to profile page
-			alert.show("Please enter OTP sent to your mobile")
-			setUsername(username)
-			setPassword(password)
-			setStage("stage2")
+		} else { // if password is a match and has no mfa redirect to profile page / send to complete mfa
 			
+			if (response.data.SignIn.AuthType === "none") {
+				localStorage.setItem('jwt_token', response.data.SignIn.Token)
+				Navigate("/profile/" + username + "/home")
+			} else {
+				setUsername(username)
+				setPassword(password)
+				setAddress([response.data.SignIn.MobClue, response.data.SignIn.EmailClue])
+				setAuthType(response.data.SignIn.AuthType)
+				setPage("hybrid")	
+			}
 		} 
-		
-		
 	} 
+
+	function Forgot () {
+
+		const username = document.getElementById('username').value;
+
+		RequestOTP(username, "forgot").then((response) => {
+			if (( "errors" in response )) {
+				console.log("error bak from otp request", response.errors[0].message)
+				alertError(response.errors[0].message)
+			} else {
+				console.log("response from otp request", response)
+				console.log("response from otp mob clue", response.data.SecureUpdate.MobClue)
+				setUsername(username)
+				setAddress([response.data.SecureUpdate.MobClue, response.data.SecureUpdate.EmailClue])
+				setAuthType(response.data.SecureUpdate.AuthType)
+				setPage("Password")
+
+			}
+		})
+	}
+			
+
+	function StartReset () {
+		setPage("forgot")
+	}
 
 
 	function alertError(error){
 		const delimiter = '= '
-		const start = 2,
-		tokens = error.split(delimiter).slice(start),
-		result = tokens.join(delimiter); // those.that
+		const start = 2
+		const tokens = error.split(delimiter).slice(start)
+		const result = tokens.join(delimiter); // those.that
 		alert.show(result)
 	}
 	
   return (  
     <>
-	{stage === "stage2" ?
-
-		<ConfirmSmsSignIn username={username} password={password} />
-		:
+	{page === "hybrid" && <SigninHybrid username={username} password={password} address={address} authtype={authtype} />}
+	{page === "Password" && <UpdateHybrid username={username}  address ={address} updatetype = {page} authtype ={authtype} />}
+		
+	{page === "init" && 
 		<>
 		<span className="login100-form-title p-b-53">
 			Sign In With
@@ -103,11 +141,11 @@ export default function RenderSignin () {
 			</a> */}
 		</div>
 		<div className="wrap-input100 validate-input" data-validate = "Password is required">
-			<input className="input100" type="password" name="pass" id="pass" />
+			<input className="input100" type="password" name="pas" id="pass" />
 			<span className="focus-input100"></span>
 		</div>
 		<div className="container-login100-form-btn m-t-17">
-			<button className="login100-form-btn" type="button" onClick={signin}>
+			<button className="login100-form-btn" type="button" onClick={() => SignIn()}>
 				Sign In
 			</button>
 		</div>
@@ -116,7 +154,9 @@ export default function RenderSignin () {
 				Not a member?
 			</span>
 			<Link to="/signUp">Sign up now</Link>
-			<Link to="/reset">Forgot Password</Link>
+			<button className="login100-form-btn" type="button" onClick={() => Forgot()}>
+				Forgot Password
+			</button>
 		</div>
 		
 		</>

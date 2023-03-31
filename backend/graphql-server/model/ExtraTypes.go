@@ -20,6 +20,8 @@ type Security struct {
 	Email string `json:"Email" bson:"Email"`
 	Mobile	string `json:"Mobile" bson:"Mobile"`
 	DOB string `json:"DOB" bson:"DOB"`
+	SecurityLock  SecurityLock `json:"SecurityLock" bson:"SecurityLock"`
+	AuthType string `json:"AuthType" bson:"AuthType"`
 	OTP 	OTP `json:"OTP" bson:"OTP"`
 }	
 
@@ -28,6 +30,11 @@ type Password struct {
 	Attempts int `json:"Attempts" bson:"Attempts"`
 }
 
+type SecurityLock struct {
+	Status string `json:"Status" bson:"Status"`
+	Stage int `json:"Stage" bson:"Stage"`
+	Expiry time.Time `json:"Expiry" bson:"Expiry"`
+}
 
 type OTP struct {
 	Mobile Mobile `json:"Mobile" bson:"Mobile"`
@@ -38,10 +45,12 @@ type Mobile struct {
 	Hash string `json:"OTP" bson:"OTP"`
 	Expiry time.Time `json:"Expiry" bson:"Expiry"`
 	Attempts int `json:"Attempts" bson:"Attempts"`
+	Requests int `json:"Requests" bson:"Requests"`
 }	
 
 type Email struct {
 	Hash string `json:"OTP" bson:"OTP"`
 	Expiry time.Time `json:"Expiry" bson:"Expiry"`
 	Attempts int `json:"Attempts" bson:"Attempts"`
-}		
+	Requests int `json:"Requests" bson:"Requests"`
+}	

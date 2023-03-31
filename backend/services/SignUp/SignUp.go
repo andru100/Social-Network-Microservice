@@ -104,7 +104,7 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 
 		passwordHolder := model.Password{Hash: passwordHash, Attempts: 0}
 
-		tempUser := model.Security{Username: in.Username, Password: passwordHolder, DOB: in.DOB, Email: in.Email, Mobile: in.Mobile, OTP: model.OTP{}}
+		tempUser := model.Security{Username: in.Username, Password: passwordHolder, DOB: in.DOB, Email: in.Email, Mobile: in.Mobile, AuthType: "sms", OTP: model.OTP{}}
 
 		_, err = tempDB.InsertOne(context.TODO(), tempUser)
 		if err != nil {
