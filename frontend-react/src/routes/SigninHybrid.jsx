@@ -92,14 +92,14 @@ export default function SigninHybrid (props) {
 	function ChangeAuthType () {
 
 		console.log("change auth type called", authtype)
-		//fun is only called when type is sms as button only shown on that page. added switch from email for future
+		//func is only called when type is sms as button only shown on that page. added switch from email for future
 		if (rendertype === "sms") {
 			ResendOTP("!email")
-			setAuthType("email")
+			setRenderType("email")
 			
 		} else {
 			ResendOTP("!sms")
-			setAuthType("sms")
+			setRenderType("sms")
 			
 		}
 	}
@@ -150,11 +150,11 @@ export default function SigninHybrid (props) {
 						resend code
 					</button>
 				</div>
-				<div >
+				{/* <div >
 					<button  type="button" onClick={() => ChangeAuthType()}>
 						dont have acccess to email
 					</button>
-				</div>
+				</div> */}
 				
 			</>
 		)

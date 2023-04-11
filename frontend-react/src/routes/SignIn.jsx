@@ -71,8 +71,6 @@ export default function RenderSignin () {
 
 	function Forgot () {
 
-		alert.show("forgot password called")
-
 		const username = document.getElementById('username').value;
 
 		RequestOTP(username, "!email").then((response) => {
@@ -118,9 +116,6 @@ export default function RenderSignin () {
 				<span className="txt1">
 					Password
 				</span>
-				{/* <a href="/" className="txt2 bo1 m-l-5">
-					Forgot?
-				</a> */}
 			</div>
 			<div className="wrap-input100 validate-input" data-validate = "Password is required">
 				<input className="input100" type="password" name="pas" id="pass" />
@@ -132,13 +127,12 @@ export default function RenderSignin () {
 				</button>
 			</div>
 			<div className="w-full text-center p-t-55">
-				{/* <span className="txt2" style={{marginRight:"10px", color:"black"}}>
-					Not a member?
-				</span> */}
-				<button  type="button" onClick={() => setPage("signup")}>
+				<button className="login100-form-btn-small" type="button" style={{ width: "45%" }} onClick={() => setPage("signup")}>
 					Sign Up
 				</button>
-				<button  type="button" onClick={() => Forgot()}>
+				<button style={{ width: "10%"}}>
+				</button>
+				<button className="login100-form-btn-small" type="button" style={{ width: "45%"}} onClick={() => Forgot()}>
 					Forgot Password
 				</button>
 			</div>
@@ -162,7 +156,6 @@ export default function RenderSignin () {
 	{page === "Password" && <UpdateHybrid username={username}  address ={address} updatetype = {page} rendertype={"email"} />}
 	{page === "signup" && <SignUp/>}
 	{page === "home" && <Home sessionuser={username} page={"home"} viewing={username}/>}
-		
 	{page === "default" && <LandingPage/>}
     </>
   )

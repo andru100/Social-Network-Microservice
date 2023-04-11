@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate, useEffect, Link } from 'react-router-dom';
 import SendData from './SendData';
 import { useAlert } from "react-alert";
 import RequestOTP from './RequestOTP';
@@ -8,15 +7,10 @@ import Home from './Home';
 
 export default function UpdateHybrid (props) {
 	
-	const Navigate = useNavigate();
 	const [page, setPage] = React.useState("default");
 	const [rendertype, setRenderType] = React.useState(props.rendertype); // an remove this and set to auto take session and get a proceed and address clue and use as a point on seurity.
-	const [username, setUsername] = React.useState(props.username);
 	const [authtype, setAuthType] = React.useState("init");
 	const [address, setAddress] = React.useState("init");
-	const [emailotp, setEmailOtp] = React.useState("");
-	const [mobileotp, setMobileOtp] = React.useState("");
-	const [updatetype, setUpdateType] = React.useState(props.updatetype);
 	const [resetdata, setResetData] = React.useState({
 		Username: props.username,
 		UpdateType: props.updatetype,
@@ -85,7 +79,7 @@ export default function UpdateHybrid (props) {
 					setRenderType("update")//update auth from server for next step/type of question dnd 
 					break;
 				default:
-					alert.show(updatetype + " updated")
+					alert.show(resetdata.UpdateType + " updated")
 					localStorage.setItem('jwt_token', response.data.SecureUpdate.Token) // Store JWT in storage
 					if (updatedata.UpdateType === "Username") {
 						updatedata.Username = updatedata.UpdateData
@@ -107,7 +101,7 @@ export default function UpdateHybrid (props) {
 	
 
 	async function ResendOTP (requestType) {
-		RequestOTP(username, requestType).then((response) => {
+		RequestOTP(resetdata.Username, requestType).then((response) => {
 			if (( "errors" in response )) {
 				console.log("error bak from otp request", response.errors[0].message)
 				alertError(response.errors[0].message)
@@ -124,17 +118,13 @@ export default function UpdateHybrid (props) {
 	}
 
 	function ChangeAuthType () {
-
-		console.log("change auth type called", authtype)
-		//fun is only called when type is sms as button only shown on that page. added switch from email for future
-		if (authtype === "sms") {
+		//func is only called when type is sms as button only shown on that page. added switch from email for future
+		if (rendertype === "sms") {
 			ResendOTP("!email")
-			//setAuthType("email")
 			setRenderType("email")
 			
 		} else {
 			ResendOTP("!sms")
-			//setAuthType("sms")
 			setRenderType("sms")
 			
 		}
@@ -190,11 +180,6 @@ export default function UpdateHybrid (props) {
 						resend code
 					</button>
 				</div>
-				<div >
-					<button  type="button" onClick={() => ChangeAuthType()}>
-						dont have acccess to email
-					</button>
-				</div>
 				<button className="login100-form-btn" type="button" onClick={updateHybrid}>
 						Verify
 				</button>
@@ -229,7 +214,7 @@ export default function UpdateHybrid (props) {
 			<>
 				<div className="p-t-31 p-b-9">
 				<span className="txt1">
-					{"Enter your new " + updatetype}
+					{"Enter your new " + resetdata.UpdateType}
 				</span>
 				</div>
 				<div className="wrap-input100 validate-input" data-validate = "verification code is required">
@@ -274,13 +259,6 @@ export default function UpdateHybrid (props) {
 			</>
 		)
 	}
-
-	// const authTypeMap = {
-	// 	"email": <ConfirmEmail/>,
-	// 	"sms": <ConfirmSms/>,
-	// 	"both": <HighSecurity/>,
-	// 	"none": <ConfirmPassword/>
-	// }
 
 
 	function ConfirmUpdate () {

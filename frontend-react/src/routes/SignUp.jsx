@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate, useEffect, Link } from 'react-router-dom';
 import SendData from './SendData';
 import { useAlert } from "react-alert";
 import RequestOTP from './RequestOTP';
@@ -8,23 +7,17 @@ import Home from './Home';
 
 export default function RenderSignUp () {
 
-	const Navigate = useNavigate();
 	const alert = useAlert()
 	const [page, setPage] = React.useState("default");
 	const [rendertype, setRenderType] = React.useState("username"); 
-	const [username, setUsername] = React.useState("");
-	const [password, setPassword] = React.useState("");
-	const [email, setEmail] = React.useState("");
-	const [mobile, setMobile] = React.useState("");
-	const [authtype, setAuthType] = React.useState("");
 	const [address, setaddress] = React.useState("");
-
 	const [mfachoice, setMfaChoice] = React.useState("unaassigned");
 	const [userdata, setUserData] = React.useState({
     Username: "",
     Password: "",
   });
 
+  
   async function SignUp () { // sends username, password, email from input, backend then creates s3 bucket and stores details on mongodb
 
     let signupdata = userdata
@@ -64,11 +57,6 @@ export default function RenderSignUp () {
 		signupdata.Oauth = passcode
 	}
 
-    // if (rendertype === "authtype") {
-    //   const authtype = document.getElementById('authtype').value;
-    //   signupdata.Token = authtype
-    // }
-
 	if (rendertype === "setsecurity") {
 		//const mfa = document.getElementById('mfa').value;
 		signupdata.Token = mfachoice
@@ -82,12 +70,7 @@ export default function RenderSignUp () {
 	alertError(response.errors[0].message)
 	
 	
-	} else if ( response.data.SignUp.Token == "proceed" ){ // if password is a match redirect to profile page
-	//alert.show("Please enter OTP sent to your email")
-	//setUsername(temp_username)
-	//setEmail(temp_email)
-	//setMobile(temp_mobile)
-	//setAuthType(temp_authtype)
+	} else if ( response.data.SignUp.Token === "proceed" ){ // if password is a match redirect to profile page
 		setaddress([response.data.SignUp.MobClue, response.data.SignUp.EmailClue])
 		signupdata.RequestType = response.data.SignUp.AuthType
 		setUserData(signupdata)
@@ -200,11 +183,6 @@ export default function RenderSignUp () {
 						resend code
 					</button>
 				</div>
-				<div >
-					<button  type="button" onClick={() => ChangeAuthType()}>
-						dont have acccess to phone
-					</button>
-				</div>
 				<div className="container-login100-form-btn m-t-17">
 				</div>
 			</>
@@ -226,11 +204,6 @@ export default function RenderSignUp () {
 				<div >
 					<button  type="button" onClick={() => ResendOTP("!email")}>
 						resend code
-					</button>
-				</div>
-				<div >
-					<button  type="button" onClick={() => ChangeAuthType()}>
-						dont have acccess to email
 					</button>
 				</div>
 				
@@ -277,21 +250,6 @@ export default function RenderSignUp () {
 		  </div>
 		);
 	}
-		
-
-	function Email () {
-		let isavailable = false
-		isavailable ?  <ConfirmEmail /> : <CheckEmail /> 
-	}
-
-	// function email () {
-	// 	switch (isavailble) {
-	// 		case "false":
-	// 			return <CheckEmail />
-	// 		case "true":
-	// 			return <ConfirmEmail />
-		
-	// }
 
   function Verify () {
 		return (
@@ -312,7 +270,7 @@ export default function RenderSignUp () {
 	}
 
   async function ResendOTP (requestType) {
-		RequestOTP(username, requestType, "temp").then((response) => {
+		RequestOTP(userdata.Username, requestType, "temp").then((response) => {
 			if (( "errors" in response )) {
 				console.log("error bak from otp request", response.errors[0].message)
 				alertError(response.errors[0].message)
@@ -320,20 +278,20 @@ export default function RenderSignUp () {
 		})
 	}
 
-  function ChangeAuthType () {
+	// function ChangeAuthType () {
 
-		console.log("change auth type called", setRenderType)
-		//fun is only called when type is sms as button only shown on that page. added switch from email for future
-		if (rendertype === "sms") {
-			ResendOTP("!email")
-			setRenderType("email")
+	// 	console.log("change auth type called", setRenderType)
+	// 	//fun is only called when type is sms as button only shown on that page. added switch from email for future
+	// 	if (rendertype === "sms") {
+	// 		ResendOTP("!email")
+	// 		setRenderType("email")
 			
-		} else {
-			ResendOTP("!sms")
-			setRenderType("sms")
+	// 	} else {
+	// 		ResendOTP("!sms")
+	// 		setRenderType("sms")
 			
-		}
-	}
+	// 	}
+	// }
 
 
 

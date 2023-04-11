@@ -444,11 +444,10 @@ iframe {
   display: -webkit-flex;
   display: -moz-box;
   display: -ms-flexbox;
-  display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 20px;
-  width: 100%;
+  padding: 10 20px;
+  width: 40%;
   height: 60px;
   background-color: #333333;
   border-radius: 10px;
