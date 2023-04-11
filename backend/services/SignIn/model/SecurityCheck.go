@@ -185,7 +185,7 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 
 	if in.Token != "" {
 
-		var jwtKey = []byte("AllYourBase")
+		var jwtKey = []byte("osgetenv")
 
 		claims := &ClaimsChk{}
 

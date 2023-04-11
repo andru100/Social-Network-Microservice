@@ -1,5 +1,7 @@
 export default async function SendData (request, variables ) { // send data to GraphQL
     
+    console.log("send data called request", variables)
+    
     let GQLpayload = {
         "query": request,
         "variables":variables

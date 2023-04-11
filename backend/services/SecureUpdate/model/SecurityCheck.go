@@ -9,7 +9,7 @@ import (
 
 	//"google.golang.org/grpc"
 	"github.com/andru100/Social-Network-Microservices/backend/services/SecureUpdate/utils"
-	jwt "github.com/dgrijalva/jwt-go"
+	//jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -193,31 +193,31 @@ func SecurityCheck (in *SecurityCheckInput) (int, error) {
 	}
 
 
-	if in.Token != "null" { //for forgot password where only way you an be there is if no token/session allows components to be modular and always look for token
-		fmt.Println("security checking token is", in.Token)
+	// if in.Token != "null" { //for forgot password where only way you an be there is if no token/session allows components to be modular and always look for token
+	// 	fmt.Println("security checking token is", in.Token)
 
-		var jwtKey = []byte("AllYourBase")
+	// 	var jwtKey = []byte("osgetenv")
 
-		claims := &ClaimsChk{}
+	// 	claims := &ClaimsChk{}
 
-		tkn, err := jwt.ParseWithClaims(*&in.Token, claims, func(token *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
-		})
+	// 	tkn, err := jwt.ParseWithClaims(*&in.Token, claims, func(token *jwt.Token) (interface{}, error) {
+	// 		return jwtKey, nil
+	// 	})
 
-		if err != nil {
-			fmt.Println("Token check failed, has expired", securityScore)
-				return securityScore, errors.New("Your session has expired, please login again")
-		}
-		if !tkn.Valid {
-			fmt.Println("Token check failed, is invalid.", securityScore)
-			return securityScore, errors.New("JWT token invalid")
-		} 
+	// 	if err != nil {
+	// 		fmt.Println("Token check failed, has expired", securityScore)
+	// 			return securityScore, errors.New("Your session has expired, please login again")
+	// 	}
+	// 	if !tkn.Valid {
+	// 		fmt.Println("Token check failed, is invalid.", securityScore)
+	// 		return securityScore, errors.New("JWT token invalid")
+	// 	} 
 
-		//if err == nil && tkn.Valid {
-			securityScore += 1
-			fmt.Println("token correct: security score +1 is: ", securityScore)
-		//}
-	}
+	// 	//if err == nil && tkn.Valid {
+	// 		securityScore += 1
+	// 		fmt.Println("token correct: security score +1 is: ", securityScore)
+	// 	//}
+	// }
 
 	fmt.Println("final security score is: ", securityScore)
 	return securityScore, err

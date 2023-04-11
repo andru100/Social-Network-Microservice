@@ -37,7 +37,7 @@ func main() {
 
 func (s *Server) Chkauth(ctx context.Context, in *model.JwtdataInput) (*model.Authd, error) {
 	
-	fmt.Println("token iss", in.Token)
+	fmt.Println("running chkauth")
 
 	var jwtKey = []byte("AllYourBase")
 

@@ -1,38 +1,34 @@
 import React from 'react';
 import { useEffect } from "react";
-import { useNavigate, Link } from 'react-router-dom';
 import ChkAuth from './chkAuth';
 import Google from '../images/icons/icon-google.png'
 import SendData from './SendData';
-import ConfirmSmsSignIn from './SigninHybrid';
-import ConfirmEmailSignIn from './ConfirmEmailSignIn';
-import ResetRequest from './UpdateDetails';
-import ResetPassword from './ResetPassword';
 import RequestOTP from './RequestOTP';
 import { useAlert } from "react-alert";
 import UpdateHybrid from './UpdateHybrid';
 import SigninHybrid from './SigninHybrid';
+import SignUp from './SignUp';
+import Home from './Home';
 
 export default function RenderSignin () {
 
-	const Navigate = useNavigate();
-	const [page, setPage] = React.useState("init");
+	const [page, setPage] = React.useState("default");
 	const [authtype, setAuthType] = React.useState("");
 	const [username, setUsername] = React.useState("");
 	const [password, setPassword] = React.useState("");
 	const [address, setAddress] = React.useState("")
-	const [email, setEmail] = React.useState("");
-	const [mobile, setMobile] = React.useState("");
 	
 	const alert = useAlert()
 
 	useEffect( () => { //check if signed in and go to profile page
 		ChkAuth().then(user => {
 		  if (user) {
-		  Navigate("/profile/" + user + "/home")
+			setUsername(user)
+			console.log("chkauth has run, user is:", user, "setting page to home")
+			setPage("home")
 		  } 
 		})
-	},[]);
+	}, [])
 
 	
 	async function SignIn(){ // Sign in, check password, get token
@@ -58,42 +54,97 @@ export default function RenderSignin () {
 			
 		} else { // if password is a match and has no mfa redirect to profile page / send to complete mfa
 			
-			if (response.data.SignIn.AuthType === "none") {
-				localStorage.setItem('jwt_token', response.data.SignIn.Token)
-				Navigate("/profile/" + username + "/home")
-			} else {
+			if (response.data.SignIn.Token === "proceed") {
 				setUsername(username)
 				setPassword(password)
 				setAddress([response.data.SignIn.MobClue, response.data.SignIn.EmailClue])
 				setAuthType(response.data.SignIn.AuthType)
-				setPage("hybrid")	
+				setPage("confirm")	
+			} else {
+				console.log("signin response", response)
+				setUsername(username)
+				localStorage.setItem("token", response.data.SignIn.Token)
+				setPage("home")
 			}
 		} 
 	} 
 
 	function Forgot () {
 
+		alert.show("forgot password called")
+
 		const username = document.getElementById('username').value;
 
-		RequestOTP(username, "forgot").then((response) => {
+		RequestOTP(username, "!email").then((response) => {
 			if (( "errors" in response )) {
 				console.log("error bak from otp request", response.errors[0].message)
 				alertError(response.errors[0].message)
 			} else {
 				console.log("response from otp request", response)
-				console.log("response from otp mob clue", response.data.SecureUpdate.MobClue)
 				setUsername(username)
 				setAddress([response.data.SecureUpdate.MobClue, response.data.SecureUpdate.EmailClue])
-				setAuthType(response.data.SecureUpdate.AuthType)
+				console.log("signin forgot request otp returned: ", response)
+				//setAuthType(response.data.SecureUpdate.AuthType)
 				setPage("Password")
 
 			}
 		})
 	}
-			
 
-	function StartReset () {
-		setPage("forgot")
+	function LandingPage () {
+		return (
+			<>
+			<span className="login100-form-title p-b-53">
+				Sign In With
+			</span>
+			<a href="/#" className="btn-face m-b-20">
+				<i className="fa fa-facebook-official"></i>
+				Facebook
+			</a>
+			<a href="/#" className="btn-google m-b-20">
+				<img src={Google} alt="GOOGLE" />
+				Google
+			</a>
+			<div className="p-t-31 p-b-9">
+				<span className="txt1">
+					Username
+				</span>
+			</div>
+			<div className="wrap-input100 validate-input" data-validate = "Username is required">
+				<input className="input100" type="text" name="username" id="username"/>
+				<span className="focus-input100"></span>
+			</div>
+			<div className="p-t-13 p-b-9">
+				<span className="txt1">
+					Password
+				</span>
+				{/* <a href="/" className="txt2 bo1 m-l-5">
+					Forgot?
+				</a> */}
+			</div>
+			<div className="wrap-input100 validate-input" data-validate = "Password is required">
+				<input className="input100" type="password" name="pas" id="pass" />
+				<span className="focus-input100"></span>
+			</div>
+			<div className="container-login100-form-btn m-t-17">
+				<button className="login100-form-btn" type="button" onClick={() => SignIn()}>
+					Sign In
+				</button>
+			</div>
+			<div className="w-full text-center p-t-55">
+				{/* <span className="txt2" style={{marginRight:"10px", color:"black"}}>
+					Not a member?
+				</span> */}
+				<button  type="button" onClick={() => setPage("signup")}>
+					Sign Up
+				</button>
+				<button  type="button" onClick={() => Forgot()}>
+					Forgot Password
+				</button>
+			</div>
+		
+		</>
+		)
 	}
 
 
@@ -107,60 +158,14 @@ export default function RenderSignin () {
 	
   return (  
     <>
-	{page === "hybrid" && <SigninHybrid username={username} password={password} address={address} authtype={authtype} />}
-	{page === "Password" && <UpdateHybrid username={username}  address ={address} updatetype = {page} authtype ={authtype} />}
+	{page === "confirm" && <SigninHybrid username={username} password={password} address={address} authtype={authtype} />}
+	{page === "Password" && <UpdateHybrid username={username}  address ={address} updatetype = {page} rendertype={"email"} />}
+	{page === "signup" && <SignUp/>}
+	{page === "home" && <Home sessionuser={username} page={"home"} viewing={username}/>}
 		
-	{page === "init" && 
-		<>
-		<span className="login100-form-title p-b-53">
-			Sign In With
-		</span>
-		<a href="/#" className="btn-face m-b-20">
-			<i className="fa fa-facebook-official"></i>
-			Facebook
-		</a>
-		<a href="/#" className="btn-google m-b-20">
-			<img src={Google} alt="GOOGLE" />
-			Google
-		</a>
-		<div className="p-t-31 p-b-9">
-			<span className="txt1">
-				Username
-			</span>
-		</div>
-		<div className="wrap-input100 validate-input" data-validate = "Username is required">
-			<input className="input100" type="text" name="username" id="username"/>
-			<span className="focus-input100"></span>
-		</div>
-		<div className="p-t-13 p-b-9">
-			<span className="txt1">
-				Password
-			</span>
-			{/* <a href="/" className="txt2 bo1 m-l-5">
-				Forgot?
-			</a> */}
-		</div>
-		<div className="wrap-input100 validate-input" data-validate = "Password is required">
-			<input className="input100" type="password" name="pas" id="pass" />
-			<span className="focus-input100"></span>
-		</div>
-		<div className="container-login100-form-btn m-t-17">
-			<button className="login100-form-btn" type="button" onClick={() => SignIn()}>
-				Sign In
-			</button>
-		</div>
-		<div className="w-full text-center p-t-55">
-			<span className="txt2" style={{marginRight:"10px", color:"black"}}>
-				Not a member?
-			</span>
-			<Link to="/signUp">Sign up now</Link>
-			<button className="login100-form-btn" type="button" onClick={() => Forgot()}>
-				Forgot Password
-			</button>
-		</div>
-		
-		</>
-	}
+	{page === "default" && <LandingPage/>}
     </>
   )
 };
+
+

@@ -3,77 +3,108 @@ import { useNavigate, useEffect, Link } from 'react-router-dom';
 import SendData from './SendData';
 import { useAlert } from "react-alert";
 import RequestOTP from './RequestOTP';
+import UpdateDetails from './UpdateDetails';
+import Home from './Home';
 
 export default function UpdateHybrid (props) {
 	
 	const Navigate = useNavigate();
-	const [stage, setStage] = React.useState("stage2");
+	const [page, setPage] = React.useState("default");
+	const [rendertype, setRenderType] = React.useState(props.rendertype); // an remove this and set to auto take session and get a proceed and address clue and use as a point on seurity.
 	const [username, setUsername] = React.useState(props.username);
-	const [authtype, setAuthType] = React.useState(props.authtype);
-	const [address, setAddress] = React.useState(props.address);
+	const [authtype, setAuthType] = React.useState("init");
+	const [address, setAddress] = React.useState("init");
+	const [emailotp, setEmailOtp] = React.useState("");
+	const [mobileotp, setMobileOtp] = React.useState("");
 	const [updatetype, setUpdateType] = React.useState(props.updatetype);
-	const [otp_sms, setOtp_sms] = React.useState("");
+	const [resetdata, setResetData] = React.useState({
+		Username: props.username,
+		UpdateType: props.updatetype,
+		RequestType: "stage2",
+	});
 	const alert = useAlert()
 
-	console.log("UpdateHybrid username: Password:", username)
+	
+
+	console.log("UpdateHybrid rendered: stage: always 2", "rendertype: ", rendertype, "authtype: ", authtype, "resetuserdata: ", resetdata)
+
+		
 	
 
 	async function updateHybrid(){
 
-		//const emailotp = document.getElementById('resetmobileotp').value;
-		const updatevalue = document.getElementById('resethybrid').value;
-			
-		let resetdata = {data: {
-			Username: username,
-			RequestType: "update",
-			UpdateType: updatetype,
-			UpdateData: updatevalue,
-			}
-		}
 
-		let getValues = []
-		authtype === "both" ? getValues = ["sms", "email"] : authtype === "none" ? getValues = ["password"] : getValues = [authtype]
+		let updatedata = resetdata
+
 		
-		console.log("getValues", getValues)
-		if (getValues.includes("sms")) {
+		//console.log("authtype is: ", authtype)
+
+
+		if (rendertype.includes("sms")) {
 			const sms = document.getElementById('sms').value;
-			resetdata.data.OTP_Mobile = sms
+			updatedata.OTP_Mobile = sms
+			
 		}
-		if (getValues.includes("email")) {
+		if (rendertype.includes("email")) {
 			const email = document.getElementById('email').value;
-			resetdata.data.OTP_Email = email
+			updatedata.OTP_Email = email
+			
 		}
 
-		if (getValues.includes("password")) {
+		if (rendertype.includes("password")) {
 			const password = document.getElementById('password').value;
-			resetdata.data.Password = password
+			updatedata.Password = password
+		}
+		if (rendertype.includes("update")) {
+			const updatevalue = document.getElementById('resethybrid').value;
+			updatedata.UpdateData = updatevalue
+			updatedata.RequestType = "update"
 		}
 
-		//if (updatetype !== "Password") {
-			const jwt = localStorage.getItem('jwt_token');
-			resetdata.data.Token = jwt
-		//}
-
-		let gqlRequest = "mutation SecureUpdate ($data: SecurityCheckInput!){ SecureUpdate (input: $data) { Token } }"
+		let gqlRequest = "mutation SecureUpdate ($data: SecurityCheckInput!){ SecureUpdate (input: $data) { Token AuthType MobClue EmailClue} }"
 		
-		let response = await SendData(gqlRequest, resetdata, 'secureupdate')
+		let response = await SendData(gqlRequest, {data: updatedata}, 'secureupdate')
 
 		
 		if ( "errors" in response ){ // if password is a match redirect to profile page
-			//{ProcessErrorAlerts("hi", "hi")}
 			console.log("error updating", response.errors[0].message )
 			alertError(response.errors[0].message)
 			return false
 			
-		  } else {// if password is a match redirect to profile page
-			alert.show(updatetype + " updated")
-			localStorage.setItem('jwt_token', response.data.SecureUpdate.Token) // Store JWT in storage
-			//updatevalue === "Username" && props.setUsername(updatevalue) 
-			Navigate('/')
+		} else {
+			switch (response.data.SecureUpdate.Token){
+				case "proceed":
+					setResetData(updatedata)
+					setAddress([response.data.SecureUpdate.MobClue, response.data.SecureUpdate.EmailClue])
+					console.log("setting rendertype to next auth type from server", response.data.SecureUpdate.AuthType)
+					setRenderType(response.data.SecureUpdate.AuthType)//update auth from server for next step/type of question dnd 
+					break;
+				case "update":
+					setResetData(updatedata)
+					console.log("server requesting update data ")
+					setRenderType("update")//update auth from server for next step/type of question dnd 
+					break;
+				default:
+					alert.show(updatetype + " updated")
+					localStorage.setItem('jwt_token', response.data.SecureUpdate.Token) // Store JWT in storage
+					if (updatedata.UpdateType === "Username") {
+						updatedata.Username = updatedata.UpdateData
+					}
+					setResetData(updatedata)
+					setPage("home")
+					break;
+			
+			}
+		
 		} 
+			
+			
+			
+			
+	} 
 		
 		
-	}
+	
 
 	async function ResendOTP (requestType) {
 		RequestOTP(username, requestType).then((response) => {
@@ -98,14 +129,18 @@ export default function UpdateHybrid (props) {
 		//fun is only called when type is sms as button only shown on that page. added switch from email for future
 		if (authtype === "sms") {
 			ResendOTP("!email")
-			setAuthType("email")
+			//setAuthType("email")
+			setRenderType("email")
 			
 		} else {
 			ResendOTP("!sms")
-			setAuthType("sms")
+			//setAuthType("sms")
+			setRenderType("sms")
 			
 		}
 	}
+
+
 
 	function ConfirmSms () {
 		return (
@@ -120,7 +155,7 @@ export default function UpdateHybrid (props) {
 					<span className="focus-input100"></span>
 				</div>
 				<div >
-					<button  type="button" onClick={() => ResendOTP("sms")}>
+					<button  type="button" onClick={() => ResendOTP("!sms")}>
 						resend code
 					</button>
 				</div>
@@ -131,6 +166,9 @@ export default function UpdateHybrid (props) {
 				</div>
 				<div className="container-login100-form-btn m-t-17">
 				</div>
+				<button className="login100-form-btn" type="button" onClick={updateHybrid}>
+						Verify
+				</button>
 			</>
 		)
 	}
@@ -148,7 +186,7 @@ export default function UpdateHybrid (props) {
 					<span className="focus-input100"></span>
 				</div>
 				<div >
-					<button  type="button" onClick={() => ResendOTP("email")}>
+					<button  type="button" onClick={() => ResendOTP("!email")}>
 						resend code
 					</button>
 				</div>
@@ -157,6 +195,9 @@ export default function UpdateHybrid (props) {
 						dont have acccess to email
 					</button>
 				</div>
+				<button className="login100-form-btn" type="button" onClick={updateHybrid}>
+						Verify
+				</button>
 				
 			</>
 		)
@@ -174,12 +215,16 @@ export default function UpdateHybrid (props) {
 					<input className="input100" type="text" name="pass" id="password"/>
 					<span className="focus-input100"></span>
 				</div>
+				<button className="login100-form-btn" type="button" onClick={updateHybrid}>
+						Verify
+				</button>
+				
 				
 			</>
 		)
 	}
 
-	function UpdateHybrid () {
+	function Update () {
 		return (
 			<>
 				<div className="p-t-31 p-b-9">
@@ -199,7 +244,7 @@ export default function UpdateHybrid (props) {
 					</button>
 				</div>
 				<div className="w-full text-center p-t-55">
-					<button onClick={() => window.location.reload(false)}>Back to log in</button>
+					<button onClick={() => setPage("updatedetails")}>Back to account details</button>
 				</div>
 			</>
 		)
@@ -218,7 +263,6 @@ export default function UpdateHybrid (props) {
 	}
 	
 
-	
 
 	
 
@@ -231,19 +275,58 @@ export default function UpdateHybrid (props) {
 		)
 	}
 
-	const authTypeMap = {
-		"email": <ConfirmEmail/>,
-		"sms": <ConfirmSms/>,
-		"both": <HighSecurity/>,
-		"none": <ConfirmPassword/>
-	}
+	// const authTypeMap = {
+	// 	"email": <ConfirmEmail/>,
+	// 	"sms": <ConfirmSms/>,
+	// 	"both": <HighSecurity/>,
+	// 	"none": <ConfirmPassword/>
+	// }
 
+
+	function ConfirmUpdate () {
+		return (
+			<>	
+				<Header/>
+				{rendertype === "password" && <ConfirmPassword/>}
+				{rendertype === "email" && <ConfirmEmail/>}
+				{rendertype === "sms" && <ConfirmSms/>}
+				{rendertype === "update" && <Update/>}
+			</>
+		)
+	}
 
 	return ( 
 		<>
-			<Header/>
-			{authTypeMap[authtype]}
-			<UpdateHybrid/>
+			
+			{page === "default" && <ConfirmUpdate /> }
+			{page === "updatedetails" && <UpdateDetails username={resetdata.Username}/>}
+			{page === "home" && <Home sessionuser={resetdata.Username} viewing ={resetdata.Username} page={"home"}/>}
+			
 		</>
-)
+	)
 };
+
+
+// if password is a match redirect to profile page
+			// switch (stage) {
+			// 	case "stage1":
+			// 		console.log("response is proceed in stage 1 setting states")
+			// 		//setResetData({...resetdata, RequestType: "stage2"});
+			// 		//setStage("stage2")
+			// 		console.log("have set stage2, setting rendertype to authtype returned:", response.data.SecureUpdate.AuthType, "authtype piped in", authtype)
+			// 		setRenderType(authtype)//update auth from default email everyone gets 
+			// 		break;
+			// 	case "stage2":
+			// 		//setMobileOtp(response.data.OTP_Mobile)
+			// 		setResetData({...resetdata, RequestType: "update"});
+			// 		setStage("update")
+			// 		setRenderType("update")
+			// 		break;
+			// 	case "update":
+			// 		alert.show(updatetype + " updated")
+			// 		localStorage.setItem('jwt_token', response.data.SecureUpdate.Token) // Store JWT in storage
+			// 		resetdata.UpdateType === "Username" && setResetData({...resetdata,  Username: resetdata.UpdateData  });
+					  
+			// 		  //setUsername(updatevalue) 
+			// 		setPage("home")
+			// 		break;

@@ -21,6 +21,7 @@ type Security struct {
 	Mobile	string `json:"Mobile" bson:"Mobile"`
 	DOB string `json:"DOB" bson:"DOB"`
 	SecurityLock  SecurityLock `json:"SecurityLock" bson:"SecurityLock"`
+	SecurityLevel int `json:"SecurityLevel" bson:"SecurityLevel"`
 	AuthType string `json:"AuthType" bson:"AuthType"`
 	OTP 	OTP `json:"OTP" bson:"OTP"`
 }	

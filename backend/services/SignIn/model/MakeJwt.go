@@ -7,6 +7,8 @@ import (
 
 func MakeJwt(userid *string, isauth bool) (string, error) {
 	mySigningKey := []byte("AllYourBase") //base for ecoding eg private key
+	
+
 
 	// Declare the expiration time of the token
 	expirationTime := time.Now().Add(200 * time.Minute)

@@ -1,53 +1,50 @@
 import React from 'react';
 import { useEffect } from "react";
-import { useNavigate, Link } from 'react-router-dom';
-import ChkAuth from './chkAuth';
-import Google from '../images/icons/icon-google.png'
-import SendData from './SendData';
-import UpdatePassword from './UpdatePassword.jsx';
-import UpdateUsername from './UpdateUsername';
-import UpdateEmail from './UpdateEmail';
-import UpdateMobile from './UpdateMobile';
 import RequestOTP from './RequestOTP';
 import UpdateHybrid from './UpdateHybrid';
+import Home from './Home';
 import { useAlert } from "react-alert";
 
 export default function RenderUpdateDetails (props) {
 
-	const Navigate = useNavigate();
 	const [authtype, setAuthType] = React.useState("init");
 	const [username, setUsername] = React.useState(props.username)
-	// const [securitylevel, setSecurityLevel] = React.useState(props.securitylevel)
 	const [address, setAddress] = React.useState("unassigned")
 	const [userDetails, setUserDetails] = React.useState({username: "", password: "", email: "", mobile: ""})
 	const [name, setName] = React.useState("John Doe");
 	const [email, setEmail] = React.useState("johndoe@gmail.com");
 	const [phone, setPhone] = React.useState("555-555-5555");
-	const [pagetype, setPageType] = React.useState("init");
+	const [page, setPage] = React.useState("default");
+	
   
 
 
-	console.log("resert request username:", username)
+	console.log("update details render start, username:", username, "page:", page)
 
-	async function GetOTP (requestType, pagetype) {
-		if (requestType == "none") {
-			setAuthType(requestType)
-			setPageType(pagetype)
-			return
-		}
+	// async function GetOTP (requestType, pagetype) {
+	// 	if (requestType == "none") {
+	// 		setAuthType(requestType)
+	// 		setPage(pagetype)
+	// 		return
+	// 	}
 
-		RequestOTP(username, requestType).then((response) => {
-			if (( "errors" in response )) {
-				console.log("error bak from otp request", response.errors[0].message)
-				alertError(response.errors[0].message)
-			} else {
-				setAddress([response.data.SecureUpdate.MobClue, response.data.SecureUpdate.EmailClue])
-				setAuthType(response.data.SecureUpdate.AuthType)
-				setPageType(pagetype)
+	// 	RequestOTP(username, requestType, "user").then((response) => {
+	// 		if (( "errors" in response )) {
+	// 			console.log("error bak from otp request", response.errors[0].message)
+	// 			alertError(response.errors[0].message)
+	// 		} else {
+	// 			setAddress([response.data.SecureUpdate.MobClue, response.data.SecureUpdate.EmailClue])
+	// 			setAuthType(response.data.SecureUpdate.AuthType)
+	// 			console.log("otp response setting page:", pagetype)
+	// 			setPage(pagetype)
 				
 
-			}
-		})
+	// 		}
+	// 	})
+	// }
+
+	function StartUpdate (updatetype) {
+		setPage(updatetype)
 	}
 
 	const handleUpdateName = (event) => {
@@ -74,7 +71,12 @@ export default function RenderUpdateDetails (props) {
 		alert.show(result)
 	}
 
-	function InitPage () {
+	function GoHome () {
+		console.log("going home, username:", username)
+		setPage("home")
+	}
+
+	function LandingPage () {
 		return (
 			<>
 				 <div>
@@ -82,29 +84,34 @@ export default function RenderUpdateDetails (props) {
 					<div>
 						<label>Username:</label>
 						<input type="text" value={name} onChange={handleUpdateName} />
-						<button className="login100-form-btn" type="button" onClick={() => GetOTP("unused", "Username")}>
+						<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Username")}>
 							update username
 						</button>
 					</div>
 					<div>
 						<label>Email:</label>
 						<input type="text" value={email} onChange={handleUpdateEmail} />
-						<button className="login100-form-btn" type="button" onClick={() => GetOTP("unused", "Email")}>
+						<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Email")}>
 							update email
 						</button>
 					</div>
 					<div>
 						<label>Phone:</label>
 						<input type="text" value={phone} onChange={handleUpdatePhone} />
-						<button className="login100-form-btn" type="button" onClick={() => GetOTP("unused", "Mobile")}>
+						<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Mobile")}>
 							update mobile
 						</button>
 					</div>
 					<div>
 						<label>Password:</label>
 						<input type="text" value={address} onChange={handleUpdateAddress} />
-						<button className="login100-form-btn" type="button" onClick={() => GetOTP("unused", "Password")}>
+						<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Password")}>
 							update password
+						</button>
+					</div>
+					<div>
+						<button type="button" onClick={() => GoHome()}>
+							back to home
 						</button>
 					</div>
 				</div>
@@ -113,21 +120,13 @@ export default function RenderUpdateDetails (props) {
 	}
 
 
-	function LandingPage ()	{
-		switch (pagetype) { 
-			case "init": 
-				console.log("found init page")
-				return <InitPage/>
-				break
-			default: return <UpdateHybrid username={username}  address ={address} updatetype = {pagetype} authtype ={authtype} /* setSessionUser={props.setSessionUser()} *//>
-		}
-	}
-	
-  return (  
-    <>
-		<LandingPage/>
+  return ( 
+	<>
+		
+		{page === "default" ? <LandingPage /> : page === "home" ? <Home sessionuser={username} viewing= {username} page={"home"}/> : <UpdateHybrid username={username} /*  address ={address} */ updatetype = {page} rendertype={"password"}/* authtype ={authtype} *//>}
+		
 	</>
-
-
-  )
+	)
 };
+
+

@@ -43,9 +43,10 @@ func (s *Server) RequestOTP(ctx context.Context, in *model.RequestOtpInput) (*mo
 	fmt.Println("request otp called request: %v user type: %v", in.RequestType, in.UserType)
 	
 	dbtype := "security"
-	// switch in.UserType {
-	// case "temp":
-	// 	dbtype = "tempuser"
+	switch in.UserType {
+	case "temp":
+		dbtype = "tempuser"
+	}
 	
 	
 	

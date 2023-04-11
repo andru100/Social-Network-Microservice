@@ -1,53 +1,49 @@
 import React from 'react';
-import { useNavigate, useEffect, Link } from 'react-router-dom';
-import SendData from './SendData';
 import { useAlert } from "react-alert";
-import ResetRequest from './UpdateDetails';
+import SendData from './SendData';
 import RequestOTP from './RequestOTP';
 import Home from './Home';
 
 export default function SigninHybrid (props) {
-	
-	const Navigate = useNavigate();
-	const [stage, setStage] = React.useState("stage2");
+
 	const [page, setPage] = React.useState("default");
 	const [username, setUsername] = React.useState(props.username);
 	const [password, setPassword] = React.useState(props.password);
 	const [authtype, setAuthType] = React.useState(props.authtype);
 	const [address, setAddress] = React.useState(props.address);
-	const [otp_sms, setOtp_sms] = React.useState("");
+	const [rendertype, setRenderType] = React.useState(props.authtype);
+	const [userdata, setUserdata] = React.useState({
+		Username: props.username,
+		Password: props.password,
+		RequestType: "stage1"
+	});
+
 	const alert = useAlert()
 
 	async function Verify(){
 
-		console.log("password in smsconfurm:", password)
 			
-		let signindata = {data:{
-			Username: username,
-			Password: password,
-			RequestType: "stage2"
-			}
-		}
-
-		let getValues = []
-		authtype === "both" ? getValues = ["sms", "email"] : authtype === "none" ? getValues = ["password"] : getValues = [authtype]
+		let signindata = userdata
 		
-		console.log("getValues", getValues)
-		if (getValues.includes("sms")) {
+		if (rendertype === "sms") {
 			const sms = document.getElementById('sms').value;
-			signindata.data.OTP_Mobile = sms
+			signindata.OTP_Mobile = sms
 		}
-		if (getValues.includes("email")) {
+		if (rendertype === "email") {
 			const email = document.getElementById('email').value;
-			signindata.data.OTP_Email = email
+			signindata.OTP_Email = email
 		}
 		
+		if (rendertype === "oauth") {
+			const passcode = document.getElementById('oauth').value;
+			signindata.Oauth = passcode
+		}
 
 
 
 		let gqlRequest = "mutation SignIn ($data: SecurityCheckInput!){ SignIn(input: $data) { Token } }"
 		
-		let response = await SendData(gqlRequest, signindata, 'signin')
+		let response = await SendData(gqlRequest, {data:signindata}, 'signin')
 
 		
 		if ( "errors" in response ){ // if password is a match redirect to profile page
@@ -55,18 +51,28 @@ export default function SigninHybrid (props) {
 			console.log("user is not signed in", response.errors[0].message )
 			return false
 			
-		  } else { // if password and Mobile otp is a match redirect to profile page
-			localStorage.setItem('jwt_token', response.data.SignIn.Token) // Store JWT in storage
-			setPage("profile")
-			//Navigate ("/Profile/" + username + "/home")
 		} 
+		  
+		if (response.data.SignIn.Token === "proceed") {
+			//stage === "stage2" && setEmailOtp(signupdata.data.OTP_Email)
+			setUserdata(signindata);
+			//setStage("stage3")
+			console.log("setting rendertype to next auth type from server", response.data.SignIn.AuthType)
+			setRenderType(response.data.SignIn.AuthType)//update auth from server for next step/type of question dnd 
+			
+
+		} else {
+				localStorage.setItem('jwt_token', response.data.SignIn.Token) // Store JWT in storage
+			   	setPage("home")
+		}
+		
 		
 		
 		
 	}
 
 	async function ResendOTP (requestType) {
-		RequestOTP(username, requestType).then((response) => {
+		RequestOTP(username, requestType, "user").then((response) => {
 			if (( "errors" in response )) {
 				console.log("error bak from otp request", response.errors[0].message)
 				alertError(response.errors[0].message)
@@ -87,7 +93,7 @@ export default function SigninHybrid (props) {
 
 		console.log("change auth type called", authtype)
 		//fun is only called when type is sms as button only shown on that page. added switch from email for future
-		if (authtype === "sms") {
+		if (rendertype === "sms") {
 			ResendOTP("!email")
 			setAuthType("email")
 			
@@ -112,7 +118,7 @@ export default function SigninHybrid (props) {
 					<span className="focus-input100"></span>
 				</div>
 				<div >
-					<button  type="button" onClick={() => ResendOTP("sms")}>
+					<button  type="button" onClick={() => ResendOTP("!sms")}>
 						resend code
 					</button>
 				</div>
@@ -140,7 +146,7 @@ export default function SigninHybrid (props) {
 					<span className="focus-input100"></span>
 				</div>
 				<div >
-					<button  type="button" onClick={() => ResendOTP("email")}>
+					<button  type="button" onClick={() => ResendOTP("!email")}>
 						resend code
 					</button>
 				</div>
@@ -154,7 +160,7 @@ export default function SigninHybrid (props) {
 		)
 	}
 
-	function SigninHybrid () {
+	function Authenticate () {
 		return (
 			<>
 				<div className="p-t-31 p-b-9">
@@ -167,7 +173,7 @@ export default function SigninHybrid (props) {
 					</button>
 				</div>
 				<div className="w-full text-center p-t-55">
-					<button onClick={() => window.location.reload(false)}>Back to log in</button>
+					<button onClick={() => setPage("default")}>Back to account details</button>
 				</div>
 			</>
 		)
@@ -190,27 +196,28 @@ export default function SigninHybrid (props) {
 	
 	
 
-	function HighSecurity () {
-		return (
-			<>
-				<ConfirmSms/>
-				<ConfirmEmail/>
-			</>
-		)
-	}
+	// function HighSecurity () {
+	// 	return (
+	// 		<>
+	// 			<ConfirmSms/>
+	// 			<ConfirmEmail/>
+	// 		</>
+	// 	)
+	// }
 
-	const authTypeMap = {
-		"email": <ConfirmEmail/>,
-		"sms": <ConfirmSms/>,
-		"both": <HighSecurity/>,
-	}
+	// const authTypeMap = {
+	// 	"email": <ConfirmEmail/>,
+	// 	"sms": <ConfirmSms/>,
+	// 	"both": <HighSecurity/>,
+	// }
 
 	function ConfirmSignin () {
 		return (
 			<>
 				<Header/>
-				{authTypeMap[authtype]}
-				<SigninHybrid/>
+				{rendertype === "email" && <ConfirmEmail/>}
+				{rendertype === "sms" && <ConfirmSms/>}
+				<Authenticate/>
 			</>
 		)
 	}
@@ -218,8 +225,9 @@ export default function SigninHybrid (props) {
 
 	return ( 
 		<>
-			{page === "default" ? <ConfirmSignin/> : <Home/>}
+			{page === "default" && <ConfirmSignin/>}
+			{page === "home" && <Home sessionuser={username} page={"home"} viewing={username}/>}
 			
 		</>
-)
+	)
 };

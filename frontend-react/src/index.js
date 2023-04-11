@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from "react-dom";
-import { BrowserRouter, Routes, Route} from "react-router-dom";
 import './index.css';
 import App from './App';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert'
@@ -19,14 +18,10 @@ const options = {
 
 const rootElement = document.getElementById("root");
 render(
-    
-  <BrowserRouter>
+
     <AlertProvider template={AlertTemplate} {...options}>
-      <Routes>
-        <Route path="*" element={<App />}/>
-      </Routes>
-    </AlertProvider>
-  </BrowserRouter>,
+        <App />
+    </AlertProvider>,
    rootElement
 );
 

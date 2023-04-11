@@ -38,6 +38,7 @@ func (r *mutationResolver) SignIn(ctx context.Context, input model.SecurityCheck
 
 // SignUp is the resolver for the SignUp field.
 func (r *mutationResolver) SignUp(ctx context.Context, input model.SecurityCheckInput) (*model.Jwtdata, error) {
+	fmt.Printf("signup called in gql server, in is: %v", input)
 	var conn *grpc.ClientConn
 
 	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4002", grpc.WithInsecure())

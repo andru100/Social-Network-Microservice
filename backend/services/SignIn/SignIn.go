@@ -46,47 +46,49 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*mod
 
 	switch in.RequestType {
 		case "stage1":
+
+			fmt.Println("signin stage 1  called", in)
+
+			collection := utils.Client.Database("datingapp").Collection("security") // connect to db and collection.
+
+			ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
+
+			// search for duplicate username
+			//TODO change this to a map rather than search all docs
+			userdata := model.Security{}
+
+			err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&userdata)
+
+			if err != nil {
+				return nil, err
+			}
 			securityScore , err := model.SecurityCheck(in)
 			// error will be throw if username or password is incorrect
 			if err != nil {
 				return nil , errors.New(fmt.Sprintf("security check failed: %v", err))
 			}
-			if securityScore >= 1 {
-				collection := utils.Client.Database("datingapp").Collection("security") // connect to db and collection.
 
-				ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
-
-				// search for duplicate username
-				//TODO change this to a map rather than search all docs
-				securitydata := model.Security{}
-
-				err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&securitydata)
-
-				fmt.Println("securitydata.Mobile: ", securitydata.Mobile)
-
-				if err != nil {
-					err = errors.New(fmt.Sprintf("unable to locate sms no.: %v", err))
-					return nil, err
-				}
-				_, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Mobile: securitydata.Mobile, RequestType: securitydata.AuthType, UserType: "user"})
+			if securityScore > 0 && securityScore < userdata.SecurityLevel {
+				
+				_, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Mobile: userdata.Mobile, RequestType: userdata.AuthType, UserType: "user"})
 
 				if err != nil {
 					return nil, err
 				}
 
-				mobileclue := securitydata.Mobile[len(securitydata.Mobile)-3:] 
-				emailclue := securitydata.Email[0:3]
+				mobileclue := ""
+
+				if userdata.AuthType == "sms" {
+					mobileclue = userdata.Mobile[len(userdata.Mobile)-3:] 
+				}
+				
+				emailclue := userdata.Email[0:3]
 		
-				return &model.Jwtdata{Token: "proceed", AuthType: securitydata.AuthType, MobClue: mobileclue, EmailClue: emailclue}, nil
+				return &model.Jwtdata{Token: "proceed", AuthType: userdata.AuthType, MobClue: mobileclue, EmailClue: emailclue}, nil
 				
 			}
-		case "stage2":
-
-			securityScore , err := model.SecurityCheck(in)
-
-			fmt.Printf("sign satge 2 data is %v securtiy score is %f\n", in, securityScore)
-
-			if securityScore >= 2 && err == nil {
+	
+			if securityScore >= userdata.SecurityLevel {
 
 				err = model.UnlockAccount(&in.Username)
 				if err != nil {

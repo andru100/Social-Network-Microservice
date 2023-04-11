@@ -55,11 +55,17 @@ services:
     ports:
       - 4001:4001
 
-  # backend-signup:
-  #   build: ./backend/services/SignUp
-  #   container_name: backend-signup
-  #   ports:
-  #     - 4002:4002
+  backend-signup:
+    build: 
+      context: ./backend/services/SignUp
+      args:
+          - HOSTIP=${HOSTIP}
+          - SENDER_EMAIL=${SENDER_EMAIL}
+    container_name: backend-signup
+    volumes:
+      - /home/dev/.aws:/root/.aws
+    ports:
+      - 4002:4002
 
   backend-likecomment:
     build: 

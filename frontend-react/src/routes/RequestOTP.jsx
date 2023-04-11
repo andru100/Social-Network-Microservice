@@ -1,13 +1,13 @@
 import SendData from "./SendData"
 
-export default async function RequestOTP (username, requesttype) {
+export default async function RequestOTP (username, requesttype, usertype) {
 
     console.log("Requesting OTP", requesttype)
         
     let signindata = {data: {
         Username: username,
         RequestType: requesttype,
-        UpdateType: "user"
+        UpdateType: usertype
         }
     }
 
