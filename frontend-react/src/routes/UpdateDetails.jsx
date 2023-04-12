@@ -79,40 +79,48 @@ export default function RenderUpdateDetails (props) {
 	function LandingPage () {
 		return (
 			<>
-				 <div>
-					<h1>Account Details</h1>
-					<div>
-						<label>Username:</label>
-						<input type="text" value={name} onChange={handleUpdateName} />
-						<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Username")}>
-							update username
-						</button>
-					</div>
-					<div>
-						<label>Email:</label>
-						<input type="text" value={email} onChange={handleUpdateEmail} />
-						<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Email")}>
-							update email
-						</button>
-					</div>
-					<div>
-						<label>Phone:</label>
-						<input type="text" value={phone} onChange={handleUpdatePhone} />
-						<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Mobile")}>
-							update mobile
-						</button>
-					</div>
-					<div>
-						<label>Password:</label>
-						<input type="text" value={address} onChange={handleUpdateAddress} />
-						<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Password")}>
-							update password
-						</button>
-					</div>
-					<div>
-						<button type="button" onClick={() => GoHome()}>
-							back to home
-						</button>
+				<div className="limiter">
+      				<div className="container-login100" >
+       					<div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+          					<form className="login100-form validate-form flex-sb flex-w">
+								<div>
+									<h1>Account Details</h1>
+									<div>
+										<label>Username:</label>
+										<input type="text" value={name} onChange={handleUpdateName} />
+										<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Username")}>
+											update username
+										</button>
+									</div>
+									<div>
+										<label>Email:</label>
+										<input type="text" value={email} onChange={handleUpdateEmail} />
+										<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Email")}>
+											update email
+										</button>
+									</div>
+									<div>
+										<label>Phone:</label>
+										<input type="text" value={phone} onChange={handleUpdatePhone} />
+										<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Mobile")}>
+											update mobile
+										</button>
+									</div>
+									<div>
+										<label>Password:</label>
+										<input type="text" value={address} onChange={handleUpdateAddress} />
+										<button className="login100-form-btn" type="button" onClick={() => StartUpdate("Password")}>
+											update password
+										</button>
+									</div>
+									<div>
+										<button type="button" onClick={() => GoHome()}>
+											back to home
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</>

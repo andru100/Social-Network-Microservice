@@ -298,13 +298,21 @@ export default function RenderSignUp () {
   function LandingPage () {
     return (
       <>
-        {rendertype === "username" && <CheckUsername />}
-        {rendertype === "email" && <CheckEmail />}
-        {rendertype === "sms" && <CheckMobile />}
-        {rendertype === "confirmsms" && <ConfirmSms />}
-        {rendertype === "confirmemail" && <ConfirmEmail />}
-		{rendertype === "setsecurity" && <AuthenticationSelector />}
-        <Verify />
+	  	<div className="limiter">
+			<div className="container-login100" >
+				<div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+					<form className="login100-form validate-form flex-sb flex-w">
+						{rendertype === "username" && <CheckUsername />}
+						{rendertype === "email" && <CheckEmail />}
+						{rendertype === "sms" && <CheckMobile />}
+						{rendertype === "confirmsms" && <ConfirmSms />}
+						{rendertype === "confirmemail" && <ConfirmEmail />}
+						{rendertype === "setsecurity" && <AuthenticationSelector />}
+						<Verify />
+					</form>
+				</div>
+			</div>
+		</div>
       </>
     )
   }

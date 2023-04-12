@@ -213,11 +213,19 @@ export default function SigninHybrid (props) {
 
 	function ConfirmSignin () {
 		return (
-			<>
-				<Header/>
-				{rendertype === "email" && <ConfirmEmail/>}
-				{rendertype === "sms" && <ConfirmSms/>}
-				<Authenticate/>
+			<>	
+				<div className="limiter">
+      				<div className="container-login100" >
+       					<div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+          					<form className="login100-form validate-form flex-sb flex-w">
+									<Header/>
+									{rendertype === "email" && <ConfirmEmail/>}
+									{rendertype === "sms" && <ConfirmSms/>}
+									<Authenticate/>
+							</form>
+        				</div>
+      				</div>
+    			</div>
 			</>
 		)
 	}
