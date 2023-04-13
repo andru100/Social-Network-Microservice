@@ -1,4 +1,71 @@
 
+.comments {
+    margin-top: 14px;
+}
+
+.comments .userimage {
+    float: left;
+    width: 70px;
+    height: 70px;
+    border-radius: 40px;
+    overflow: hidden;
+    margin: 10px 0px 10px 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.comments .username {
+    font-size: 16px;
+    font-weight: 600;
+    justify-content: left;
+    margin-top: 10px;
+    color: #2d353c
+}
+
+.comments .time {
+    font-size: 9px;
+    font-weight: 600;
+    justify-content: left;
+    margin-top: 17px;
+    color: #8c959c
+}
+
+
+.comment-content {
+    letter-spacing: .25px;
+    line-height: 18px;
+    font-size: 13px
+}
+
+.replys {
+    margin-left: 12px;
+    border-top: 2px solid #e2e7eb; 
+}
+
+.replys .userimage { 
+    float: left;
+    width: 34px;
+    height: 34px;
+    border-radius: 40px;
+    overflow: hidden;
+    margin: 10px 0px 10px 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.reply-icons {
+    margin-bottom: 5px;
+    margin-left: 10px;
+}
+
+.reply-box {
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+
+
+
 
 .profile-header {
     position: relative;

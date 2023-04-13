@@ -884,15 +884,15 @@ type PostData struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username    string     `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty"`
-	SessionUser string     `protobuf:"bytes,2,opt,name=SessionUser,proto3" json:"SessionUser,omitempty"`
-	MainCmt     string     `protobuf:"bytes,3,opt,name=MainCmt,proto3" json:"MainCmt,omitempty"`
-	PostNum     int32      `protobuf:"varint,4,opt,name=PostNum,proto3" json:"PostNum,omitempty"`
-	Time        string     `protobuf:"bytes,5,opt,name=Time,proto3" json:"Time,omitempty"`
-	TimeStamp   int64      `protobuf:"varint,6,opt,name=TimeStamp,proto3" json:"TimeStamp,omitempty"`
-	Date        string     `protobuf:"bytes,7,opt,name=Date,proto3" json:"Date,omitempty"`
-	Comments    []*MsgCmts `protobuf:"bytes,8,rep,name=Comments,proto3" json:"Comments,omitempty"` //    []MsgCmts `bson:"Comments" json:"Comments"`
-	Likes       []*Likes   `protobuf:"bytes,9,rep,name=Likes,proto3" json:"Likes,omitempty"`       //   []Likes   `bson:"Likes" json:"Likes"`
+	Username    string     `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty" bson:"Username"`
+	SessionUser string     `protobuf:"bytes,2,opt,name=SessionUser,proto3" json:"SessionUser,omitempty" bson:"SessionUser"`
+	MainCmt     string     `protobuf:"bytes,3,opt,name=MainCmt,proto3" json:"MainCmt,omitempty" bson:"MainCmt"`
+	PostNum     int32      `protobuf:"varint,4,opt,name=PostNum,proto3" json:"PostNum,omitempty" bson:"PostNum"`
+	Time        string     `protobuf:"bytes,5,opt,name=Time,proto3" json:"Time,omitempty" bson:"Time"`
+	TimeStamp   int64      `protobuf:"varint,6,opt,name=TimeStamp,proto3" json:"TimeStamp,omitempty" bson:"TimeStamp"`
+	Date        string     `protobuf:"bytes,7,opt,name=Date,proto3" json:"Date,omitempty" bson:"Date"`
+	Comments    []*MsgCmts `protobuf:"bytes,8,rep,name=Comments,proto3" json:"Comments,omitempty" bson:"Comments` //    []MsgCmts `bson:"Comments" json:"Comments"`
+	Likes       []*Likes   `protobuf:"bytes,9,rep,name=Likes,proto3" json:"Likes,omitempty" bson: "Likes"`       //   []Likes   `bson:"Likes" json:"Likes"`
 }
 
 func (x *PostData) Reset() {

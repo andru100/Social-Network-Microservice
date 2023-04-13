@@ -97,6 +97,10 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*mod
 
 				//generate jwt
 				token, err1 := model.MakeJwt(&in.Username, true)
+				if err1 != nil {
+					fmt.Println("error making jwt: ", err1)
+					return nil, err1
+				}
 				return &model.Jwtdata{Token: token}, err1
 
 			} else {

@@ -50,9 +50,11 @@ func (s *Server) Chkauth(ctx context.Context, in *model.JwtdataInput) (*model.Au
 	var auth model.Authd
 
 	if err != nil {
+		fmt.Println("error parsing token err is: ", err)
 		return nil, err
 	}
 	if !tkn.Valid {
+		fmt.Println("token is not valid")
 		return nil, err
 	}
 

@@ -62,6 +62,7 @@ export default function SigninHybrid (props) {
 			
 
 		} else {
+			    console.log("user is signed in token is", response.data.SignIn.Token )
 				localStorage.setItem('jwt_token', response.data.SignIn.Token) // Store JWT in storage
 			   	setPage("home")
 		}

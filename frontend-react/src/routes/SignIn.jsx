@@ -62,8 +62,8 @@ export default function RenderSignin () {
 				setPage("confirm")	
 			} else {
 				console.log("signin response", response)
+				localStorage.setItem("jwt_token", response.data.SignIn.Token)
 				setUsername(username)
-				localStorage.setItem("token", response.data.SignIn.Token)
 				setPage("home")
 			}
 		} 

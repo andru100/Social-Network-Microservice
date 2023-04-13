@@ -61,7 +61,7 @@ body, html {
 }
 
 textarea {
-  width: 457px;
+  width: auto;
   height: 202px;
 }
 
@@ -424,6 +424,7 @@ iframe {
   height: 60px;
   background-color: #333333;
   border-radius: 10px;
+  margin-top: 14px;
 
   font-family: Poppins-Medium;
   font-size: 16px;
