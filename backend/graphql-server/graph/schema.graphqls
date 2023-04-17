@@ -87,6 +87,7 @@ type Jwtdata  {
 
 
 type MsgCmts  {
+	ID : String!
 	Username: String! 
 	Comment:  String! 
 	Profpic:  String!
@@ -98,13 +99,10 @@ type Likes  {
 }
 
 type PostData  {
-	Username:    String!    	
-	SessionUser: String!    
-	MainCmt:     String!   
-	PostNum:     Int32!      
-	Time:        String!   
-	TimeStamp:   Int64! 
-	Date:        String!    
+	ID: 		String!
+	Username:    String!     
+	MainCmt:     String!    
+	TimeStamp:   Int64!     
 	Comments:    [MsgCmts!]!  #
 	Likes:       [Likes!]!  #
 }
@@ -112,21 +110,19 @@ type PostData  {
 
 #  to hold retrived mongo doc
 type MongoFields  {
-	Key:            String!            
-	#ID:             primitive.Object#ID
+	# Key:            String!            
+	# #ID:             primitive.Object#ID
 	ID:				ID!
 	Username:       String!             
-	Password:       String!            
-	Email:          String!            
 	Bio:            String!           
 	Profpic:        String!   
-	Photos:         [String!]!         
-	LastCommentNum: Int32!             
+	Photos:         [String!]!   
+	Following:      [String!]!
+	Followers:      [String!]!
+	Replys:         [String!]!
+	Liked:          [String!]!
 	Posts:          [PostData!]!       
 }
-
-
-
 
 
 input JwtdataInput  { 

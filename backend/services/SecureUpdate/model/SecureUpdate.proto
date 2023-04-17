@@ -79,23 +79,24 @@ message Likes  {
 	string Profpic = 2 ; 
 }
 
-message MongoFields  {
-	string  Key = 1 ;
-	string ID = 2 ; 	 
-	string Username = 3 ;  
-	string Password = 4 ;   
-	string Email = 5 ;     
-	string Bio = 6 ; 
-	string Profpic = 7 ; 
-	repeated string Photos = 8 ;
-	int32 LastCommentNum = 9 ;
-	repeated PostData Posts = 10 ; //         []PostData `json:"Posts"`
+message MongoFields  { 	 
+	string Username = 1 ;  
+	string Bio = 2 ; 
+	string Profpic = 3 ; 
+	repeated string Photos = 4 ;
+	repeated string Following = 5 ;  
+	repeated string Followers = 6 ;
+	repeated string Replys = 7 ;
+	repeated string Liked = 8 ; 
+	repeated PostData Posts = 9 ; 
+	// int32 LastCommentNum = 10 ;
 }
 
 message MsgCmts  {
-	string Username = 1 ;
-	string Comment = 2 ; 
-	string Profpic = 3 ;
+	string ID = 1 ;
+	string Username = 2 ;
+	string Comment = 3 ; 
+	string Profpic = 4 ;
 }
 
 message MutationInput  {
@@ -104,15 +105,12 @@ message MutationInput  {
 }
 
 message PostData  {
-	string Username = 1 ; 
-	string SessionUser = 2 ; 
+	string ID = 1 ;
+	string Username = 2 ; 
 	string MainCmt = 3 ; 
-	int32 PostNum = 4 ; 
-	string Time = 5 ;  
-	int64 TimeStamp = 6 ; 
-	string Date = 7 ;   
-	repeated MsgCmts Comments = 8 ; //    []MsgCmts `bson:"Comments" json:"Comments"`
-	repeated Likes Likes = 9 ; //   []Likes   `bson:"Likes" json:"Likes"`
+	int64 TimeStamp = 4 ; 
+	repeated MsgCmts Comments = 5 ; //    []MsgCmts `bson:"Comments" json:"Comments"`
+	repeated Likes Likes = 6 ; //   []Likes   `bson:"Likes" json:"Likes"`
 }
 
 message ReplyCommentInput  {
@@ -120,7 +118,7 @@ message ReplyCommentInput  {
 	string ReplyUsername = 2 ; 
 	string ReplyComment = 3 ; 
 	string ReplyProfpic = 4 ; 
-	int32 PostIndx = 5 ;  
+	string PostID = 5 ;  
 	string ReturnPage = 6 ;
 }
 
@@ -138,7 +136,7 @@ message SendLikeInput  {
 	string Username = 1 ; 
 	string LikedBy = 2 ; 
 	string LikeByPic = 3 ;  
-	int32 PostIndx = 4 ;   
+	string PostID = 4 ;   
 	string ReturnPage = 5 ; 
 }
 

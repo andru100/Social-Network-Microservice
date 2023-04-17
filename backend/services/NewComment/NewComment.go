@@ -50,7 +50,7 @@ func (s *Server) NewComment (ctx context.Context, in *model.SendCmtInput) (*mode
 
 	err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&currentDoc)
 
-	currentDoc.LastCommentNum += 1
+	// currentDoc.LastCommentNum += 1
 	
 	//initialise empty slice to hold future likes and reply comments
 	cmtHolder := []*model.MsgCmts{}
@@ -59,12 +59,8 @@ func (s *Server) NewComment (ctx context.Context, in *model.SendCmtInput) (*mode
 	//make new comment struct: 
 	newPost := model.PostData{
 		Username:    in.Username,    
-		SessionUser: in.SessionUser,
-		MainCmt:     in.MainCmt,  
-		PostNum:     currentDoc.LastCommentNum,    
-		Time:        in.Time,   
-		TimeStamp:   in.TimeStamp,    
-		Date:        in.Date,    
+		MainCmt:     in.MainCmt,     
+		TimeStamp:   in.TimeStamp,   
 		Comments:    cmtHolder ,
 		Likes:      likeHolder, 
 	}
@@ -85,20 +81,6 @@ func (s *Server) NewComment (ctx context.Context, in *model.SendCmtInput) (*mode
 	_, err = collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		err = errors.New("error when adding comment to DB")
-		return nil, err
-	}
-
-	//update post index count
-	update = bson.D{
-		{Updatetype, bson.D{
-			{"LastCommentNum", currentDoc.LastCommentNum},
-		}},
-	}
-
-	//put to db
-	_, err = collection.UpdateOne(context.TODO(), filter, update)
-	if err != nil {
-		err = errors.New("error when updating post index")
 		return nil, err
 	}
 

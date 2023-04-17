@@ -60,7 +60,7 @@ func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*mod
 			err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&userdata)
 
 			if err != nil {
-				return nil, err
+				return nil, errors.New("username not found")
 			}
 			securityScore , err := model.SecurityCheck(in)
 			// error will be throw if username or password is incorrect

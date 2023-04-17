@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: ChkAuth.proto
+// source: model/ChkAuth.proto
 
 package model
 
@@ -101,5 +101,5 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "ChkAuth.proto",
+	Metadata: "model/ChkAuth.proto",
 }

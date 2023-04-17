@@ -18,7 +18,7 @@ func (s *Server) NewComment (ctx context.Context, in *SendCmtInput) (*MongoField
 
 	err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&currentDoc)
 
-	currentDoc.LastCommentNum += 1
+	//currentDoc.LastCommentNum += 1
 	
 	//initialise empty slice to hold future likes and reply comments
 	cmtHolder := []*MsgCmts{}
@@ -27,12 +27,8 @@ func (s *Server) NewComment (ctx context.Context, in *SendCmtInput) (*MongoField
 	//make new comment struct: 
 	newPost := PostData{
 		Username:    in.Username,    
-		SessionUser: in.SessionUser,
-		MainCmt:     in.MainCmt,  
-		PostNum:     currentDoc.LastCommentNum,    
-		Time:        in.Time,   
-		TimeStamp:   in.TimeStamp,    
-		Date:        in.Date,    
+		MainCmt:     in.MainCmt,      
+		TimeStamp:   in.TimeStamp,  
 		Comments:    cmtHolder ,
 		Likes:      likeHolder, 
 	}
@@ -56,19 +52,19 @@ func (s *Server) NewComment (ctx context.Context, in *SendCmtInput) (*MongoField
 		return nil, err
 	}
 
-	//update post index count
-	update = bson.D{
-		{Updatetype, bson.D{
-			{"LastCommentNum", currentDoc.LastCommentNum},
-		}},
-	}
+	// //update post index count
+	// update = bson.D{
+	// 	{Updatetype, bson.D{
+	// 		{"LastCommentNum", currentDoc.LastCommentNum},
+	// 	}},
+	// }
 
-	//put to db
-	_, err = collection.UpdateOne(context.TODO(), filter, update)
-	if err != nil {
-		err = errors.New("error when updating post index")
-		return nil, err
-	}
+	// //put to db
+	// _, err = collection.UpdateOne(context.TODO(), filter, update)
+	// if err != nil {
+	// 	err = errors.New("error when updating post index")
+	// 	return nil, err
+	// }
 
 	// check originating page request came from and return updated comments to save an extra api call on react refresh component
 	if in.ReturnPage == "All" {

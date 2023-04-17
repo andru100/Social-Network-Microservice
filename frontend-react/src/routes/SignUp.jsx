@@ -3,6 +3,11 @@ import SendData from './SendData';
 import { useAlert } from "react-alert";
 import RequestOTP from './RequestOTP';
 import Home from './Home';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import SignUp from './SignUp';
+import SignIn from './SignIn';
 
 
 export default function RenderSignUp () {
@@ -230,24 +235,71 @@ export default function RenderSignUp () {
 		}
 	  
 		return (
-		  <div>
-			<label>
-			  <input type="checkbox" id="sms" onChange={handleSMSChange} />
-			  SMS
-			</label>
-			<label>
-			  <input type="checkbox" id="email" onChange={handleEmailChange} />
-			  Email
-			</label>
-			<label>
-			  <input type="checkbox" id="password" onChange={handleIsPasswordChange} />
-			  Password only
-			</label>
-			<label>
-			  <input type="checkbox" id="high" onChange={handleHighSecChange} />
-			  High Security
-			</label>
-		  </div>
+			<>
+					<Row>
+						<Col>
+							<div style={{textAlign: 'center', marginLeft: "47px", marginBottom: "30px"}} >
+								<span className="txt1" style={{fontSize: "20px"}} >
+									{"Select your authentication method"}
+								</span>
+							</div>
+						</Col>
+					</Row>
+					<Row>
+						<Col>
+							<div className="mfa-box" style={{textAlign: 'center'}} onClick={() => handleIsPasswordChange}>
+								<span className="txt1">
+									{"Password only"}
+								</span>
+								<div>
+									<i class="fa fa-unlock-alt fa-5x" style={{marginTop: "5px"}} aria-hidden="true"></i>
+								</div>
+								
+							</div>
+							
+						</Col>
+						<Col>
+							<div className="mfa-box" style={{textAlign: 'center'}} onClick={() => handleIsPasswordChange}>
+								<span className="txt1">
+									{"SMS MFA"}
+								</span>
+								<div>
+									<i class="fa fa-mobile fa-5x" style={{marginTop: "5px"}} aria-hidden="true"></i>
+								</div>
+								
+							</div>
+							
+						</Col>
+					</Row>
+					<Row>
+						<Col>
+							<div className="mfa-box" style={{textAlign: 'center'}} onClick={() => handleIsPasswordChange}>
+								<span className="txt1">
+									{"Email MFA"}
+								</span>
+								<div>
+									<i class="fa fa-envelope fa-5x" style={{marginTop: "5px"}} aria-hidden="true"></i>
+								</div>
+								
+							</div>
+							
+						</Col>
+						<Col>
+							<div className="mfa-box" style={{textAlign: 'center'}} onClick={() => handleIsPasswordChange}>
+								<span className="txt1">
+									{"High Security"}
+								</span>
+								<div> 
+									<i class="fa fa-mobile fa-4x" style={{marginTop: "5px", marginRight: "20px"}} aria-hidden="true"></i>
+									<i class="fa fa-envelope fa-4x" style={{marginTop: "5px"}} aria-hidden="true"></i>
+								</div>
+								
+							</div>
+							
+						</Col>
+					</Row>
+				
+			</>
 		);
 	}
 
@@ -263,7 +315,7 @@ export default function RenderSignUp () {
 					</button>
 				</div>
 				<div className="w-full text-center p-t-55">
-					<button onClick={() => setPage("signup")}>Back to account details</button>
+					<button onClick={() => setPage("signin")}>Back to sign in</button>
 				</div>
 			</>
 		)
@@ -324,6 +376,7 @@ export default function RenderSignUp () {
       {page === "default" && <LandingPage/>}
 	  {page === "home" && <Home sessionuser={userdata.Username} page={"home"} viewing={userdata.Username} />}
       {page === "signin" && <SignIn/>}
+	  {page === "signup" && <SignUp/>}
 
     
     </> 

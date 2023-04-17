@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: GetUserComments.proto
+// source: model/GetUserComments.proto
 
 package model
 
@@ -105,5 +105,5 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "GetUserComments.proto",
+	Metadata: "model/GetUserComments.proto",
 }

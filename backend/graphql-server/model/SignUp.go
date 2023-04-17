@@ -105,7 +105,7 @@ func (s *Server) SignUp(ctx context.Context, in *SecurityCheckInput) (*Jwtdata, 
 
 				collection := utils.Client.Database("datingapp").Collection("users") // connect to db
 				
-				createuser := MongoFields{Username: in.Username, Profpic: "https://adminajh46unique.s3.eu-west-2.amazonaws.com/default-profile-pic.jpg", Photos: []string{}, LastCommentNum: 0, Posts: []*PostData{} }
+				createuser := MongoFields{Username: in.Username, Profpic: "https://adminajh46unique.s3.eu-west-2.amazonaws.com/default-profile-pic.jpg", Photos: []string{}, Posts: []*PostData{}, Followers: []string{}, Following: []string{}, Liked: []string{}, Replys: []string{} }
 
 				//username not in use so add new userdata struct
 				_, err = collection.InsertOne(context.TODO(), createuser)

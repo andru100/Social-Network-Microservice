@@ -19,7 +19,9 @@ function Home (props) {
    const [viewCmtBox, setviewCmtBox] = useState({}); // use to show comment box when clicked
    const [page, setPage] = useState(props.page); // use to show comment box when clicked
    const [viewing, setViewing] = useState(props.viewing); // use to show comment box when clicked
+   const [scope, setScope] = useState("user"); // use to show comment box when clicked
 
+   console.log("render occcured, scope is: ", scope)
 
    dayjs().format()
    dayjs.extend(relativeTime)
@@ -27,12 +29,12 @@ function Home (props) {
    var timeAtRender = dayjs(Date.now())
 
   useEffect( () => {
-         getCmt().then(cmtz => {
-            if (cmtz) {
-             setcmt(cmtz)
-             console.log("Users data object retrieved is:", cmtz)
-            }
-         })
+      getCmt().then(cmtz => {
+         if (cmtz) {
+         setcmt(cmtz)
+         console.log("Users data object retrieved is:", cmtz)
+         }
+      })
   },[]);
 
 // extra auth heck option
@@ -55,21 +57,17 @@ function Home (props) {
 //   },[]);
 
 
-   async function getCmt (user2find) { // sends username, password from input, then backend creates s3 bucket in username and stores details on mongo
+   async function getCmt (request) { // sends username, password from input, then backend creates s3 bucket in username and stores details on mongo
   
       let data = {Username: viewing}
 
-      let queryType
+      let queryType ="GetUserComments"
 
-      if (page === "All") {
+      if (request === "all") {
          queryType = "GetAllComments"
-      } else {
-         queryType ="GetUserComments"
-      }
-
-      if (user2find) {
-         data.Username = sessionUser
-      }
+      } else if (request === "friends") {
+         queryType = "GetFriendsComments"
+      } 
 
       let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
       let response = await SendData(gqlRequest, data)
@@ -77,6 +75,21 @@ function Home (props) {
 			//{ProcessErrorAlerts("hi", "hi")}
 			console.log("Error retrieving user data", response.errors[0].message )
 			
+		} else {
+         return response.data[queryType] 
+      }
+   }
+
+   async function getSessionUserData () { // sends username, password from input, then backend creates s3 bucket in username and stores details on mongo
+  
+      let data = {Username: sessionUser}
+
+      let queryType ="GetUserComments"
+
+      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
+      let response = await SendData(gqlRequest, data)
+      if ( "errors" in response ){ 
+			console.log("Error retrieving user data", response.errors[0].message )
 		} else {
          return response.data[queryType] 
       }
@@ -119,7 +132,7 @@ function Home (props) {
          }
 
          let gqlRequest = "mutation ReplyComment ($data: ReplyCommentInput!){ ReplyComment (input: $data) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
-         const reply = await getCmt(sessionUser)
+         const reply = await getSessionUserData()
          CommentResponse.data.ReplyProfpic = reply.Profpic
          
          SendData(gqlRequest, CommentResponse).then((response)=> ("errors" in response) ? console.log("error sending response to comment") : setcmt(response.data.ReplyComment))
@@ -136,30 +149,134 @@ function Home (props) {
             }
          }
          let gqlRequest = "mutation LikeComment ($data: SendLikeInput!){ LikeComment (input: $data) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
-         getCmt(sessionUser).then((repliersData)=> {SendLikeInput.data.LikeByPic = repliersData.Profpic; SendData(gqlRequest, SendLikeInput).then((response)=> ( "errors" in response) ? console.log("error adding like") : setcmt(response.data.LikeComment) ) ; })
+         getSessionUserData().then((repliersData)=> {SendLikeInput.data.LikeByPic = repliersData.Profpic; SendData(gqlRequest, SendLikeInput).then((response)=> ( "errors" in response) ? console.log("error adding like") : setcmt(response.data.LikeComment) ) ; })
       }
 
    }
 
-   
 
-   function redirecter () {
-      //Navigate("/signIn")
-   }
+   //edit profile functions
+
+   async function updateBio () { 
+    
+      const bio = document.getElementById('bioBox').value
+  
+      let variables = {data: {Username: sessionUser, Bio: bio}}
+  
+      let gqlRequest = "mutation UpdateBio ($data: UpdateBioInput!){ UpdateBio(input: $data) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username sessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
+        
+        let response = await SendData(gqlRequest, variables)
+  
+        
+        if ( "errors" in response ){ // if password is a match redirect to profile page
+        //{ProcessErrorAlerts("hi", "hi")}
+        console.log("error updating bio", response.errors[0].message )
+        return false
+        
+      } else { // if password is a match redirect to profile page
+           console.log("saved bio")
+        setcmt(response.data.UpdateBio) // store users data object
+        //setDp(!dp) // show bio edit box
+        //change to update details type or put in unpdate details
+        } 
+    }
+  
+    async function addPhotos (event) {
+      if (event) {
+        let file = (event.target.files[0])
+        var data = new FormData() 
+        data.append('file', file)
+        data.append('user', sessionUser)
+        data.append('type', 'addPhotos')
+      
+        let options = {
+          method: 'POST',
+          body: data, 
+        }
+  
+        let postUrl = process.env.REACT_APP_BACKEND_UPLOAD +  '/postfile/' + sessionUser 
+        let response = await fetch(postUrl, options)
+        let convert = await response.json ()
+        if ( response.status === 401 || response.status === 400){
+          console.log("your pic didn't save, please try again")
+         } else if ( response.status === 200){ 
+          console.log("added pic to users photos")
+          setcmt(convert)
+         }
+        
+      }
+    };
+  
+    function triggerClick(event){ // clicking image triggers upload button click
+      var myButton = document.getElementById(event.target.name);
+      if ( myButton ) {
+        myButton.click()
+      }
+    }
+  
+    async function addProfilePic (event) {
+      if (event) {
+        let file = (event.target.files[0])
+        var data = new FormData() 
+        data.append('file', file)
+        data.append('user', sessionUser)
+        data.append('type', 'profPic')
+      
+        let options = {
+          method: 'POST',
+          body: data, 
+        }
+  
+        let ProfUrl = process.env.REACT_APP_BACKEND_UPLOAD + '/postfile/' + sessionUser
+        let response = await fetch(ProfUrl, options)
+        let convert = await response.json ()
+        document.getElementById("profpic11").src = convert.Profpic // get posted img address and change profile picture
+        
+      }
+    };
+
+    function getPosts () {
+      
+     }
 
 
-    function goToProfile (){
-      //Navigate ("/Profile/" + User + "/home")
+    function goToHome (){
+      getCmt("user").then(cmtz => {
+         if (cmtz) {
+          setcmt(cmtz)
+          console.log("Users data object retrieved is:", cmtz)
+         }
+      })
+      setScope("user")
+      setViewing(sessionUser)
     }
 
     function goToAllPosts (){
-      //Navigate ("/profile/" + User + "/all")
+      getCmt("all").then(cmtz => {
+         if (cmtz) {
+          setcmt(cmtz)
+          console.log("Users data object retrieved is:", cmtz)
+         }
+      })
+      setScope("all")
+      // getPosts()
+    }
+
+    function goToFriends (){
+      getCmt("friends").then(cmtz => {
+         if (cmtz) {
+          setcmt(cmtz)
+          console.log("Users data object retrieved is:", cmtz)
+         }
+      })
+      setScope("friends")
     }
 
     function goToPhotos () {
-       if (page !== "media") { // for when your on media tab already
-         //Navigate("/profile/" + User + "/media")
-       }
+      //  if (page !== "media") { // for when your on media tab already
+         setScope("media")
+         getPosts()
+   
     }
 
     function Logout (){
@@ -194,56 +311,67 @@ function Home (props) {
         <div style={containerStyle}>
          <Container>
            <Row>
-             <Col style={{}}>
-                  <div id="content" className="content content-full-width">
-                     <div className="profile">
-                        <div className="profile-header">
-                           <div className="profile-header-cover"></div>
-                              <div className="profile-header-content">
-                                 <div className="profile-header-img">
-                                    <img calssName="profpics" src={cmt.Profpic} alt=""/>
-                                 </div>
-                                 <div className="profile-header-info">
-                                    <h4 className="m-t-10 m-b-5">{viewing}</h4>
-                                    <p className="m-b-10" style={{color:"black"}}>{cmt.Bio? cmt.Bio : "Click the edit profile button to add a bio to your profile now."}</p>
-                                    <a href="!" className="btn btn-sm btn-info mb-2" style={{marginRight:"10px"}} onClick={(e)=> {e.preventDefault() ; setPage("editprofile")}}>Edit Profile</a>
-                                    <a href="!" className="btn btn-sm btn-info mb-2" style={{marginRight:"10px"}} onClick={(e)=> {e.preventDefault() ; setPage("updatedetails")}}>Update Details</a>
-                                    <a href="!" className="btn btn-sm btn-info mb-2" onClick={(e)=> {e.preventDefault(); Logout()}}>Log Out</a>
+               <Col md="3"></Col>
+               <Col md="6">
+                  <div className="comments" style={{background: "white"}}>
+                     <Row>
+                        <Col style={{marginLeft: "30px"}}>
+                           {/* <div className="profile-header-content"> */}
+                              <div className="profile-header-img">
+                                 {/* <img className="profpics" id= "profpic11" name="profpic1"  onClick={(e)=>  {e.preventDefault(); triggerClick(e)}} alt="alt" src={cmt.Profpic}  data-holder-Rendered="true"/> */}
+                                 <img calssName="profpics" id= "profpic11" name="profpic1" src={cmt.Profpic} alt="alt" data-holder-Rendered="true" onClick={(e)=>  {e.preventDefault(); triggerClick(e)}}/>
+                              </div>
+                              <div className="visually-hidden">
+                                 <div>
+                                       <input id="profpic1" type="file" className="blocked" onChange={addProfilePic}  name= "uploader1"/>
                                  </div>
                               </div>
-                        </div>
-                     </div>
+                           {/* </div> */}
+                        </Col>
+                        <Col>
+                           <div className="profile-header-info">
+                              <h4 className="m-t-10 m-b-5">{viewing}</h4>
+                              <p className="m-b-10" style={{color:"black"}}>{cmt.Bio? cmt.Bio : "Click the edit profile button to add a bio to your profile now."}</p>
+                              <a href="!" className="btn btn-sm btn-info mb-2" style={{marginRight:"10px"}} onClick={(e)=> {e.preventDefault() ; setPage("editprofile")}}>Edit Profile</a>
+                              <a href="!" className="btn btn-sm btn-info mb-2" style={{marginRight:"10px"}} onClick={(e)=> {e.preventDefault() ; setPage("updatedetails")}}>Update Details</a>
+                              <a href="!" className="btn btn-sm btn-info mb-2" onClick={(e)=> {e.preventDefault(); Logout()}}>Log Out</a>
+                           </div>
+                        </Col>
+                     </Row>
                   </div>
+               </Col>
+               <Col md="3"></Col>
+                              
+            </Row>
                   
-             </Col>
-             {/* <Col style={{background: "white"}}>2 of 2</Col> */}
-           </Row>
+              
+             
            <Row>
              <Col xs lg="3"> 
                <Row>
                    <Col style={{}}>
-                     {sessionUser && <button className="login100-form-btn" type="button" onClick={(e) => { e.preventDefault() ; goToProfile()}}>PROFILE</button>}
+                     {sessionUser && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToHome()}}>PROFILE</button>}
                    </Col>
                </Row>
                <Row>
                      <Col style={{}}>
-                     {sessionUser && <button className="login100-form-btn" type="button"  onClick={(e) => {e.preventDefault(); goToAllPosts()}}>FEED</button>}
+                     {sessionUser && <button className="login100-form-btn" type="button"  onClick={(e)=> {e.preventDefault() ; goToAllPosts()}}>FOR YOU</button>}
                              
                      </Col>
                </Row>
                <Row>
                      <Col style={{}}>
-                     {sessionUser && <button className="login100-form-btn" type="button"  onClick={(e) => {e.preventDefault(); goToPhotos()}}>MEDIA</button>}      
+                     {sessionUser && <button className="login100-form-btn" type="button"  onClick={(e)=> {e.preventDefault() ; goToPhotos()}}>MEDIA</button>}      
                      </Col>
                </Row>
                <Row>
                      <Col>
-                     {sessionUser && <button className="login100-form-btn" type="button" onClick={() => {}}>FRIENDS</button>}  
+                     {sessionUser && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToFriends()}}>FRIENDS</button>}  
                      </Col>        
                </Row>
              </Col>
              <Col>
-                  {sessionUser && page === "media" &&
+                  {sessionUser && scope === "media" &&
                   <>
                      <div className="connected-container">
                         <div className="gif-grid">
@@ -253,6 +381,12 @@ function Home (props) {
                               </div>
                            ))}
                         </div>
+                     </div>
+                     <div>
+                        <a href="!" className="btn btn-sm btn-info mb-2" name="mediaUplaod" style={{marginTop: "10px"}} onClick={(e) => {e.preventDefault(); triggerClick(e)}}>Add Photos</a>
+                     </div>  
+                     <div>
+                           <input id="mediaUplaod" type="file" className="blocked" onChange={(e)=> addPhotos(e)}  name= "uploader1"/>
                      </div>
                   </>
                   }

@@ -1,17 +1,5 @@
 
 
-.profpics{
-  width:130px;
-  height:130px;
-  object-fit:cover;
-  border-radius:50%;
-  margin: 0 auto;
-}
-
-.addPhoto{
-  width:130px;
-  height:130px;
-}
 
 /* .txt10{
   text-align: centre;
@@ -208,12 +196,27 @@ iframe {
   
 }
 
+.mfa-box {
+  width: 200px;
+  height: 120px;
+  margin-top: 20px;
+  margin-left: 10px;
+  background-color: rgba(255, 255, 255, 1);
+  color: #000;
+  border-radius: 10px;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+}
+
+
 
 .wrap-login100 {
   width: 680px;
   background: #ffffff;
   border-radius: 10px;
   position: relative;
+  display: flex;
+  margin: 0 auto;
+  
 }
 
 

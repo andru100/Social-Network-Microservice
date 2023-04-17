@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: LikeComment.proto
+// source: model/LikeComment.proto
 
 package model
 
@@ -179,5 +179,5 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "LikeComment.proto",
+	Metadata: "model/LikeComment.proto",
 }

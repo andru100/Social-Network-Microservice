@@ -51,7 +51,7 @@ func (s *Server) LikeComment (ctx context.Context, in *model.SendLikeInput) (*mo
 	//Find the comment being liked
 	//TODO make each sub field a mongo doc so that comments can be searched by ID of doc and save on looping through data
 	for i := 0; i < len(currentDoc.Posts); i++ {
-		if currentDoc.Posts[i].PostNum == in.PostIndx {
+		if currentDoc.Posts[i].ID == in.PostID {
 			likesent := model.Likes{
 				Username: in.LikedBy ,
 				Profpic:  in.LikeByPic,

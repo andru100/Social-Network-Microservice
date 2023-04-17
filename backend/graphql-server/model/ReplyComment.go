@@ -23,7 +23,7 @@ func (s *Server) ReplyComment (ctx context.Context, in *ReplyCommentInput) (*Mon
 	//Find the comment being replied do by index and add it
 	//TODO make each sub filed a mongo doc so we can search by ID and save looping through all comments
 	for i := 0; i < len(currentDoc.Posts); i++ {
-		if currentDoc.Posts[i].PostNum == in.PostIndx {
+		if currentDoc.Posts[i].ID == in.PostID {
 			reply := MsgCmts{
 				Username: in.ReplyUsername ,
 				Comment:  in.ReplyComment , 
