@@ -112,7 +112,7 @@ type PostData  {
 type MongoFields  {
 	# Key:            String!            
 	# #ID:             primitive.Object#ID
-	ID:				ID!
+	ID:				String!
 	Username:       String!             
 	Bio:            String!           
 	Profpic:        String!   
@@ -134,7 +134,7 @@ input SendLikeInput  {
 	Username:   String!  
 	LikedBy:   String! #  
 	LikeByPic:   String! #  
-	PostIndx:   Int32!,
+	PostID:   String!,
 	ReturnPage: String!,
 }
 
@@ -153,7 +153,7 @@ input ReplyCommentInput  {
 	ReplyUsername: String! 
 	ReplyComment:  String! 
 	ReplyProfpic:  String!
-	PostIndx:   Int32!   
+	PostID:   String!   
 	ReturnPage: String! 
 }
 
