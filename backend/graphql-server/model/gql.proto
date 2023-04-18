@@ -80,16 +80,15 @@ message Likes  {
 }
 
 message MongoFields  { 	
-	string ID = 1 ;
-	string Username = 2 ;;  
-	string Bio = 3  ; 
-	string Profpic = 4 ; 
-	repeated string Photos = 5 ;
-	repeated string Following = 6 ;  
-	repeated string Followers = 7 ;
-	repeated string Replys = 8 ;
-	repeated string Liked = 9 ; 
-	repeated PostData Posts = 10 ; 
+	string Username = 1 ;  
+	string Bio = 2 ; 
+	string Profpic = 3 ; 
+	repeated string Photos = 4 ;
+	repeated string Following = 5 ;  
+	repeated string Followers = 6 ;
+	repeated string Replys = 7 ;
+	repeated string Liked = 8 ; 
+	repeated PostData Posts = 9 ; 
 	// int32 LastCommentNum = 10 ;
 }
 
