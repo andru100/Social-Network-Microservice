@@ -121,6 +121,7 @@ message ReplyCommentInput  {
 	string PostID = 5 ;  
 	string ReturnPage = 6 ;
 	string RequestType = 7 ;
+	string ReplyID = 8 ;
 }
 
 message SendCmtInput  {

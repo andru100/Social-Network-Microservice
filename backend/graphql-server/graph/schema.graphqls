@@ -155,6 +155,7 @@ input ReplyCommentInput  {
 	PostID:   String!   
 	ReturnPage: String! 
 	RequestType: String!
+	ReplyID: String!
 }
 
 input UpdateBioInput  {
