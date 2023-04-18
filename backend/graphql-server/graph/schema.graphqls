@@ -112,7 +112,6 @@ type PostData  {
 type MongoFields  {
 	# Key:            String!            
 	# #ID:             primitive.Object#ID
-	ID:				String!
 	Username:       String!             
 	Bio:            String!           
 	Profpic:        String!   
@@ -136,16 +135,16 @@ input SendLikeInput  {
 	LikeByPic:   String! #  
 	PostID:   String!,
 	ReturnPage: String!,
+	RequestType: String!
 }
 
 input SendCmtInput  {
 	Username:    String!    
 	SessionUser: String!    
 	MainCmt:     String!  
-	Time:        String!   
 	TimeStamp:   Int64!    
-	Date:        String! 
 	ReturnPage: String!     
+	RequestType: String!
 }
 
 input ReplyCommentInput  {
@@ -155,6 +154,7 @@ input ReplyCommentInput  {
 	ReplyProfpic:  String!
 	PostID:   String!   
 	ReturnPage: String! 
+	RequestType: String!
 }
 
 input UpdateBioInput  {

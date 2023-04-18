@@ -120,16 +120,16 @@ message ReplyCommentInput  {
 	string ReplyProfpic = 4 ; 
 	string PostID = 5 ;  
 	string ReturnPage = 6 ;
+	string RequestType = 7 ;
 }
 
 message SendCmtInput  {
 	string Username = 1 ; 
 	string SessionUser = 2 ;
 	string MainCmt = 3 ; 
-	string Time = 4 ;
-	int64 TimeStamp = 5 ;   
-	string Date = 6 ; 
-	string ReturnPage = 7 ;  
+	int64 TimeStamp = 4 ;   
+	string ReturnPage = 5 ;  
+	string RequestType = 6 ;
 }
 
 message SendLikeInput  {
@@ -138,6 +138,7 @@ message SendLikeInput  {
 	string LikeByPic = 3 ;  
 	string PostID = 4 ;   
 	string ReturnPage = 5 ; 
+	string RequestType = 6 ;
 }
 
 message UpdateBioInput  {
