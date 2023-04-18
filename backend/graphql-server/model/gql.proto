@@ -131,6 +131,7 @@ message SendCmtInput  {
 	int64 TimeStamp = 4 ;   
 	string ReturnPage = 5 ;  
 	string RequestType = 6 ;
+	string PostID = 7 ;
 }
 
 message SendLikeInput  {

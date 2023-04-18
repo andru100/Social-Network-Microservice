@@ -145,6 +145,7 @@ input SendCmtInput  {
 	TimeStamp:   Int64!    
 	ReturnPage: String!     
 	RequestType: String!
+	PostID: String!
 }
 
 input ReplyCommentInput  {
