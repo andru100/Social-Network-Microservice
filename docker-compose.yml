@@ -127,3 +127,12 @@ services:
     container_name: backend-secureupdate
     ports:
       - 4012:4012
+
+  backend-follow:
+    build: 
+        context: ./backend/services/Follow
+        args:
+          - HOSTIP=${HOSTIP}
+    container_name: backend-follow
+    ports:
+      - 4013:4013

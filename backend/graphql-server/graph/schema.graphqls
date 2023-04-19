@@ -25,6 +25,8 @@ type Mutation {
   UpdateBio(input: UpdateBioInput!) : MongoFields
   RequestOTP(input: RequestOtpInput!) : Confirmation
   SecureUpdate(input: SecurityCheckInput!) : Jwtdata
+  Follow(input: FollowInput!) : MongoFields
+
   
 }
 
@@ -107,6 +109,17 @@ type PostData  {
 	Likes:       [Likes!]!  #
 }
 
+type ReplyData{
+	Username: String!
+	PostID: String!
+	ReplyID: String!
+}
+
+type LikedData{
+	Username: String!
+	PostID: String!
+}
+
 
 #  to hold retrived mongo doc
 type MongoFields  {
@@ -118,8 +131,8 @@ type MongoFields  {
 	Photos:         [String!]!   
 	Following:      [String!]!
 	Followers:      [String!]!
-	Replys:         [String!]!
-	Liked:          [String!]!
+	Replys:         [ReplyData!]!
+	Liked:          [LikedData!]!
 	Posts:          [PostData!]!       
 }
 
@@ -132,7 +145,7 @@ input JwtdataInput  {
 input SendLikeInput  {
 	Username:   String!  
 	LikedBy:   String! #  
-	LikeByPic:   String! #  
+	LikeByPic:   String #  
 	PostID:   String!,
 	ReturnPage: String!,
 	RequestType: String!
@@ -141,22 +154,29 @@ input SendLikeInput  {
 input SendCmtInput  {
 	Username:    String!    
 	SessionUser: String!    
-	MainCmt:     String!  
-	TimeStamp:   Int64!    
+	MainCmt:     String 
+	TimeStamp:   Int64   
 	ReturnPage: String!     
 	RequestType: String!
-	PostID: String!
+	PostID: String
 }
 
 input ReplyCommentInput  {
 	AuthorUsername:   String! 
 	ReplyUsername: String! 
-	ReplyComment:  String! 
-	ReplyProfpic:  String!
+	ReplyComment:  String
+	ReplyProfpic:  String
 	PostID:   String!   
 	ReturnPage: String! 
 	RequestType: String!
-	ReplyID: String!
+	ReplyID: String
+}
+
+input FollowInput  {
+	Username: String!
+	UserOfIntrest: String!
+	ReturnPage: String! 
+	RequestType: String!
 }
 
 input UpdateBioInput  {

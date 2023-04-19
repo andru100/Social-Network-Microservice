@@ -73,6 +73,17 @@ message Likes  {
 	string Profpic = 2 ; 
 }
 
+message ReplyData{
+	string Username = 1 ;
+	string PostID = 2 ;
+	string ReplyID = 3 ;
+}
+
+message LikedData{
+	string Username = 1 ;
+	string PostID = 2 ;
+}
+
 message MongoFields  { 	 
 	string Username = 1 ;  
 	string Bio = 2 ; 
@@ -80,8 +91,8 @@ message MongoFields  {
 	repeated string Photos = 4 ;
 	repeated string Following = 5 ;  
 	repeated string Followers = 6 ;
-	repeated string Replys = 7 ;
-	repeated string Liked = 8 ; 
+	repeated ReplyData Replys = 7 ;
+	repeated LikedData Liked = 8 ; 
 	repeated PostData Posts = 9 ; 
 	// int32 LastCommentNum = 10 ;
 }

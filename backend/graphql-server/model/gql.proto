@@ -15,6 +15,7 @@ service SocialGrpc {
   rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
   rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
   rpc SecureUpdate(SecurityCheckInput) returns (Jwtdata) {}
+  rpc Follow(FollowInput) returns (MongoFields) {}
 
 }
 
@@ -79,15 +80,26 @@ message Likes  {
 	string Profpic = 2 ; 
 }
 
-message MongoFields  { 	
+message ReplyData{
+	string Username = 1 ;
+	string PostID = 2 ;
+	string ReplyID = 3 ;
+}
+
+message LikedData{
+	string Username = 1 ;
+	string PostID = 2 ;
+}
+
+message MongoFields  { 	 
 	string Username = 1 ;  
 	string Bio = 2 ; 
 	string Profpic = 3 ; 
 	repeated string Photos = 4 ;
 	repeated string Following = 5 ;  
 	repeated string Followers = 6 ;
-	repeated string Replys = 7 ;
-	repeated string Liked = 8 ; 
+	repeated ReplyData Replys = 7 ;
+	repeated LikedData Liked = 8 ; 
 	repeated PostData Posts = 9 ; 
 	// int32 LastCommentNum = 10 ;
 }
@@ -112,6 +124,14 @@ message PostData  {
 	repeated MsgCmts Comments = 5 ; //    []MsgCmts `bson:"Comments" json:"Comments"`
 	repeated Likes Likes = 6 ; //   []Likes   `bson:"Likes" json:"Likes"`
 }
+
+message FollowInput  {
+	string Username = 1 ; 
+	string UserOfIntrest = 2 ; 
+	string ReturnPage = 3 ; 
+	string RequestType = 4 ;
+}
+
 
 message ReplyCommentInput  {
 	string AuthorUsername = 1 ; 

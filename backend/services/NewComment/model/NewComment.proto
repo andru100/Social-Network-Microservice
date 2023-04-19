@@ -46,6 +46,17 @@ message Likes  {
 	string Profpic = 2 ; 
 }
 
+message ReplyData{
+	string Username = 1 ;
+	string PostID = 2 ;
+	string ReplyID = 3 ;
+}
+
+message LikedData{
+	string Username = 1 ;
+	string PostID = 2 ;
+}
+
 message MongoFields  { 	 
 	string Username = 1 ;  
 	string Bio = 2 ; 
@@ -53,8 +64,8 @@ message MongoFields  {
 	repeated string Photos = 4 ;
 	repeated string Following = 5 ;  
 	repeated string Followers = 6 ;
-	repeated string Replys = 7 ;
-	repeated string Liked = 8 ; 
+	repeated ReplyData Replys = 7 ;
+	repeated LikedData Liked = 8 ; 
 	repeated PostData Posts = 9 ; 
 	// int32 LastCommentNum = 10 ;
 }
@@ -98,16 +109,17 @@ message ReplyCommentInput  {
 	string ReplyProfpic = 4 ; 
 	string PostID = 5 ;  
 	string ReturnPage = 6 ;
+	string RequestType = 7 ;
 }
 
 message SendCmtInput  {
 	string Username = 1 ; 
 	string SessionUser = 2 ;
 	string MainCmt = 3 ; 
-	string Time = 4 ;
-	int64 TimeStamp = 5 ;   
-	string Date = 6 ; 
-	string ReturnPage = 7 ;  
+	int64 TimeStamp = 4 ;   
+	string ReturnPage = 5 ;  
+	string RequestType = 6 ;
+	string PostID = 7 ;
 }
 
 message SendLikeInput  {
@@ -116,6 +128,7 @@ message SendLikeInput  {
 	string LikeByPic = 3 ;  
 	string PostID = 4 ;   
 	string ReturnPage = 5 ; 
+	string RequestType = 6 ;
 }
 
 message UpdateBioInput  {

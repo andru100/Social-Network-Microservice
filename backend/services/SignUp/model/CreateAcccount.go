@@ -12,7 +12,7 @@ import (
 func CreateAccount (username string) error {
 	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db
 
-	createuser := MongoFields{Username: username, Profpic: "https://adminajh46unique.s3.eu-west-2.amazonaws.com/default-profile-pic.jpg", Photos: []string{}, LastCommentNum: 0, Posts: []*PostData{}}
+	createuser := MongoFields{Username: username, Profpic: "https://adminajh46unique.s3.eu-west-2.amazonaws.com/default-profile-pic.jpg", Photos: []string{},  Posts: []*PostData{}, Following: []string{}, Followers: []string{}, Replys: []string{}, Liked: []string{}}
 
 	//username not in use so add new userdata struct
 	_, err := collection.InsertOne(context.TODO(), createuser)

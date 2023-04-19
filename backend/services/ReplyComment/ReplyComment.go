@@ -9,6 +9,7 @@ import (
 	"errors"
 
 	"google.golang.org/grpc"
+	"github.com/google/uuid"
 	"github.com/andru100/Social-Network-Microservices/backend/services/ReplyComment/model"
 	"github.com/andru100/Social-Network-Microservices/backend/services/ReplyComment/utils"
 	"go.mongodb.org/mongo-driver/bson"
@@ -50,16 +51,33 @@ func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput)
 	// Find the document that mathes the id 
 	err := collection.FindOne(ctxMongo, bson.M{"Username": in.AuthorUsername}).Decode(&currentDoc)
 
-	//Find the comment being replied do by index and add it
-	//TODO make each sub filed a mongo doc so we can search by ID and save looping through all comments
+	//Find the post being replied to and add or delete it
 	for i := 0; i < len(currentDoc.Posts); i++ {
 		if currentDoc.Posts[i].ID == in.PostID {
-			reply := model.MsgCmts{
-				Username: in.ReplyUsername ,
-				Comment:  in.ReplyComment , 
-				Profpic:  in.ReplyProfpic ,
+			switch in.RequestType {
+				case "create":
+					id := uuid.New()
+
+					reply := model.MsgCmts{
+						ID:       id.String(),
+						Username: in.ReplyUsername ,
+						Comment:  in.ReplyComment , 
+						Profpic:  in.ReplyProfpic ,
+					}
+					
+					currentDoc.Posts[i].Comments = append(currentDoc.Posts[i].Comments, &reply) // add reply to post
+				case "delete":
+					for j := 0; j < len(currentDoc.Posts[i].Comments); j++ {
+						if currentDoc.Posts[i].Comments[j].ID == in.ReplyID {
+							currentDoc.Posts[i].Comments = append(currentDoc.Posts[i].Comments[:j], currentDoc.Posts[i].Comments[j+1:]...) // delete reply from post
+							break
+						}
+					}
+				default:
+					err = errors.New("invalid request type")
+					return nil, err
 			}
-			currentDoc.Posts[i].Comments = append(currentDoc.Posts[i].Comments, &reply) // add reply to post
+
 			filter := bson.M{"Username": currentDoc.Posts[i].Username}
 			Updatetype := "$set"
 			Key2updt := "Posts"
@@ -74,9 +92,15 @@ func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput)
 			if err != nil {
 				err = errors.New("error when adding comment to DB")
 				return nil, err
-			}                             
+			}   
+			
+			break
 		}
 	}
+
+	go UpdateUserReplys(in) // update replys to users record
+
+
 
 	
 	// check originating page request came from and return updated comments to save an extra api call on react refresh component
@@ -87,4 +111,58 @@ func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput)
 	   result, err1:= model.Rpc2GetUserCmts (&model.GetComments{Username: in.AuthorUsername})
 	   return result, err1
     }
+}
+
+func UpdateUserReplys(in *model.ReplyCommentInput) {
+	collection := utils.Client.Database("datingapp").Collection("userdata")
+
+	currentDoc := model.MongoFields{}
+
+	ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
+
+	// Find the document that mathes the id 
+	err := collection.FindOne(ctxMongo, bson.M{"Username": in.ReplyUsername}).Decode(&currentDoc)
+
+	
+	switch in.RequestType {
+		case "create":
+			replydata := model.ReplyData{
+				Username: in.AuthorUsername,
+				PostID: in.PostID,
+				ReplyID: uniqueID, // this needs to be given after the reply is created and sent otherwise user commenting on self will screw it
+			}
+
+			currentDoc.Replys = append(currentDoc.Replys, &replydata) // add reply to post
+		case "delete":
+			for j := 0; j < len(currentDoc.Replys); j++ {
+				if currentDoc.Replys[j].ReplyID == in.ReplyID {
+					currentDoc.Replys = append(currentDoc.Replys[:j], currentDoc.Replys[j+1:]...) // delete reply from post
+					break
+				}
+			}
+		default:
+			err = errors.New("invalid request type")
+			return nil, err
+	}
+
+	filter := bson.M{"Username": in.ReplyUsername}
+	Updatetype := "$set"
+	Key2updt := "Replys"
+	update := bson.D{
+		{Updatetype, bson.D{
+			{Key2updt, currentDoc.Posts},
+		}},
+	}
+
+	//put to db
+	_, err = collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		err = errors.New("error when adding comment to DB")
+		return nil, err
+	}   
+	
+	break
+
+	
+
 }

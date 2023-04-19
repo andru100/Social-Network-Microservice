@@ -69,7 +69,7 @@ function Home (props) {
          queryType = "GetFriendsComments"
       } 
 
-      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
+      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username){ Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       let response = await SendData(gqlRequest, data)
       if ( "errors" in response ){ // if password is a match redirect to profile page
 			//{ProcessErrorAlerts("hi", "hi")}
@@ -86,7 +86,7 @@ function Home (props) {
 
       let queryType ="GetUserComments"
 
-      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
+      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username){ Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } }}"
       let response = await SendData(gqlRequest, data)
       if ( "errors" in response ){ 
 			console.log("Error retrieving user data", response.errors[0].message )
@@ -96,63 +96,110 @@ function Home (props) {
    }
 
 
-   async function sendCmt (msgType, cmtAuthr, iD) { // sends comments, replies to comments and likes
-      let cmt = "" //in case msgType is reply and comment box not shown so causes null error
-      if (msgType === "isCmt") {
-         cmt = document.getElementById("cmt").value 
-      }   
-
-      if (msgType === "isCmt") {
-         let NewCmtInput  = { data: {
-            Username : cmtAuthr,
-            SessionUser: sessionUser,
-            MainCmt : cmt ,
-            Time : new Date().toLocaleTimeString('en-GB', { hour: "numeric", minute: "numeric"}), // no longer used
-            Date : new Date().toLocaleDateString(), // no longer used
-            TimeStamp : Date.now(),    
-            ReturnPage: page   ,
-            }
+   async function sendCmt (cmtAuthr) { // sends comments, replies to comments and likes
+    
+      let NewCmtInput  = { data: {
+         Username : cmtAuthr,
+         SessionUser: sessionUser, //  not needed once can be retrieved from the session cookie
+         MainCmt : document.getElementById("cmt").value ,
+         TimeStamp : Date.now(),    
+         ReturnPage: page   ,
+         RequestType: "create"
          }
-
-         let gqlRequest = "mutation NewComment ($data: SendCmtInput!){ NewComment (input: $data) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
-         
-         SendData(gqlRequest, NewCmtInput).then((response)=> ("errors" in response) ? console.log("error posting data") : setcmt(response.data.NewComment) ); 
       }
+
+      let gqlRequest = "mutation NewComment ($data: SendCmtInput!){ NewComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       
+      SendData(gqlRequest, NewCmtInput).then((response)=> ("errors" in response) ? console.log("Error posting comment", response.errors[0].message ) : setcmt(response.data.NewComment) ); 
+   
+   }
 
-      if (msgType === "isResponse") {
-         let CommentResponse =  { data: {
-            AuthorUsername: cmtAuthr ,
-            ReplyUsername: sessionUser ,
-            ReplyComment:  document.getElementById(iD).value , 
-            ReplyProfpic:  "" ,
-            PostIndx:   iD ,
-            ReturnPage: page
-            }
+   async function sendReply (cmtAuthr, iD) { // sends comments, replies to comments and likes
+      
+      let CommentResponse =  { data: {
+         AuthorUsername: cmtAuthr ,
+         ReplyUsername: sessionUser ,
+         ReplyComment:  document.getElementById(iD).value , 
+         ReplyProfpic:  "" ,
+         PostID:   iD ,
+         ReturnPage: page,
+         RequestType: "create"
          }
-
-         let gqlRequest = "mutation ReplyComment ($data: ReplyCommentInput!){ ReplyComment (input: $data) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
-         const reply = await getSessionUserData()
-         CommentResponse.data.ReplyProfpic = reply.Profpic
-         
-         SendData(gqlRequest, CommentResponse).then((response)=> ("errors" in response) ? console.log("error sending response to comment") : setcmt(response.data.ReplyComment))
       }
 
+      let gqlRequest = "mutation ReplyComment ($data: ReplyCommentInput!){ ReplyComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      const reply = await getSessionUserData()
+      CommentResponse.data.ReplyProfpic = reply.Profpic
+      
+      SendData(gqlRequest, CommentResponse).then((response)=> ("errors" in response) ? console.log("error sending response to comment") : setcmt(response.data.ReplyComment))
+   }
 
-      if (msgType === "cmtLiked") {
-         let SendLikeInput  = { data: {
-            Username:   cmtAuthr ,
-            LikedBy:   sessionUser ,
-            LikeByPic:   "",
-            PostIndx:   iD , 
-            ReturnPage: page   
-            }
+   async function sendLike (cmtAuthr, iD) { 
+
+      let SendLikeInput  = { data: {
+         Username:   cmtAuthr ,
+         LikedBy:   sessionUser ,
+         LikeByPic:   "",
+         PostID:   iD , 
+         ReturnPage: page , 
+         RequestType: "create"
          }
-         let gqlRequest = "mutation LikeComment ($data: SendLikeInput!){ LikeComment (input: $data) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username SessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
-         getSessionUserData().then((repliersData)=> {SendLikeInput.data.LikeByPic = repliersData.Profpic; SendData(gqlRequest, SendLikeInput).then((response)=> ( "errors" in response) ? console.log("error adding like") : setcmt(response.data.LikeComment) ) ; })
       }
+      let gqlRequest = "mutation LikeComment ($data: SendLikeInput!){ LikeComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      getSessionUserData().then((repliersData)=> {SendLikeInput.data.LikeByPic = repliersData.Profpic; SendData(gqlRequest, SendLikeInput).then((response)=> ( "errors" in response) ? console.log("error adding like") : setcmt(response.data.LikeComment) ) ; })
+   }
+
+   async function deleteCmt (cmtAuthr, postID) { // sends comments, replies to comments and likes
+
+      let NewCmtInput  = { data: {
+         Username : cmtAuthr,
+         SessionUser: sessionUser,  
+         ReturnPage: page   ,
+         RequestType: "delete",
+         PostID: postID
+         }
+      }
+
+      let gqlRequest = "mutation NewComment ($data: SendCmtInput!){ NewComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      
+      SendData(gqlRequest, NewCmtInput).then((response)=> ("errors" in response) ? console.log("Error posting comment", response.errors[0].message ) : setcmt(response.data.NewComment) ); 
+   
+   }
+
+   async function deleteResponse (cmtAuthr, postID, replyID) { // sends comments, replies to comments and likes
+      
+      let CommentResponse =  { data: {
+         AuthorUsername: cmtAuthr ,
+         ReplyUsername: sessionUser ,
+         PostID:   postID ,
+         ReplyID: replyID, 
+         ReturnPage: page ,
+         RequestType: "delete",
+         }
+      }
+
+      let gqlRequest = "mutation ReplyComment ($data: ReplyCommentInput!){ ReplyComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      
+      SendData(gqlRequest, CommentResponse).then((response)=> ("errors" in response) ? console.log("error sending response to comment") : setcmt(response.data.ReplyComment))
+   
+   }
+
+   async function deleteLike (cmtAuthr, iD) { // sends comments, replies to comments and likes
+
+      let SendLikeInput  = { data: {
+         Username:   cmtAuthr ,
+         LikedBy:   sessionUser ,
+         PostID:   iD , 
+         ReturnPage: page   
+         }
+      }
+      let gqlRequest = "mutation LikeComment ($data: SendLikeInput!){ LikeComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      SendData(gqlRequest, SendLikeInput).then((response)=> ( "errors" in response) ? console.log("error adding like") : setcmt(response.data.LikeComment) ) 
+   
 
    }
+
+
 
 
    //edit profile functions
@@ -163,7 +210,7 @@ function Home (props) {
   
       let variables = {data: {Username: sessionUser, Bio: bio}}
   
-      let gqlRequest = "mutation UpdateBio ($data: UpdateBioInput!){ UpdateBio(input: $data) { Key ID Username Password Email Bio Profpic Photos LastCommentNum Posts { Username sessionUser MainCmt PostNum Time TimeStamp Date Comments { Username Comment Profpic } Likes { Username Profpic } } } }"
+      let gqlRequest = "mutation UpdateBio ($data: UpdateBioInput!){ UpdateBio(input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
         
         let response = await SendData(gqlRequest, variables)
   
@@ -235,10 +282,6 @@ function Home (props) {
       }
     };
 
-    function getPosts () {
-      
-     }
-
 
     function goToHome (){
       getCmt("user").then(cmtz => {
@@ -275,7 +318,6 @@ function Home (props) {
     function goToPhotos () {
       //  if (page !== "media") { // for when your on media tab already
          setScope("media")
-         getPosts()
    
     }
 
@@ -401,7 +443,7 @@ function Home (props) {
                                  <div className="input-group">
                                     <textarea style={{height: "36px"}} type="text" className="form-control rounded-corner" id="cmt" placeholder="Write a comment..."/>
                                     <span className="input-group-btn p-l-10">
-                                       <button className="btn btn-primary f-s-12 rounded-corner" type="button" onClick={() => sendCmt("isCmt", sessionUser, 0)}>Comment</button>
+                                       <button className="btn btn-primary f-s-12 rounded-corner" type="button" onClick={() => sendCmt(sessionUser)}>Comment</button>
                                     </span>
                                  </div>
                               </form>
@@ -431,6 +473,16 @@ function Home (props) {
                                              <Col>
                                                 <div className="time">{dayjs(userData.TimeStamp).from(timeAtRender) }</div>
                                              </Col>
+                                             <Col>
+                                                {
+                                                   sessionUser === userData.Username &&
+
+                                                   <i class="fa fa-trash-o" onClick={() => deleteCmt(sessionUser, userData.ID)} aria-hidden="true"></i>
+                                                }
+                                             </Col>
+
+                                                
+                                                
                                           </Row>
                                           <Row>
                                              <Col>
@@ -446,10 +498,20 @@ function Home (props) {
                                     <Row>
                                        <Col>
                                           <div className="reply-icons" >
-                                             <span className="fa-stack fa-fw stats-icon">
-                                                <i className="fa fa-circle fa-stack-2x text-danger"></i>
-                                                <i className="fa fa-heart fa-stack-1x fa-inverse t-plus-1" onClick={()=>sendCmt("cmtLiked", userData.Username, userData.PostNum)}></i>
-                                             </span>
+                                             { 
+                                                userData.Likes.some(e => e.Username === sessionUser) ?
+                                                   <span className="fa-stack fa-fw stats-icon">
+                                                      <i className="fa fa-circle fa-stack-2x text-danger"></i>
+                                                      <i className="fa fa-heart fa-stack-1x fa-inverse t-plus-1" onClick={()=>deleteLike(userData.Username, userData.ID)}></i>
+                                                   </span>
+
+                                                :
+
+                                                <span className="fa-stack fa-fw stats-icon">
+                                                   <i className="fa fa-heart fa-stack-1x fa-inverse t-plus-1" style={{backgroundColor: "red"}} onClick={()=>sendLike(userData.Username, userData.ID)}></i>
+                                                </span>
+
+                                             }
                                              <span className="stats-text" onClick={() => {viewReply[userData.PostNum] && toggleReply(userData.PostNum) ; viewCmtBox[userData.PostNum] && toggleCmt(userData.PostNum); toggleLikes(userData.PostNum)}}>{userData.Likes?.length} Likes</span>
                                           </div>
                                        </Col>
@@ -493,7 +555,16 @@ function Home (props) {
                                                       </Col>
                                                       <Col>
                                                          <Row>
-                                                            <div ClassName = "username" onClick={()=> setViewing(replys.Username)} >{replys.Username}</div> 
+                                                            <Col>
+                                                                <div ClassName = "username" onClick={()=> setViewing(replys.Username)} >{replys.Username}</div>
+                                                            </Col> 
+                                                            <Col>
+                                                            {
+                                                               sessionUser === replys.Username &&
+
+                                                               <i class="fa fa-trash-o" onClick={() => deleteResponse(sessionUser, userData.ID, replys.ID)} aria-hidden="true"></i>
+                                                            }
+                                                            </Col>
                                                          </Row>
                                                          <Row>
                                                             <p>{replys.Comment}</p>
@@ -511,14 +582,14 @@ function Home (props) {
                                                          <div className="input">
                                                             <form action="">
                                                                <div className="input-group">
-                                                                  <textarea type="text" className="form-control rounded-corner" id={userData.PostNum} style={{height:"90px", width:"180px"}} placeholder="Reply to the post..."/>
+                                                                  <textarea type="text" className="form-control rounded-corner" id={userData.ID} style={{height:"90px", width:"180px"}} placeholder="Reply to the post..."/>
                                                                </div>
                                                             </form>
                                                          </div>
                                                    </Row>
                                                    <Row>
                                                       <span className="input-group-btn p-l-10">
-                                                         <button className="btn btn-primary f-s-12 rounded-corner" type="button"  onClick={()=>sendCmt("isResponse", userData.Username, userData.PostNum)}>Comment</button>
+                                                         <button className="btn btn-primary f-s-12 rounded-corner" type="button"  onClick={()=>sendReply(userData.Username, userData.ID)}>Comment</button>
                                                       </span>
                                                    </Row>
                                                 </> 

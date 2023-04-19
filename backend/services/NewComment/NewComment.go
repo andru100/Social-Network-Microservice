@@ -7,8 +7,10 @@ import (
 	"net"
 	"time"
 	"errors"
+	"sort"
 
 	"google.golang.org/grpc"
+	"github.com/google/uuid"
 
 	"github.com/andru100/Social-Network-Microservices/backend/services/NewComment/utils"
 	"github.com/andru100/Social-Network-Microservices/backend/services/NewComment/model"
@@ -41,6 +43,8 @@ func main() {
 
 
 func (s *Server) NewComment (ctx context.Context, in *model.SendCmtInput) (*model.MongoFields, error) {
+
+	fmt.Println("NewComment called")
 	
 	collection := utils.Client.Database("datingapp").Collection("userdata")
 
@@ -50,25 +54,50 @@ func (s *Server) NewComment (ctx context.Context, in *model.SendCmtInput) (*mode
 
 	err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&currentDoc)
 
-	// currentDoc.LastCommentNum += 1
+	switch in.RequestType {
+		case "create":
 	
-	//initialise empty slice to hold future likes and reply comments
-	cmtHolder := []*model.MsgCmts{}
-	likeHolder := []*model.Likes{}
+			//initialise empty slice to hold future likes and reply comments
+			cmtHolder := []*model.MsgCmts{}
+			likeHolder := []*model.Likes{}
+			id := uuid.New()
 
-	//make new comment struct: 
-	newPost := model.PostData{
-		Username:    in.Username,    
-		MainCmt:     in.MainCmt,     
-		TimeStamp:   in.TimeStamp,   
-		Comments:    cmtHolder ,
-		Likes:      likeHolder, 
+			fmt.Println("adding New post to DB, uuid is: ", id)
+
+			//make new comment struct: 
+			newPost := model.PostData{
+				ID: id.String(),
+				Username:    in.Username,    
+				MainCmt:     in.MainCmt,     
+				TimeStamp:   in.TimeStamp,   
+				Comments:    cmtHolder ,
+				Likes:      likeHolder, 
+			}
+
+			currentDoc.Posts = append(currentDoc.Posts, &newPost)
+
+			sort.Slice(currentDoc.Posts, func(i, j int) bool { // needs to be done on adding post and remove this
+				return currentDoc.Posts[i].TimeStamp > currentDoc.Posts[j].TimeStamp
+			})
+		
+		case "delete":
+
+			for i, v := range currentDoc.Posts {
+				if v.ID == in.PostID {
+					currentDoc.Posts = append(currentDoc.Posts[:i], currentDoc.Posts[i+1:]...)
+					break
+				}
+			}
+
+		default:
+			err = errors.New("invalid request, should be add or delete")
+			return nil, err
+
 	}
 
-	currentDoc.Posts = append(currentDoc.Posts, &newPost)
 	filter := bson.M{"Username": in.Username} 
 
-	//add new comment to DB 
+ 
 	Updatetype := "$set"
 	Key2updt := "Posts"
 	update := bson.D{

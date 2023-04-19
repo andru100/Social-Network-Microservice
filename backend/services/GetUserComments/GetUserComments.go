@@ -6,7 +6,6 @@ import (
 	"net"
 	"errors"
 	"log"
-	"sort"
 	"time"
 	"google.golang.org/grpc"
 	"github.com/andru100/Social-Network-Microservices/backend/services/GetUserComments/model"
@@ -51,10 +50,6 @@ func (s *Server) GetUserComments(ctx context.Context, in *model.GetComments) (*m
 		fmt.Println(err5, err, in.Username)
 		return nil, err5
 	}
-
-	sort.Slice(currentDoc.Posts, func(i, j int) bool { // needs to be done on adding post and remove this
-		return currentDoc.Posts[i].TimeStamp > currentDoc.Posts[j].TimeStamp
-	})
 
 	return &currentDoc, err
 }

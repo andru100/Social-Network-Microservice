@@ -19,4 +19,4 @@ var Sess, Err2 = session.NewSession(&aws.Config{ //start a aws session by settin
 	Region: aws.String("eu-west-2")},
 )
 
-var Uniqueadr = "ajh46unique" // used to make s3 file upload filenames unique
+var Uniqueadr = "ajh15socialunique" // used to make s3 file upload filenames unique

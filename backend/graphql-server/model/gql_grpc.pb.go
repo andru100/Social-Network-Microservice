@@ -34,6 +34,7 @@ type SocialGrpcClient interface {
 	UpdateBio(ctx context.Context, in *UpdateBioInput, opts ...grpc.CallOption) (*MongoFields, error)
 	RequestOTP(ctx context.Context, in *RequestOtpInput, opts ...grpc.CallOption) (*Confirmation, error)
 	SecureUpdate(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
+	Follow(ctx context.Context, in *FollowInput, opts ...grpc.CallOption) (*MongoFields, error)
 }
 
 type socialGrpcClient struct {
@@ -143,6 +144,15 @@ func (c *socialGrpcClient) SecureUpdate(ctx context.Context, in *SecurityCheckIn
 	return out, nil
 }
 
+func (c *socialGrpcClient) Follow(ctx context.Context, in *FollowInput, opts ...grpc.CallOption) (*MongoFields, error) {
+	out := new(MongoFields)
+	err := c.cc.Invoke(ctx, "/SocialGrpc/Follow", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SocialGrpcServer is the server API for SocialGrpc service.
 // All implementations must embed UnimplementedSocialGrpcServer
 // for forward compatibility
@@ -159,6 +169,7 @@ type SocialGrpcServer interface {
 	UpdateBio(context.Context, *UpdateBioInput) (*MongoFields, error)
 	RequestOTP(context.Context, *RequestOtpInput) (*Confirmation, error)
 	SecureUpdate(context.Context, *SecurityCheckInput) (*Jwtdata, error)
+	Follow(context.Context, *FollowInput) (*MongoFields, error)
 	mustEmbedUnimplementedSocialGrpcServer()
 }
 
@@ -198,6 +209,9 @@ func (UnimplementedSocialGrpcServer) RequestOTP(context.Context, *RequestOtpInpu
 }
 func (UnimplementedSocialGrpcServer) SecureUpdate(context.Context, *SecurityCheckInput) (*Jwtdata, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SecureUpdate not implemented")
+}
+func (UnimplementedSocialGrpcServer) Follow(context.Context, *FollowInput) (*MongoFields, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Follow not implemented")
 }
 func (UnimplementedSocialGrpcServer) mustEmbedUnimplementedSocialGrpcServer() {}
 
@@ -410,6 +424,24 @@ func _SocialGrpc_SecureUpdate_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SocialGrpc_Follow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FollowInput)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SocialGrpcServer).Follow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/SocialGrpc/Follow",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SocialGrpcServer).Follow(ctx, req.(*FollowInput))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SocialGrpc_ServiceDesc is the grpc.ServiceDesc for SocialGrpc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -460,6 +492,10 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SecureUpdate",
 			Handler:    _SocialGrpc_SecureUpdate_Handler,
+		},
+		{
+			MethodName: "Follow",
+			Handler:    _SocialGrpc_Follow_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
