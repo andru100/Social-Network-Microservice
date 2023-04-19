@@ -194,6 +194,31 @@ func (r *mutationResolver) SecureUpdate(ctx context.Context, input model.Securit
 	return result, err
 }
 
+// Follow is the resolver for the Follow field.
+func (r *mutationResolver) Follow(ctx context.Context, input model.FollowInput) (*model.MongoFields, error) {
+	var conn *grpc.ClientConn
+
+	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4013", grpc.WithInsecure())
+
+	if err != nil {
+		log.Fatalf("did not connect: %s", err)
+	}
+	defer conn.Close()
+
+	c := model.NewSocialGrpcClient(conn)
+
+	result, err := c.Follow(context.Background(), &input)
+
+	if err != nil {
+		fmt.Println("error is ", err)
+		return nil, err
+	}
+
+	return result, err
+	
+	panic(fmt.Errorf("not implemented: Follow - Follow"))
+}
+
 // Chkauth is the resolver for the Chkauth field.
 func (r *queryResolver) Chkauth(ctx context.Context, input model.JwtdataInput) (*model.Authd, error) {
 	var conn *grpc.ClientConn

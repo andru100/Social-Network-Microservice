@@ -1,0 +1,108 @@
+func LogUserLikes(in *model.SendLikeInput) {
+	collection := utils.Client.Database("datingapp").Collection("userdata")
+
+	user := model.MongoFields{}
+
+	userOfIntrest := model.MongoFields{}
+
+	ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
+
+	err := collection.FindOne(ctxMongo, bson.M{"Username": in.LikedBy}).Decode(&user)
+	if err != nil {
+		return nil, errors.New("error finding user data")
+	}
+
+	err = collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&userOfIntrest)
+	if err != nil {
+		return nil, errors.New("error finding user data")
+	}
+
+
+	
+	
+	switch in.RequestType {
+		case "create":
+			likesent := model.LikedData{// addto users reccord of likes
+				Username: in.Username,
+				PostID:   in.PostID,
+			}
+
+			user.Liked = append(user.Liked, &likesent) 
+
+			likesent = model.Likes{ // add to post bee liked
+				Username: in.LikedBy ,
+				Profpic:  in.LikeByPic,
+			}
+
+			for i := 0; i < len(userOfIntrest.Posts); i++ {
+				if userOfIntrest.Posts[i].ID == in.PostID {
+					userOfIntrest.Posts[i].Likes = append(userOfIntrest.Posts[i].Likes, &likesent) // add like to post
+					break
+				}
+			}
+
+			
+
+		case "delete":
+			for j := 0; j < len(user.Likes); j++ {
+				if user.Likes[j].PostID == in.PostID {
+					user.Likes = append(user.Likes[:j], user.Likes[j+1:]...) // delete like from post
+					break
+				}
+			}
+
+			for i := 0; i < len(userOfIntrest.Posts); i++ {
+				if userOfIntrest.Posts[i].ID == in.PostID {
+					for j := 0; j < len(userOfIntrest.Posts[i].Likes); j++ {
+						if userOfIntrest.Posts[i].Likes[j].Username == in.LikedBy {
+							userOfIntrest.Posts[i].Likes = append(userOfIntrest.Posts[i].Likes[:j], userOfIntrest.Posts[i].Likes[j+1:]...) // delete like from post
+							break
+						}
+					}
+					break
+				}
+			}
+		
+		default:
+			err = errors.New("invalid request type")
+			return nil, err
+			
+	}
+
+	filter := bson.M{"Username": in.LikedBy}   
+	Updatetype := "$set"
+	Key2updt := "Liked"
+	update := bson.D{
+		{Updatetype, bson.D{
+			{Key2updt, user.Liked},
+		}},
+	}
+
+	//put to db
+	_, err = collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		err = errors.New("error when adding Like to DB")
+		return nil, err
+	}
+
+	filter = bson.M{"Username": in.Username}
+	Updatetype = "$set"
+	Key2updt = "Posts"
+	update = bson.D{
+		{Updatetype, bson.D{
+			{Key2updt, userOfIntrest.Posts},
+		}},
+	}
+
+	_, err = collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		err = errors.New("error when adding Like to DB")
+		return nil, err
+	}
+
+
+		
+	
+
+	
+}

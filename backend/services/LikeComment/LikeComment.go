@@ -105,7 +105,7 @@ func (s *Server) LikeComment (ctx context.Context, in *model.SendLikeInput) (*mo
     }
 }
 
-func LogUserLikes(in *model.SendLikeInput) {
+func LogUserLikes(in *model.SendLikeInput) error {
 	collection := utils.Client.Database("datingapp").Collection("userdata")
 
 	currentDoc := model.MongoFields{}
@@ -115,42 +115,44 @@ func LogUserLikes(in *model.SendLikeInput) {
 	err := collection.FindOne(ctxMongo, bson.M{"Username": in.LikedBy}).Decode(&currentDoc)
 	
 	
-	case "create":
-		likesent := model.LikedData{
-			Username: in.Username,
-			PostID:   in.PostID,
-		}
-
-		currentDoc.LikedData = append(currentDoc.LikedData, &likesent) // add like to post
-
-	case "delete":
-		for j := 0; j < len(currentDoc.LikedData); j++ {
-			if currentDoc.LikedData[i].PostID == in.PostID {
-				currentDoc.LikedData = append(currentDoc.LikedData[:j], currentDoc.LikedData[j+1:]...) // delete like from post
-				break
+	switch in.RequestType {
+		case "create":
+			likesent := model.LikedData{
+				Username: in.Username,
+				PostID:   in.PostID,
 			}
-		}
-	
-	default:
-		err = errors.New("invalid request type")
-		return nil, err
-			
 
-			filter := bson.M{"Username": in.LikedBy}   
-			Updatetype := "$set"
-			Key2updt := "LikedData"
-			update := bson.D{
-				{Updatetype, bson.D{
-					{Key2updt, currentDoc.LikedData},
-				}},
+			currentDoc.Liked = append(currentDoc.Liked, &likesent) // add like to post
+
+		case "delete":
+			for j := 0; j < len(currentDoc.Liked); j++ {
+				if currentDoc.Liked[j].PostID == in.PostID {
+					currentDoc.Liked = append(currentDoc.Liked[:j], currentDoc.Liked[j+1:]...) // delete like from post
+					break
+				}
 			}
 		
-			//put to db
-			_, err = collection.UpdateOne(context.TODO(), filter, update)
-			if err != nil {
-				err = errors.New("error when adding Like to DB")
-				return nil, err
-			}
+		default:
+			return  errors.New("invalid request type")
+	}
+			
+
+	filter := bson.M{"Username": in.LikedBy}   
+	Updatetype := "$set"
+	Key2updt := "Liked"
+	update := bson.D{
+		{Updatetype, bson.D{
+			{Key2updt, currentDoc.Liked},
+		}},
+	}
+
+	//put to db
+	_, err = collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return errors.New("error when adding Like to DB")
+	}
+
+	return nil
 		
 
 

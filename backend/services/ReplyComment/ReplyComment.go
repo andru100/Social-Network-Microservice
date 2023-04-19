@@ -42,6 +42,8 @@ func main() {
 
 func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput) (*model.MongoFields, error) {// adds replies to users comments mongo doc
 
+	uniqueID := uuid.New()
+	
 	collection := utils.Client.Database("datingapp").Collection("userdata")
 
 	currentDoc := model.MongoFields{}
@@ -56,10 +58,10 @@ func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput)
 		if currentDoc.Posts[i].ID == in.PostID {
 			switch in.RequestType {
 				case "create":
-					id := uuid.New()
+					
 
 					reply := model.MsgCmts{
-						ID:       id.String(),
+						ID:       uniqueID.String(),
 						Username: in.ReplyUsername ,
 						Comment:  in.ReplyComment , 
 						Profpic:  in.ReplyProfpic ,
@@ -98,7 +100,7 @@ func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput)
 		}
 	}
 
-	go UpdateUserReplys(in) // update replys to users record
+	go UpdateUserReplys(in, uniqueID.String()) // update replys to users record
 
 
 
@@ -113,7 +115,7 @@ func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput)
     }
 }
 
-func UpdateUserReplys(in *model.ReplyCommentInput) {
+func UpdateUserReplys(in *model.ReplyCommentInput, uniqueId string) error {
 	collection := utils.Client.Database("datingapp").Collection("userdata")
 
 	currentDoc := model.MongoFields{}
@@ -129,7 +131,7 @@ func UpdateUserReplys(in *model.ReplyCommentInput) {
 			replydata := model.ReplyData{
 				Username: in.AuthorUsername,
 				PostID: in.PostID,
-				ReplyID: uniqueID, // this needs to be given after the reply is created and sent otherwise user commenting on self will screw it
+				ReplyID: uniqueId, // this needs to be given after the reply is created and sent otherwise user commenting on self will screw it
 			}
 
 			currentDoc.Replys = append(currentDoc.Replys, &replydata) // add reply to post
@@ -142,7 +144,7 @@ func UpdateUserReplys(in *model.ReplyCommentInput) {
 			}
 		default:
 			err = errors.New("invalid request type")
-			return nil, err
+			return err
 	}
 
 	filter := bson.M{"Username": in.ReplyUsername}
@@ -158,10 +160,10 @@ func UpdateUserReplys(in *model.ReplyCommentInput) {
 	_, err = collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		err = errors.New("error when adding comment to DB")
-		return nil, err
-	}   
-	
-	break
+		return err
+	} 
+
+	return nil
 
 	
 
