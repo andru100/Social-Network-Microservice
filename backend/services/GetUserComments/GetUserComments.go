@@ -38,7 +38,7 @@ func main() {
 }
 
 func (s *Server) GetUserComments(ctx context.Context, in *model.GetComments) (*model.MongoFields, error) {
-
+	fmt.Println("GetUserComments called!")
 	
 	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
 	currentDoc := model.MongoFields{}
@@ -50,6 +50,6 @@ func (s *Server) GetUserComments(ctx context.Context, in *model.GetComments) (*m
 		fmt.Println(err5, err, in.Username)
 		return nil, err5
 	}
-
+	
 	return &currentDoc, err
 }

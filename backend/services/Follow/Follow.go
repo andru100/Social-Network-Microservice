@@ -40,6 +40,8 @@ func main() {
 
 func (s *Server) Follow (ctx context.Context, in *model.FollowInput) (*model.MongoFields, error) {
 
+	fmt.Println("Follow called!")
+
 	collection := utils.Client.Database("datingapp").Collection("userdata")
 
 	requester := model.MongoFields{}
@@ -123,7 +125,8 @@ func (s *Server) Follow (ctx context.Context, in *model.FollowInput) (*model.Mon
 		result, err1 := model.Rpc2GetAllCmts(&model.GetComments{Username: in.Username})
 		return result, err1
     } else {
-	   result, err1:= model.Rpc2GetUserCmts (&model.GetComments{Username: in.Username})
+	   result, err1:= model.Rpc2GetUserCmts (&model.GetComments{Username: in.UserOfIntrest})
+	   fmt.Println("follow func returning", result)
 	   return result, err1
     }
 }

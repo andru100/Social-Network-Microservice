@@ -21,7 +21,8 @@ function Home (props) {
    const [viewing, setViewing] = useState(props.viewing); // use to show comment box when clicked
    const [scope, setScope] = useState("user"); // use to show comment box when clicked
 
-   console.log("render occcured, scope is: ", scope)
+   console.log("render occcured, scope is: ", scope, "viewing: ", viewing, "sessionUser: ", sessionUser, "page: ", page)
+   console.log("user data is: ", cmt)
 
    dayjs().format()
    dayjs.extend(relativeTime)
@@ -57,9 +58,11 @@ function Home (props) {
 //   },[]);
 
 
-   async function getCmt (request) { // sends username, password from input, then backend creates s3 bucket in username and stores details on mongo
+   async function getCmt (request, user) { // sends username, password from input, then backend creates s3 bucket in username and stores details on mongo
   
       let data = {Username: viewing}
+
+      user && (data.Username = user)
 
       let queryType ="GetUserComments"
 
@@ -69,7 +72,7 @@ function Home (props) {
          queryType = "GetFriendsComments"
       } 
 
-      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username){ Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       let response = await SendData(gqlRequest, data)
       if ( "errors" in response ){ // if password is a match redirect to profile page
 			//{ProcessErrorAlerts("hi", "hi")}
@@ -86,7 +89,7 @@ function Home (props) {
 
       let queryType ="GetUserComments"
 
-      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username){ Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } }}"
+      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       let response = await SendData(gqlRequest, data)
       if ( "errors" in response ){ 
 			console.log("Error retrieving user data", response.errors[0].message )
@@ -108,7 +111,7 @@ function Home (props) {
          }
       }
 
-      let gqlRequest = "mutation NewComment ($data: SendCmtInput!){ NewComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      let gqlRequest = "mutation NewComment ($data: SendCmtInput!){ NewComment (input: $data){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       
       SendData(gqlRequest, NewCmtInput).then((response)=> ("errors" in response) ? console.log("Error posting comment", response.errors[0].message ) : setcmt(response.data.NewComment) ); 
    
@@ -127,7 +130,7 @@ function Home (props) {
          }
       }
 
-      let gqlRequest = "mutation ReplyComment ($data: ReplyCommentInput!){ ReplyComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      let gqlRequest = "mutation ReplyComment ($data: ReplyCommentInput!){ ReplyComment (input: $data){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       const reply = await getSessionUserData()
       CommentResponse.data.ReplyProfpic = reply.Profpic
       
@@ -145,7 +148,7 @@ function Home (props) {
          RequestType: "create"
          }
       }
-      let gqlRequest = "mutation LikeComment ($data: SendLikeInput!){ LikeComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      let gqlRequest = "mutation LikeComment ($data: SendLikeInput!){ LikeComment (input: $data){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       getSessionUserData().then((repliersData)=> {SendLikeInput.data.LikeByPic = repliersData.Profpic; SendData(gqlRequest, SendLikeInput).then((response)=> ( "errors" in response) ? console.log("error adding like") : setcmt(response.data.LikeComment) ) ; })
    }
 
@@ -160,7 +163,7 @@ function Home (props) {
          }
       }
 
-      let gqlRequest = "mutation NewComment ($data: SendCmtInput!){ NewComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      let gqlRequest = "mutation NewComment ($data: SendCmtInput!){ NewComment (input: $data){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       
       SendData(gqlRequest, NewCmtInput).then((response)=> ("errors" in response) ? console.log("Error posting comment", response.errors[0].message ) : setcmt(response.data.NewComment) ); 
    
@@ -178,7 +181,7 @@ function Home (props) {
          }
       }
 
-      let gqlRequest = "mutation ReplyComment ($data: ReplyCommentInput!){ ReplyComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      let gqlRequest = "mutation ReplyComment ($data: ReplyCommentInput!){ ReplyComment (input: $data){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       
       SendData(gqlRequest, CommentResponse).then((response)=> ("errors" in response) ? console.log("error sending response to comment") : setcmt(response.data.ReplyComment))
    
@@ -190,13 +193,27 @@ function Home (props) {
          Username:   cmtAuthr ,
          LikedBy:   sessionUser ,
          PostID:   iD , 
-         ReturnPage: page   
+         ReturnPage: page ,  
+         RequestType: "delete"
          }
       }
-      let gqlRequest = "mutation LikeComment ($data: SendLikeInput!){ LikeComment (input: $data) { Username Bio Profpic Photos Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      let gqlRequest = "mutation LikeComment ($data: SendLikeInput!){ LikeComment (input: $data){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
       SendData(gqlRequest, SendLikeInput).then((response)=> ( "errors" in response) ? console.log("error adding like") : setcmt(response.data.LikeComment) ) 
    
 
+   }
+
+   async function follow (requestype) { // sends comments, replies to comments and likes
+
+      let SendFollowInput  = { data: {
+         Username:  sessionUser ,
+	      UserOfIntrest: viewing ,
+	      ReturnPage: page ,
+	      RequestType: requestype
+         }
+      }
+      let gqlRequest = "mutation Follow ($data: FollowInput!){ Follow (input: $data) { Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      SendData(gqlRequest, SendFollowInput).then((response)=> ( "errors" in response) ? console.log("error adding like") : setcmt(response.data.Follow) ) 
    }
 
 
@@ -284,7 +301,7 @@ function Home (props) {
 
 
     function goToHome (){
-      getCmt("user").then(cmtz => {
+      getCmt("user", sessionUser).then(cmtz => {
          if (cmtz) {
           setcmt(cmtz)
           console.log("Users data object retrieved is:", cmtz)
@@ -292,6 +309,18 @@ function Home (props) {
       })
       setScope("user")
       setViewing(sessionUser)
+    }
+
+    function goToUser (user){
+      getCmt("user", user).then(cmtz => {
+         if (cmtz) {
+          setcmt(cmtz)
+          console.log("Users data object retrieved is:", cmtz)
+         }
+      })
+      setScope("user")
+      setViewing(user)
+      
     }
 
     function goToAllPosts (){
@@ -306,7 +335,7 @@ function Home (props) {
     }
 
     function goToFriends (){
-      getCmt("friends").then(cmtz => {
+      getCmt("friends", sessionUser).then(cmtz => {
          if (cmtz) {
           setcmt(cmtz)
           console.log("Users data object retrieved is:", cmtz)
@@ -355,7 +384,7 @@ function Home (props) {
            <Row>
                <Col md="3"></Col>
                <Col md="6">
-                  <div className="comments" style={{background: "white"}}>
+                  <div className="comments" style={{background: "black"}}>
                      <Row>
                         <Col style={{marginLeft: "30px"}}>
                            {/* <div className="profile-header-content"> */}
@@ -374,8 +403,26 @@ function Home (props) {
                            <div className="profile-header-info">
                               <h4 className="m-t-10 m-b-5">{viewing}</h4>
                               <p className="m-b-10" style={{color:"black"}}>{cmt.Bio? cmt.Bio : "Click the edit profile button to add a bio to your profile now."}</p>
-                              <a href="!" className="btn btn-sm btn-info mb-2" style={{marginRight:"10px"}} onClick={(e)=> {e.preventDefault() ; setPage("editprofile")}}>Edit Profile</a>
-                              <a href="!" className="btn btn-sm btn-info mb-2" style={{marginRight:"10px"}} onClick={(e)=> {e.preventDefault() ; setPage("updatedetails")}}>Update Details</a>
+                              {
+                                 sessionUser === viewing ?
+
+                                 <a href="!" className="btn btn-sm btn-info mb-2" style={{marginRight:"10px"}} onClick={(e)=> {e.preventDefault() ; setPage("updatedetails")}}>Update Details</a>
+
+                                 :
+
+                     
+                                 
+                                 cmt.Followers && cmt.Followers.includes(sessionUser) ?
+                                 
+                                 <a href="!" className="btn btn-sm btn-info mb-2" style={{marginRight:"10px"}} onClick={(e)=> {e.preventDefault() ; follow("unfollow")}}>Unfollow</a>
+
+
+                                 :
+                                 <a href="!" className="btn btn-sm btn-info mb-2" style={{marginRight:"10px"}} onClick={(e)=> {e.preventDefault() ; follow("follow")}}>Follow</a>
+                                
+                              }
+                              
+                              
                               <a href="!" className="btn btn-sm btn-info mb-2" onClick={(e)=> {e.preventDefault(); Logout()}}>Log Out</a>
                            </div>
                         </Col>
@@ -463,12 +510,12 @@ function Home (props) {
                                    <div>
                                     <Row>
                                        <Col md="auto">
-                                          <span className="userimage"><img onClick={()=> setViewing(userData.Username)} src={cmt.Profpic} alt=""/></span>
+                                          <span className="userimage"><img onClick={()=>   goToUser(userData.Username)} src={cmt.Profpic} alt=""/></span>
                                        </Col>
                                        <Col>
                                           <Row>
                                              <Col md="auto">
-                                                <div className="username" onClick={()=> setViewing(userData.Username)}>{userData.Username}</div>
+                                                <div className="username" onClick={()=> goToUser(userData.Username)}>{userData.Username}</div>
                                              </Col>
                                              <Col>
                                                 <div className="time">{dayjs(userData.TimeStamp).from(timeAtRender) }</div>

@@ -25,16 +25,16 @@ type SecurityCheckInput struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username    string `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty"`
-	Password    string `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty"`
-	DOB         string `protobuf:"bytes,3,opt,name=DOB,proto3" json:"DOB,omitempty"`
-	Email       string `protobuf:"bytes,4,opt,name=Email,proto3" json:"Email,omitempty"`
-	Mobile      string `protobuf:"bytes,5,opt,name=Mobile,proto3" json:"Mobile,omitempty"`
-	OTP_Email   string `protobuf:"bytes,6,opt,name=OTP_Email,json=OTPEmail,proto3" json:"OTP_Email,omitempty"`
-	OTP_Mobile  string `protobuf:"bytes,7,opt,name=OTP_Mobile,json=OTPMobile,proto3" json:"OTP_Mobile,omitempty"`
-	Token       string `protobuf:"bytes,8,opt,name=Token,proto3" json:"Token,omitempty"`
-	RequestType string `protobuf:"bytes,9,opt,name=RequestType,proto3" json:"RequestType,omitempty"`
-	UpdateData  string `protobuf:"bytes,10,opt,name=UpdateData,proto3" json:"UpdateData,omitempty"`
+	Username    string `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty" bson:"Username,omitempty"`
+	Password    string `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty" bson:"Password,omitempty"`
+	DOB         string `protobuf:"bytes,3,opt,name=DOB,proto3" json:"DOB,omitempty" bson:"DOB,omitempty"`
+	Email       string `protobuf:"bytes,4,opt,name=Email,proto3" json:"Email,omitempty" bson:"Email,omitempty"`
+	Mobile      string `protobuf:"bytes,5,opt,name=Mobile,proto3" json:"Mobile,omitempty" bson:"Mobile,omitempty"`
+	OTP_Email   string `protobuf:"bytes,6,opt,name=OTP_Email,json=OTPEmail,proto3" json:"OTP_Email,omitempty" bson:"OTP_Email,omitempty"`
+	OTP_Mobile  string `protobuf:"bytes,7,opt,name=OTP_Mobile,json=OTPMobile,proto3" json:"OTP_Mobile,omitempty" bson:"OTP_Mobile,omitempty"`
+	Token       string `protobuf:"bytes,8,opt,name=Token,proto3" json:"Token,omitempty" bson:"Token,omitempty"`
+	RequestType string `protobuf:"bytes,9,opt,name=RequestType,proto3" json:"RequestType,omitempty" bson:"RequestType,omitempty"`
+	UpdateData  string `protobuf:"bytes,10,opt,name=UpdateData,proto3" json:"UpdateData,omitempty" bson:"UpdateData,omitempty"`
 }
 
 func (x *SecurityCheckInput) Reset() {
@@ -765,15 +765,15 @@ type MongoFields struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username  string       `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty"`
-	Bio       string       `protobuf:"bytes,2,opt,name=Bio,proto3" json:"Bio,omitempty"`
-	Profpic   string       `protobuf:"bytes,3,opt,name=Profpic,proto3" json:"Profpic,omitempty"`
-	Photos    []string     `protobuf:"bytes,4,rep,name=Photos,proto3" json:"Photos,omitempty"`
-	Following []string     `protobuf:"bytes,5,rep,name=Following,proto3" json:"Following,omitempty"`
-	Followers []string     `protobuf:"bytes,6,rep,name=Followers,proto3" json:"Followers,omitempty"`
-	Replys    []*ReplyData `protobuf:"bytes,7,rep,name=Replys,proto3" json:"Replys,omitempty"`
-	Liked     []*LikedData `protobuf:"bytes,8,rep,name=Liked,proto3" json:"Liked,omitempty"`
-	Posts     []*PostData  `protobuf:"bytes,9,rep,name=Posts,proto3" json:"Posts,omitempty"` // int32 LastCommentNum = 10 ;
+	Username  string       `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty" bson:"Username,omitempty"`
+	Bio       string       `protobuf:"bytes,2,opt,name=Bio,proto3" json:"Bio,omitempty" bson:"Bio,omitempty"`
+	Profpic   string       `protobuf:"bytes,3,opt,name=Profpic,proto3" json:"Profpic,omitempty" bson:"Profpic,omitempty"`
+	Photos    []string     `protobuf:"bytes,4,rep,name=Photos,proto3" json:"Photos,omitempty" bson:"Photos,omitempty"`
+	Following []string     `protobuf:"bytes,5,rep,name=Following,proto3" json:"Following,omitempty" bson:"Following,omitempty"`
+	Followers []string     `protobuf:"bytes,6,rep,name=Followers,proto3" json:"Followers,omitempty" bson:"Followers,omitempty"`
+	Replys    []*ReplyData `protobuf:"bytes,7,rep,name=Replys,proto3" json:"Replys,omitempty" bson:"Replys,omitempty"`
+	Liked     []*LikedData `protobuf:"bytes,8,rep,name=Liked,proto3" json:"Liked,omitempty" bson:"Liked,omitempty"`
+	Posts     []*PostData  `protobuf:"bytes,9,rep,name=Posts,proto3" json:"Posts,omitempty" bson:"Posts,omitempty"`
 }
 
 func (x *MongoFields) Reset() {

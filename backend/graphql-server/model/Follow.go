@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"time"
+	"fmt"
 	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 
 func (s *Server) Follow (ctx context.Context, in *FollowInput) (*MongoFields, error) {
+	fmt.Println("Follow/unfollow request recieved")
 
 	collection := utils.Client.Database("datingapp").Collection("userdata")
 
@@ -94,7 +96,7 @@ func (s *Server) Follow (ctx context.Context, in *FollowInput) (*MongoFields, er
 		result, err1 := Rpc2GetAllCmts(&GetComments{Username: in.Username})
 		return result, err1
     } else {
-	   result, err1:= Rpc2GetUserCmts (&GetComments{Username: in.Username})
+	   result, err1:= Rpc2GetUserCmts (&GetComments{Username: in.UserOfIntrest})
 	   return result, err1
     }
 }
