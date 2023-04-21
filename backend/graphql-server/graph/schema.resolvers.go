@@ -221,7 +221,7 @@ func (r *queryResolver) Chkauth(ctx context.Context, input model.JwtdataInput) (
 
 
 // GetUserComments is the resolver for the GetUserComments field.
-func (r *queryResolver) GetPosts(ctx context.Context, input GetPostsInput) (*model.MongoFields, error) {
+func (r *queryResolver) GetPosts(ctx context.Context, input model.GetPost) (*model.MongoFields, error) {
 	var conn *grpc.ClientConn
 
 	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4009", grpc.WithInsecure())
@@ -233,7 +233,7 @@ func (r *queryResolver) GetPosts(ctx context.Context, input GetPostsInput) (*mod
 
 	c := model.NewSocialGrpcClient(conn)
 
-	result, err := c.GetUserComments(context.Background(), &input)
+	result, err := c.GetPosts(context.Background(), &input)
 
 	if err != nil {
 		return nil, err

@@ -8,11 +8,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-func Rpc2GetAllCmts (in *GetComments) (*MongoFields, error) {
+func GetPostsClient (in *GetPost) (*MongoFields, error) {
 
 	var conn *grpc.ClientConn
 	
-	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4008", grpc.WithInsecure())
+	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4009", grpc.WithInsecure())
 	
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)
@@ -21,7 +21,7 @@ func Rpc2GetAllCmts (in *GetComments) (*MongoFields, error) {
 
 	c := NewSocialGrpcClient(conn)
 
-	result, err := c.GetAllComments(context.Background(), in)
+	result, err := c.GetPosts(context.Background(), in)
 	
 	if err != nil {
 		return nil, err

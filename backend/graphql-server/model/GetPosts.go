@@ -5,14 +5,14 @@ import (
 	"errors"
 	"sort"
 	"time"
-	"github.com/andru100/Social-Network/backend/social"
+	"github.com/andru100/Social-Network-Microservice/backend/graphql-server/utils"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *Server) GetUserComments(ctx context.Context, in *GetComments) (*MongoFields, error) {
+func (s *Server) GetUserComments(ctx context.Context, in *GetPost) (*MongoFields, error) {
 
 	
-	collection := social.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
+	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
 	currentDoc := MongoFields{}
 	ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
 

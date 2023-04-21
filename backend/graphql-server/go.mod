@@ -3,7 +3,7 @@ module github.com/andru100/Social-Network-Microservice/backend/graphql-server
 go 1.20
 
 require (
-	github.com/99designs/gqlgen v0.17.29
+	github.com/99designs/gqlgen v0.17.30
 	github.com/aws/aws-sdk-go v1.44.217
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.9.0

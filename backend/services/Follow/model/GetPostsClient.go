@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func Rpc2GetUserCmts (in *GetComments) (*MongoFields, error) {
+func GetPostsClient (in *GetPost) (*MongoFields, error) {
 
 	var conn *grpc.ClientConn
 	
@@ -21,7 +21,7 @@ func Rpc2GetUserCmts (in *GetComments) (*MongoFields, error) {
 
 	c := NewSocialGrpcClient(conn)
 
-	result, err := c.GetUserComments(context.Background(), in)
+	result, err := c.GetPosts(context.Background(), in)
 	
 	if err != nil {
 		return nil, err

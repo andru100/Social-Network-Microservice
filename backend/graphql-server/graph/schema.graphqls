@@ -11,7 +11,7 @@ scalar Int32
 
 type Query {
   Chkauth(input: JwtdataInput!) : Authd
-  GetPosts(input: GetPostsInput!) : MongoFields
+  GetPosts(input: GetPost!) : MongoFields
 }
 
 type Mutation {
@@ -60,6 +60,12 @@ input MutationInput {
   ID: String!
 }
 
+input GetPost {
+	Username: String!
+	RequestType: String!
+	SearchTerm: String
+}
+
 type Authd  {
 	AuthdUser: String!
 }
@@ -67,12 +73,6 @@ type Authd  {
 # type AuthCheck  {
 # 	AuthdUser: String!
 # }
-
-type GetPost {
-	Username: String!
-	RequestType: String!
-	SearchTerm: String
-}
 
 
 type GetUserCmts  { 

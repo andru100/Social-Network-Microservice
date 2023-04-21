@@ -96,13 +96,9 @@ func (s *Server) LikeComment (ctx context.Context, in *model.SendLikeInput) (*mo
 
 	
 	// check originating page request came from and return updated comments to save an extra api call on react refresh component
-	if in.ReturnPage == "All" {
-		result, err1 := model.Rpc2GetAllCmts(&model.GetComments{Username: in.Username})
-		return result, err1
-    } else {
-	   result, err1:= model.Rpc2GetUserCmts (&model.GetComments{Username: in.Username})
-	   return result, err1
-    }
+	result, err1:= model.GetPostsClient (&model.GetPost{Username: in.Username, RequestType: in.ReturnPage})
+	return result, err1
+    
 }
 
 func LogUserLikes(in *model.SendLikeInput) error {

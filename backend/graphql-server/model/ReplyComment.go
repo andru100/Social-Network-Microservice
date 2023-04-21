@@ -50,11 +50,6 @@ func (s *Server) ReplyComment (ctx context.Context, in *ReplyCommentInput) (*Mon
 
 	
 	// check originating page request came from and return updated comments to save an extra api call on react refresh component
-	if in.ReturnPage == "All" {
-		result, err1 := Rpc2GetAllCmts(&GetComments{Username: in.ReplyUsername})
-		return result, err1
-    } else {
-	   result, err1:= Rpc2GetUserCmts (&GetComments{Username: in.AuthorUsername})
-	   return result, err1
-    }
+	result, err1:= GetPostsClient (&GetPost{Username: in.AuthorUsername, RequestType: in.ReturnPage})
+	return result, err1
 }
