@@ -1353,61 +1353,6 @@ func (x *SendLikeInput) GetReturnPage() string {
 	return ""
 }
 
-type UpdateBioInput struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Username string `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty"`
-	Bio      string `protobuf:"bytes,2,opt,name=Bio,proto3" json:"Bio,omitempty"`
-}
-
-func (x *UpdateBioInput) Reset() {
-	*x = UpdateBioInput{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_model_SecureUpdate_proto_msgTypes[19]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UpdateBioInput) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateBioInput) ProtoMessage() {}
-
-func (x *UpdateBioInput) ProtoReflect() protoreflect.Message {
-	mi := &file_model_SecureUpdate_proto_msgTypes[19]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpdateBioInput.ProtoReflect.Descriptor instead.
-func (*UpdateBioInput) Descriptor() ([]byte, []int) {
-	return file_model_SecureUpdate_proto_rawDescGZIP(), []int{19}
-}
-
-func (x *UpdateBioInput) GetUsername() string {
-	if x != nil {
-		return x.Username
-	}
-	return ""
-}
-
-func (x *UpdateBioInput) GetBio() string {
-	if x != nil {
-		return x.Bio
-	}
-	return ""
-}
-
 var File_model_SecureUpdate_proto protoreflect.FileDescriptor
 
 var file_model_SecureUpdate_proto_rawDesc = []byte{
@@ -1557,11 +1502,7 @@ var file_model_SecureUpdate_proto_rawDesc = []byte{
 	0x42, 0x79, 0x50, 0x69, 0x63, 0x12, 0x16, 0x0a, 0x06, 0x50, 0x6f, 0x73, 0x74, 0x49, 0x44, 0x18,
 	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x50, 0x6f, 0x73, 0x74, 0x49, 0x44, 0x12, 0x1e, 0x0a,
 	0x0a, 0x52, 0x65, 0x74, 0x75, 0x72, 0x6e, 0x50, 0x61, 0x67, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0a, 0x52, 0x65, 0x74, 0x75, 0x72, 0x6e, 0x50, 0x61, 0x67, 0x65, 0x22, 0x3e, 0x0a,
-	0x0e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x42, 0x69, 0x6f, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x12,
-	0x1a, 0x0a, 0x08, 0x55, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x08, 0x55, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x42,
-	0x69, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x42, 0x69, 0x6f, 0x32, 0x6e, 0x0a,
+	0x09, 0x52, 0x0a, 0x52, 0x65, 0x74, 0x75, 0x72, 0x6e, 0x50, 0x61, 0x67, 0x65, 0x32, 0x6e, 0x0a,
 	0x0a, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x47, 0x72, 0x70, 0x63, 0x12, 0x2f, 0x0a, 0x0a, 0x52,
 	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x4f, 0x54, 0x50, 0x12, 0x10, 0x2e, 0x52, 0x65, 0x71, 0x75,
 	0x65, 0x73, 0x74, 0x4f, 0x74, 0x70, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x1a, 0x0d, 0x2e, 0x43, 0x6f,
@@ -1584,7 +1525,7 @@ func file_model_SecureUpdate_proto_rawDescGZIP() []byte {
 	return file_model_SecureUpdate_proto_rawDescData
 }
 
-var file_model_SecureUpdate_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_model_SecureUpdate_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_model_SecureUpdate_proto_goTypes = []interface{}{
 	(*SecurityCheckInput)(nil), // 0: SecurityCheckInput
 	(*RequestOtpInput)(nil),    // 1: RequestOtpInput
@@ -1605,7 +1546,6 @@ var file_model_SecureUpdate_proto_goTypes = []interface{}{
 	(*ReplyCommentInput)(nil),  // 16: ReplyCommentInput
 	(*SendCmtInput)(nil),       // 17: SendCmtInput
 	(*SendLikeInput)(nil),      // 18: SendLikeInput
-	(*UpdateBioInput)(nil),     // 19: UpdateBioInput
 }
 var file_model_SecureUpdate_proto_depIdxs = []int32{
 	10, // 0: MongoFields.Replys:type_name -> ReplyData
@@ -1858,18 +1798,6 @@ func file_model_SecureUpdate_proto_init() {
 				return nil
 			}
 		}
-		file_model_SecureUpdate_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateBioInput); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1877,7 +1805,7 @@ func file_model_SecureUpdate_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_model_SecureUpdate_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   20,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

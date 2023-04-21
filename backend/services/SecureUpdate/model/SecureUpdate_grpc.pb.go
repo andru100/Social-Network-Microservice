@@ -23,7 +23,6 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SocialGrpcClient interface {
 	// rpc Chkauth(JwtdataInput) returns (Authd) {}
-	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
 	// rpc SignUp(SecurityCheckInput) returns (Jwtdata) {}
@@ -31,7 +30,6 @@ type SocialGrpcClient interface {
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
 	// rpc PostFile(Upload) returns (MongoFields) {}
-	// rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
 	RequestOTP(ctx context.Context, in *RequestOtpInput, opts ...grpc.CallOption) (*Confirmation, error)
 	SecureUpdate(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
 }
@@ -67,7 +65,6 @@ func (c *socialGrpcClient) SecureUpdate(ctx context.Context, in *SecurityCheckIn
 // for forward compatibility
 type SocialGrpcServer interface {
 	// rpc Chkauth(JwtdataInput) returns (Authd) {}
-	// rpc GetAllComments(GetComments) returns (MongoFields) {}
 	// rpc GetUserComments(GetComments) returns (MongoFields) {}
 	// rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
 	// rpc SignUp(SecurityCheckInput) returns (Jwtdata) {}
@@ -75,7 +72,6 @@ type SocialGrpcServer interface {
 	// rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
 	// rpc NewComment(SendCmtInput)returns (MongoFields) {}
 	// rpc PostFile(Upload) returns (MongoFields) {}
-	// rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
 	RequestOTP(context.Context, *RequestOtpInput) (*Confirmation, error)
 	SecureUpdate(context.Context, *SecurityCheckInput) (*Jwtdata, error)
 	mustEmbedUnimplementedSocialGrpcServer()

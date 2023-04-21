@@ -125,27 +125,6 @@ func (r *mutationResolver) NewComment(ctx context.Context, input model.SendCmtIn
 	return result, err
 }
 
-// UpdateBio is the resolver for the UpdateBio field.
-func (r *mutationResolver) UpdateBio(ctx context.Context, input model.UpdateBioInput) (*model.MongoFields, error) {
-	var conn *grpc.ClientConn
-
-	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4006", grpc.WithInsecure())
-
-	if err != nil {
-		log.Fatalf("did not connect: %s", err)
-	}
-	defer conn.Close()
-
-	c := model.NewSocialGrpcClient(conn)
-
-	result, err := c.UpdateBio(context.Background(), &input)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return result, err
-}
 
 // RequestOtp is the resolver for the RequestOTP field.
 func (r *mutationResolver) RequestOtp(ctx context.Context, input model.RequestOtpInput) (*model.Confirmation, error) {
@@ -239,30 +218,10 @@ func (r *queryResolver) Chkauth(ctx context.Context, input model.JwtdataInput) (
 	return result, err
 }
 
-// GetAllComments is the resolver for the GetAllComments field.
-func (r *queryResolver) GetAllComments(ctx context.Context, input string) (*model.MongoFields, error) {
-	var conn *grpc.ClientConn
 
-	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4008", grpc.WithInsecure())
-
-	if err != nil {
-		log.Fatalf("did not connect: %s", err)
-	}
-	defer conn.Close()
-
-	c := model.NewSocialGrpcClient(conn)
-
-	result, err := c.GetAllComments(context.Background(), &model.GetComments{Username: input})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return result, err
-}
 
 // GetUserComments is the resolver for the GetUserComments field.
-func (r *queryResolver) GetUserComments(ctx context.Context, input string) (*model.MongoFields, error) {
+func (r *queryResolver) GetPosts(ctx context.Context, input GetPostsInput) (*model.MongoFields, error) {
 	var conn *grpc.ClientConn
 
 	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4009", grpc.WithInsecure())
@@ -274,7 +233,7 @@ func (r *queryResolver) GetUserComments(ctx context.Context, input string) (*mod
 
 	c := model.NewSocialGrpcClient(conn)
 
-	result, err := c.GetUserComments(context.Background(), &model.GetComments{Username: input})
+	result, err := c.GetUserComments(context.Background(), &input)
 
 	if err != nil {
 		return nil, err

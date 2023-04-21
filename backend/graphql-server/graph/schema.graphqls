@@ -11,8 +11,7 @@ scalar Int32
 
 type Query {
   Chkauth(input: JwtdataInput!) : Authd
-  GetAllComments(input: String!) : MongoFields
-  GetUserComments(input: String!) : MongoFields
+  GetPosts(input: GetPostsInput!) : MongoFields
 }
 
 type Mutation {
@@ -22,7 +21,6 @@ type Mutation {
   ReplyComment(input: ReplyCommentInput!) : MongoFields
   NewComment(input: SendCmtInput!) : MongoFields
   #PostFile(file: Upload!): MongoFields
-  UpdateBio(input: UpdateBioInput!) : MongoFields
   RequestOTP(input: RequestOtpInput!) : Confirmation
   SecureUpdate(input: SecurityCheckInput!) : Jwtdata
   Follow(input: FollowInput!) : MongoFields
@@ -70,7 +68,14 @@ type Authd  {
 # 	AuthdUser: String!
 # }
 
-type GetUserCmts  {
+type GetPost {
+	Username: String!
+	RequestType: String!
+	SearchTerm: String
+}
+
+
+type GetUserCmts  { 
 	Page:     String! 
 	Username: String! 
 }
@@ -177,11 +182,6 @@ input FollowInput  {
 	UserOfIntrest: String!
 	ReturnPage: String! 
 	RequestType: String!
-}
-
-input UpdateBioInput  {
-	Username: String! 
-	Bio:  String!
 }
 
 # input UploadInput {

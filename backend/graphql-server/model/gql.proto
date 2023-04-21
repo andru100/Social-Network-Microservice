@@ -4,15 +4,13 @@ option go_package = "model/";
 
 service SocialGrpc {
   rpc Chkauth(JwtdataInput) returns (Authd) {}
-  rpc GetAllComments(GetComments) returns (MongoFields) {}
-  rpc GetUserComments(GetComments) returns (MongoFields) {}
+  rpc GetPosts(GetPost) returns (MongoFields) {}
   rpc SignIn(SecurityCheckInput) returns (Jwtdata) {}
   rpc SignUp(SecurityCheckInput) returns (Jwtdata) {}
   rpc LikeComment(SendLikeInput) returns (MongoFields) {}
   rpc ReplyComment(ReplyCommentInput) returns (MongoFields) {}
   rpc NewComment(SendCmtInput)returns (MongoFields) {}
   //rpc PostFile(Upload) returns (MongoFields) {} 
-  rpc UpdateBio(UpdateBioInput) returns (MongoFields) {}
   rpc RequestOTP(RequestOtpInput) returns (Confirmation) {}
   rpc SecureUpdate(SecurityCheckInput) returns (Jwtdata) {}
   rpc Follow(FollowInput) returns (MongoFields) {}
@@ -47,9 +45,12 @@ message Confirmation {
 }
 
 
-message GetComments {
+message GetPost {
 	string Username = 1 ;
+	string RequestType = 2 ;
+	string SearchTerm = 3 ;
 }
+
 
 message Authd  {
 	string AuthdUser = 1 ;
@@ -163,8 +164,4 @@ message SendLikeInput  {
 	string RequestType = 6 ;
 }
 
-message UpdateBioInput  {
-	string Username = 1 ;
-	string Bio  = 2 ;     
-}
 

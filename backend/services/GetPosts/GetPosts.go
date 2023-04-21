@@ -37,19 +37,24 @@ func main() {
 	}
 }
 
-func (s *Server) GetUserComments(ctx context.Context, in *model.GetComments) (*model.MongoFields, error) {
+func (s *Server) GetPosts(ctx context.Context, in *model.GetPost) (*model.MongoFields, error) {
 	fmt.Println("GetUserComments called!")
 	
-	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
-	currentDoc := model.MongoFields{}
-	ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
-
-	err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&currentDoc)
-	if err != nil {
-		err5 := errors.New("unable to find users data")
-		fmt.Println(err5, err, in.Username)
-		return nil, err5
+	switch in.RequestType {
+		case "suggested":
+			return model.GetSuggestedPosts(ctx, in)
+		case "following":
+			return model.GetFollowingPosts(ctx, in)
+		case "replys":
+			return model.GetReplys(ctx, in)
+		case "likes":
+			return model.GetLikes(ctx, in)
+		case "search":
+			return model.GetSearchPosts(ctx, in)
+		case "user":
+			return model.GetUserPosts(ctx, in)
+		default:
+			return nil, errors.New("Invalid request type")
 	}
-	
-	return &currentDoc, err
+			
 }

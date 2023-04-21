@@ -42,6 +42,12 @@ type Server struct {
 func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb doc
 	fmt.Println("secure update called request type is", in.RequestType)
 
+	
+	if in.UpdateType == "bio" { // bio does not need security check
+		//return model.UpdateBio(ctx, in)
+		return nil, errors.New("bio update not implemented yet")
+	}
+
 	username := in.Username // can be updated while keeping orig for db look up
 
 	dbtype := "security"

@@ -23,15 +23,13 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SocialGrpcClient interface {
 	Chkauth(ctx context.Context, in *JwtdataInput, opts ...grpc.CallOption) (*Authd, error)
-	GetAllComments(ctx context.Context, in *GetComments, opts ...grpc.CallOption) (*MongoFields, error)
-	GetUserComments(ctx context.Context, in *GetComments, opts ...grpc.CallOption) (*MongoFields, error)
+	GetPosts(ctx context.Context, in *GetPost, opts ...grpc.CallOption) (*MongoFields, error)
 	SignIn(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
 	SignUp(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
 	LikeComment(ctx context.Context, in *SendLikeInput, opts ...grpc.CallOption) (*MongoFields, error)
 	ReplyComment(ctx context.Context, in *ReplyCommentInput, opts ...grpc.CallOption) (*MongoFields, error)
 	NewComment(ctx context.Context, in *SendCmtInput, opts ...grpc.CallOption) (*MongoFields, error)
 	//rpc PostFile(Upload) returns (MongoFields) {}
-	UpdateBio(ctx context.Context, in *UpdateBioInput, opts ...grpc.CallOption) (*MongoFields, error)
 	RequestOTP(ctx context.Context, in *RequestOtpInput, opts ...grpc.CallOption) (*Confirmation, error)
 	SecureUpdate(ctx context.Context, in *SecurityCheckInput, opts ...grpc.CallOption) (*Jwtdata, error)
 	Follow(ctx context.Context, in *FollowInput, opts ...grpc.CallOption) (*MongoFields, error)
@@ -54,18 +52,9 @@ func (c *socialGrpcClient) Chkauth(ctx context.Context, in *JwtdataInput, opts .
 	return out, nil
 }
 
-func (c *socialGrpcClient) GetAllComments(ctx context.Context, in *GetComments, opts ...grpc.CallOption) (*MongoFields, error) {
+func (c *socialGrpcClient) GetPosts(ctx context.Context, in *GetPost, opts ...grpc.CallOption) (*MongoFields, error) {
 	out := new(MongoFields)
-	err := c.cc.Invoke(ctx, "/SocialGrpc/GetAllComments", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *socialGrpcClient) GetUserComments(ctx context.Context, in *GetComments, opts ...grpc.CallOption) (*MongoFields, error) {
-	out := new(MongoFields)
-	err := c.cc.Invoke(ctx, "/SocialGrpc/GetUserComments", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/SocialGrpc/GetPosts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -117,15 +106,6 @@ func (c *socialGrpcClient) NewComment(ctx context.Context, in *SendCmtInput, opt
 	return out, nil
 }
 
-func (c *socialGrpcClient) UpdateBio(ctx context.Context, in *UpdateBioInput, opts ...grpc.CallOption) (*MongoFields, error) {
-	out := new(MongoFields)
-	err := c.cc.Invoke(ctx, "/SocialGrpc/UpdateBio", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *socialGrpcClient) RequestOTP(ctx context.Context, in *RequestOtpInput, opts ...grpc.CallOption) (*Confirmation, error) {
 	out := new(Confirmation)
 	err := c.cc.Invoke(ctx, "/SocialGrpc/RequestOTP", in, out, opts...)
@@ -158,15 +138,13 @@ func (c *socialGrpcClient) Follow(ctx context.Context, in *FollowInput, opts ...
 // for forward compatibility
 type SocialGrpcServer interface {
 	Chkauth(context.Context, *JwtdataInput) (*Authd, error)
-	GetAllComments(context.Context, *GetComments) (*MongoFields, error)
-	GetUserComments(context.Context, *GetComments) (*MongoFields, error)
+	GetPosts(context.Context, *GetPost) (*MongoFields, error)
 	SignIn(context.Context, *SecurityCheckInput) (*Jwtdata, error)
 	SignUp(context.Context, *SecurityCheckInput) (*Jwtdata, error)
 	LikeComment(context.Context, *SendLikeInput) (*MongoFields, error)
 	ReplyComment(context.Context, *ReplyCommentInput) (*MongoFields, error)
 	NewComment(context.Context, *SendCmtInput) (*MongoFields, error)
 	//rpc PostFile(Upload) returns (MongoFields) {}
-	UpdateBio(context.Context, *UpdateBioInput) (*MongoFields, error)
 	RequestOTP(context.Context, *RequestOtpInput) (*Confirmation, error)
 	SecureUpdate(context.Context, *SecurityCheckInput) (*Jwtdata, error)
 	Follow(context.Context, *FollowInput) (*MongoFields, error)
@@ -180,11 +158,8 @@ type UnimplementedSocialGrpcServer struct {
 func (UnimplementedSocialGrpcServer) Chkauth(context.Context, *JwtdataInput) (*Authd, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Chkauth not implemented")
 }
-func (UnimplementedSocialGrpcServer) GetAllComments(context.Context, *GetComments) (*MongoFields, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllComments not implemented")
-}
-func (UnimplementedSocialGrpcServer) GetUserComments(context.Context, *GetComments) (*MongoFields, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserComments not implemented")
+func (UnimplementedSocialGrpcServer) GetPosts(context.Context, *GetPost) (*MongoFields, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPosts not implemented")
 }
 func (UnimplementedSocialGrpcServer) SignIn(context.Context, *SecurityCheckInput) (*Jwtdata, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
@@ -200,9 +175,6 @@ func (UnimplementedSocialGrpcServer) ReplyComment(context.Context, *ReplyComment
 }
 func (UnimplementedSocialGrpcServer) NewComment(context.Context, *SendCmtInput) (*MongoFields, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NewComment not implemented")
-}
-func (UnimplementedSocialGrpcServer) UpdateBio(context.Context, *UpdateBioInput) (*MongoFields, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateBio not implemented")
 }
 func (UnimplementedSocialGrpcServer) RequestOTP(context.Context, *RequestOtpInput) (*Confirmation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RequestOTP not implemented")
@@ -244,38 +216,20 @@ func _SocialGrpc_Chkauth_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SocialGrpc_GetAllComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetComments)
+func _SocialGrpc_GetPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPost)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SocialGrpcServer).GetAllComments(ctx, in)
+		return srv.(SocialGrpcServer).GetPosts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/SocialGrpc/GetAllComments",
+		FullMethod: "/SocialGrpc/GetPosts",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SocialGrpcServer).GetAllComments(ctx, req.(*GetComments))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SocialGrpc_GetUserComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetComments)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SocialGrpcServer).GetUserComments(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/SocialGrpc/GetUserComments",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SocialGrpcServer).GetUserComments(ctx, req.(*GetComments))
+		return srv.(SocialGrpcServer).GetPosts(ctx, req.(*GetPost))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -370,24 +324,6 @@ func _SocialGrpc_NewComment_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SocialGrpc_UpdateBio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateBioInput)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SocialGrpcServer).UpdateBio(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/SocialGrpc/UpdateBio",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SocialGrpcServer).UpdateBio(ctx, req.(*UpdateBioInput))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _SocialGrpc_RequestOTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RequestOtpInput)
 	if err := dec(in); err != nil {
@@ -454,12 +390,8 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _SocialGrpc_Chkauth_Handler,
 		},
 		{
-			MethodName: "GetAllComments",
-			Handler:    _SocialGrpc_GetAllComments_Handler,
-		},
-		{
-			MethodName: "GetUserComments",
-			Handler:    _SocialGrpc_GetUserComments_Handler,
+			MethodName: "GetPosts",
+			Handler:    _SocialGrpc_GetPosts_Handler,
 		},
 		{
 			MethodName: "SignIn",
@@ -480,10 +412,6 @@ var SocialGrpc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NewComment",
 			Handler:    _SocialGrpc_NewComment_Handler,
-		},
-		{
-			MethodName: "UpdateBio",
-			Handler:    _SocialGrpc_UpdateBio_Handler,
 		},
 		{
 			MethodName: "RequestOTP",

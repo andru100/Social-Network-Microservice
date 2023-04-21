@@ -1,59 +1,32 @@
-package main
+package model
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"net"
 	"sort"
 	"time"
-	"google.golang.org/grpc"
 	//"github.com/andru100/Graphql-Social-Network/graph/model"
-	"github.com/andru100/Social-Network-Microservices/backend/services/GetAllComments/model"
-	"github.com/andru100/Social-Network-Microservices/backend/services/GetAllComments/utils"
+	"github.com/andru100/Social-Network-Microservices/backend/services/GetUserComments/utils"
 	//"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type Server struct {
-	model.UnimplementedSocialGrpcServer
-}
 
-func main() {
-
-	fmt.Println("GetAllComments running!")
-
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 4008))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-
-	s := Server{}
-
-	grpcServer := grpc.NewServer()
-
-	model.RegisterSocialGrpcServer(grpcServer, &s)
-
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %s", err)
-	}
-}
-
-func (s *Server) GetAllComments(ctx context.Context, in *model.GetComments) (*model.MongoFields, error) { // gets comments for all friends/users, for the home page feed
+func GetSuggestedPosts(ctx context.Context, in *GetPost) (*MongoFields, error) { // gets comments for all friends/users, for the home page feed
 
 	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection.
 
-	currentDoc := model.MongoFields{}
+	currentDoc := MongoFields{}
 
 	ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
 
-	var allPosts []*model.PostData
+	var allPosts []*PostData
 
 	findOptions := options.Find()
 	findOptions.SetLimit(2)
 
-	var results []*model.MongoFields
+	var results []*MongoFields
 
 	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
@@ -63,7 +36,7 @@ func (s *Server) GetAllComments(ctx context.Context, in *model.GetComments) (*mo
 	// Iterating through cursor decode documents one at a time
 	for cur.Next(context.TODO()) {
 
-		var elem model.MongoFields
+		var elem MongoFields
 		err := cur.Decode(&elem)
 		if err != nil {
 			log.Fatal(err)
@@ -90,7 +63,7 @@ func (s *Server) GetAllComments(ctx context.Context, in *model.GetComments) (*mo
 		return allPosts[i].TimeStamp > allPosts[j].TimeStamp
 	})
 
-	var json2send model.MongoFields
+	var json2send MongoFields
 	json2send.Posts = allPosts
 	err = collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&currentDoc)
 	json2send.Profpic = currentDoc.Profpic
