@@ -96,7 +96,7 @@ func (s *Server) LikeComment (ctx context.Context, in *model.SendLikeInput) (*mo
 
 	
 	// check originating page request came from and return updated comments to save an extra api call on react refresh component
-	result, err1:= model.GetPostsClient (&model.GetPost{Username: in.Username, RequestType: in.ReturnPage})
+	result, err1:= model.GetPostsClient(&model.GetPost{Username: in.Username, RequestType: in.ReturnPage})
 	return result, err1
     
 }

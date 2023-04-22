@@ -121,7 +121,7 @@ func (s *Server) Follow (ctx context.Context, in *model.FollowInput) (*model.Mon
 
 		
 	// check originating page request came from and return updated comments to save an extra api call on react refresh component
-	result, err1:= model.GetPostsClient (&model.GetPost{Username: in.Username, RequestType: in.ReturnPage})
+	result, err1:= model.GetPostsClient (&model.GetPost{Username: in.UserOfIntrest, RequestType: in.ReturnPage})
 	return result, err1
 }
 

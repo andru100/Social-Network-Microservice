@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *Server) GetUserComments(ctx context.Context, in *GetPost) (*MongoFields, error) {
+func (s *Server) GetPosts(ctx context.Context, in *GetPost) (*MongoFields, error) {
 
 	
 	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection.

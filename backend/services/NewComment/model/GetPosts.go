@@ -6,11 +6,11 @@ import (
 	"sort"
 	"time"
 	
-	"github.com/andru100/Social-Network-Microservices/backend/services/Follow/utils"
+	"github.com/andru100/Social-Network-Microservices/backend/services/NewComment/utils"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *Server) GetUserComments(ctx context.Context, in *GetPost) (*MongoFields, error) {
+func (s *Server) GetPosts(ctx context.Context, in *GetPost) (*MongoFields, error) {
 
 	
 	collection := utils.Client.Database("datingapp").Collection("userdata") // connect to db and collection.

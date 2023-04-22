@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"sort"
+	"fmt"
 	"time"
 	//"github.com/andru100/Graphql-Social-Network/graph/model"
 	"github.com/andru100/Social-Network-Microservices/backend/services/GetUserComments/utils"
@@ -42,13 +43,10 @@ func GetReplys(ctx context.Context, in *GetPost) (*MongoFields, error) { // gets
 		return allPosts[i].TimeStamp > allPosts[j].TimeStamp
 	})
 
-	var json2send MongoFields
-	json2send.Posts = allPosts
-	json2send.Profpic = userdata.Profpic
-	json2send.Bio = userdata.Bio
-	json2send.Photos = userdata.Photos
+	fmt.Println("sending users reply posts: ", allPosts)
+	userdata.Posts = allPosts
 
-	return &json2send, err
+	return &userdata, err
 	
 
 }

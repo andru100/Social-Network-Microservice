@@ -10,9 +10,9 @@ COPY . .
 RUN go mod download
 
 #build and name
-RUN go build -o /getusercomments-service
+RUN go build -o /getposts-service
 
 EXPOSE 4009
 
 #run executable when container is run
-CMD ["/getusercomments-service"]
+CMD ["/getposts-service"]

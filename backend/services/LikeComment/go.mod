@@ -3,11 +3,11 @@ module github.com/andru100/Social-Network-Microservices/backend/services/LikeCom
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go v1.44.217
+	github.com/aws/aws-sdk-go v1.44.247
 	github.com/gin-gonic/gin v1.9.0
-	go.mongodb.org/mongo-driver v1.11.2
-	google.golang.org/grpc v1.53.0
-	google.golang.org/protobuf v1.29.0
+	go.mongodb.org/mongo-driver v1.11.4
+	google.golang.org/grpc v1.54.0
+	google.golang.org/protobuf v1.30.0
 )
 
 require (
@@ -39,11 +39,10 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
-	golang.org/x/net v0.7.0 // indirect
+	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
-	golang.org/x/sys v0.5.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
+	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
 	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

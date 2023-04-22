@@ -34,15 +34,9 @@ services:
     ports:
       - 4007:4007
 
-  backend-getallcomments:
-    build: ./backend/services/GetAllComments
-    container_name: backend-getallcomments
-    ports:
-      - 4008:4008
-
-  backend-getusercomments:
-    build: ./backend/services/GetUserComments
-    container_name: backend-getusercomments
+  backend-getposts:
+    build: ./backend/services/GetPosts
+    container_name: backend-getposts
     ports:
       - 4009:4009
 
@@ -94,11 +88,6 @@ services:
     ports:
       - 4005:4005
 
-  backend-updatebio:
-    build: ./backend/services/UpdateBio
-    container_name: backend-updatebio
-    ports:
-      - 4006:4006
 
   # backend-postfile-service:
   #    build: ./backend/services/PostFile

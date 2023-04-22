@@ -42,6 +42,8 @@ func main() {
 
 func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput) (*model.MongoFields, error) {// adds replies to users comments mongo doc
 
+	fmt.Println("ReplyComment called!")
+	
 	uniqueID := uuid.New()
 	
 	collection := utils.Client.Database("datingapp").Collection("userdata")
@@ -103,16 +105,13 @@ func (s *Server) ReplyComment (ctx context.Context, in *model.ReplyCommentInput)
 	go UpdateUserReplys(in, uniqueID.String()) // update replys to users record
 
 
-
-	
 	// check originating page request came from and return updated comments to save an extra api call on react refresh component
-	if in.ReturnPage == "All" {
-		result, err1 := model.Rpc2GetAllCmts(&model.GetComments{Username: in.ReplyUsername})
-		return result, err1
-    } else {
-	   result, err1:= model.Rpc2GetUserCmts (&model.GetComments{Username: in.AuthorUsername})
-	   return result, err1
-    }
+	username := in.ReplyUsername
+	if in.ReturnPage == "user" {
+		username = in.AuthorUsername
+	} 
+	result, err1:= model.GetPostsClient (&model.GetPost{Username: username, RequestType: in.ReturnPage})
+	return result, err1
 }
 
 func UpdateUserReplys(in *model.ReplyCommentInput, uniqueId string) error {
@@ -152,7 +151,7 @@ func UpdateUserReplys(in *model.ReplyCommentInput, uniqueId string) error {
 	Key2updt := "Replys"
 	update := bson.D{
 		{Updatetype, bson.D{
-			{Key2updt, currentDoc.Posts},
+			{Key2updt, currentDoc.Replys},
 		}},
 	}
 

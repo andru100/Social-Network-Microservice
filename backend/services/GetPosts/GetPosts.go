@@ -6,11 +6,8 @@ import (
 	"net"
 	"errors"
 	"log"
-	"time"
 	"google.golang.org/grpc"
 	"github.com/andru100/Social-Network-Microservices/backend/services/GetUserComments/model"
-	"github.com/andru100/Social-Network-Microservices/backend/services/GetUserComments/utils"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type Server struct {
@@ -19,7 +16,7 @@ type Server struct {
 
 func main() {
 
-	fmt.Println("GetUserComments running!")
+	fmt.Println("GetPosts running!")
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 4009))
 	if err != nil {

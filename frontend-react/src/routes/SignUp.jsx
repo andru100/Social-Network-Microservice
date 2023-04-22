@@ -24,7 +24,7 @@ export default function RenderSignUp () {
 
   
   async function SignUp () { // sends username, password, email from input, backend then creates s3 bucket and stores details on mongodb
-
+	console.log("signup rendered mfa choicce is:", mfachoice)
     let signupdata = userdata
 
 	rendertype.includes("confirm") ? signupdata.RequestType = "stage2" : signupdata.RequestType = rendertype
@@ -218,21 +218,41 @@ export default function RenderSignUp () {
 
 	function AuthenticationSelector() {
 	  
-		const handleSMSChange = (event) => {
-		  setMfaChoice(event.target.id);
+		const SMSAuth = () => {
+			
+		  setMfaChoice("sms");
+		  console.log("mfa is now", mfachoice)
 		};
 	  
-		const handleEmailChange = (event) => {
-		  setMfaChoice(event.target.id);
+		const EmailAuth = () => {
+			
+		  setMfaChoice("email");
+		  console.log("mfa is now", mfachoice)
 		};
 
-		const handleIsPasswordChange = (event) => {
-			setMfaChoice(event.target.id);
+		const PasswordAuth = () => {
+			
+			setMfaChoice("password");
+			console.log("mfa is now", mfachoice)
 		}
 
-		const handleHighSecChange = (event) => {
-			setMfaChoice(event.target.id);
+		const HighSecAuth = () => {
+			
+			setMfaChoice("high");
+			console.log("mfa is now", mfachoice)
 		}
+
+		let smsbox
+		let emailbox
+		let passwordbox
+		let highsecbox
+
+		mfachoice === "sms" ? smsbox = {backgroundImage: 'linear-gradient(47deg, cyan, magenta)', textAlign: 'center'} : smsbox = {backgroundColor: 'rgba(255, 255, 255, 1)', textAlign: 'center'} ;
+		mfachoice === "email" ? emailbox = {backgroundImage: 'linear-gradient(47deg, cyan, magenta)', textAlign: 'center'} : emailbox = {backgroundColor: 'rgba(255, 255, 255, 1)', textAlign: 'center'} ;
+		mfachoice === "password" ? passwordbox = {backgroundImage: 'linear-gradient(47deg, cyan, magenta)', textAlign: 'center'} : passwordbox = {backgroundColor: 'rgba(255, 255, 255, 1)', textAlign: 'center'} ;
+		mfachoice === "high" ?  highsecbox = {backgroundImage: 'linear-gradient(47deg, cyan, magenta)', textAlign: 'center'} : highsecbox = {backgroundColor: 'rgba(255, 255, 255, 1)', textAlign: 'center'} ;
+
+
 	  
 		return (
 			<>
@@ -247,7 +267,7 @@ export default function RenderSignUp () {
 					</Row>
 					<Row>
 						<Col>
-							<div className="mfa-box" style={{textAlign: 'center'}} onClick={() => handleIsPasswordChange}>
+							<div className="mfa-box" style={passwordbox} onClick={() => { PasswordAuth()}}>
 								<span className="txt1">
 									{"Password only"}
 								</span>
@@ -259,7 +279,7 @@ export default function RenderSignUp () {
 							
 						</Col>
 						<Col>
-							<div className="mfa-box" style={{textAlign: 'center'}} onClick={() => handleIsPasswordChange}>
+							<div className="mfa-box" style={smsbox} onClick={() => SMSAuth()}>
 								<span className="txt1">
 									{"SMS MFA"}
 								</span>
@@ -273,7 +293,7 @@ export default function RenderSignUp () {
 					</Row>
 					<Row>
 						<Col>
-							<div className="mfa-box" style={{textAlign: 'center'}} onClick={() => handleIsPasswordChange}>
+							<div className="mfa-box" style={emailbox} onClick={() => EmailAuth()}>
 								<span className="txt1">
 									{"Email MFA"}
 								</span>
@@ -285,7 +305,7 @@ export default function RenderSignUp () {
 							
 						</Col>
 						<Col>
-							<div className="mfa-box" style={{textAlign: 'center'}} onClick={() => handleIsPasswordChange}>
+							<div className="mfa-box" style={highsecbox} onClick={() => HighSecAuth()}>
 								<span className="txt1">
 									{"High Security"}
 								</span>

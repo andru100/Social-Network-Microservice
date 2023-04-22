@@ -7,8 +7,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import ChkAuth from './chkAuth';
 import SendData from './SendData';
-import UpdateDetails from './UpdateDetails'
-import EditProfile from './EditProfile'
+import UpdateHybrid from "./UpdateHybrid";
 import SignIn from './SignIn'
 
 function Home (props) {
@@ -30,7 +29,7 @@ function Home (props) {
    var timeAtRender = dayjs(Date.now())
 
   useEffect( () => {
-      getCmt().then(cmtz => {
+      getCmt("user").then(cmtz => {
          if (cmtz) {
          setcmt(cmtz)
          console.log("Users data object retrieved is:", cmtz)
@@ -58,43 +57,43 @@ function Home (props) {
 //   },[]);
 
 
-   async function getCmt (request, user) { // sends username, password from input, then backend creates s3 bucket in username and stores details on mongo
+   async function getCmt (request, user, searchKey) { // sends username, password from input, then backend creates s3 bucket in username and stores details on mongo
   
-      let data = {Username: viewing}
+      let payload = { data: {
+         Username: viewing,
+         RequestType: request
+      }}
 
-      user && (data.Username = user)
+      user && (payload.data.Username = user)
+      searchKey && (payload.data.SearchTerm = searchKey)
 
-      let queryType ="GetUserComments"
 
-      if (request === "all") {
-         queryType = "GetAllComments"
-      } else if (request === "friends") {
-         queryType = "GetFriendsComments"
-      } 
-
-      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
-      let response = await SendData(gqlRequest, data)
+      let gqlRequest = "query GetPosts ($data: GetPost!){  GetPosts (input: $data){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      let response = await SendData(gqlRequest, payload)
       if ( "errors" in response ){ // if password is a match redirect to profile page
 			//{ProcessErrorAlerts("hi", "hi")}
 			console.log("Error retrieving user data", response.errors[0].message )
 			
 		} else {
-         return response.data[queryType] 
+         return response.data["GetPosts"] 
       }
    }
 
    async function getSessionUserData () { // sends username, password from input, then backend creates s3 bucket in username and stores details on mongo
   
-      let data = {Username: sessionUser}
+      let payload = {data: {
+         Username: sessionUser,
+         RequestType: "user"
+      }}
+      
 
-      let queryType ="GetUserComments"
 
-      let gqlRequest = "query " + queryType + " ($Username: String!){  " + queryType + " (input: $Username){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
-      let response = await SendData(gqlRequest, data)
+      let gqlRequest = "query GetPosts ($data: GetPost!){ GetPosts (input: $data){ Username Bio Profpic Photos Following Followers Replys{Username PostID ReplyID} Liked{Username PostID} Posts { ID Username MainCmt TimeStamp Comments {ID Username Comment Profpic } Likes {Username Profpic } } } }"
+      let response = await SendData(gqlRequest, payload)
       if ( "errors" in response ){ 
 			console.log("Error retrieving user data", response.errors[0].message )
 		} else {
-         return response.data[queryType] 
+         return response.data["GetPosts"] 
       }
    }
 
@@ -106,7 +105,7 @@ function Home (props) {
          SessionUser: sessionUser, //  not needed once can be retrieved from the session cookie
          MainCmt : document.getElementById("cmt").value ,
          TimeStamp : Date.now(),    
-         ReturnPage: page   ,
+         ReturnPage: "user"   ,
          RequestType: "create"
          }
       }
@@ -125,7 +124,7 @@ function Home (props) {
          ReplyComment:  document.getElementById(iD).value , 
          ReplyProfpic:  "" ,
          PostID:   iD ,
-         ReturnPage: page,
+         ReturnPage: scope,
          RequestType: "create"
          }
       }
@@ -144,7 +143,7 @@ function Home (props) {
          LikedBy:   sessionUser ,
          LikeByPic:   "",
          PostID:   iD , 
-         ReturnPage: page , 
+         ReturnPage: scope , 
          RequestType: "create"
          }
       }
@@ -157,7 +156,7 @@ function Home (props) {
       let NewCmtInput  = { data: {
          Username : cmtAuthr,
          SessionUser: sessionUser,  
-         ReturnPage: page   ,
+         ReturnPage: scope   ,
          RequestType: "delete",
          PostID: postID
          }
@@ -176,7 +175,7 @@ function Home (props) {
          ReplyUsername: sessionUser ,
          PostID:   postID ,
          ReplyID: replyID, 
-         ReturnPage: page ,
+         ReturnPage: scope ,
          RequestType: "delete",
          }
       }
@@ -193,7 +192,7 @@ function Home (props) {
          Username:   cmtAuthr ,
          LikedBy:   sessionUser ,
          PostID:   iD , 
-         ReturnPage: page ,  
+         ReturnPage: scope ,  
          RequestType: "delete"
          }
       }
@@ -208,7 +207,7 @@ function Home (props) {
       let SendFollowInput  = { data: {
          Username:  sessionUser ,
 	      UserOfIntrest: viewing ,
-	      ReturnPage: page ,
+	      ReturnPage: "user" ,
 	      RequestType: requestype
          }
       }
@@ -323,25 +322,45 @@ function Home (props) {
       
     }
 
-    function goToAllPosts (){
-      getCmt("all").then(cmtz => {
+    function goToSuggestedPosts (){
+      getCmt("suggested", sessionUser).then(cmtz => {
          if (cmtz) {
           setcmt(cmtz)
           console.log("Users data object retrieved is:", cmtz)
          }
       })
-      setScope("all")
+      setScope("suggested")
       // getPosts()
     }
 
     function goToFriends (){
-      getCmt("friends", sessionUser).then(cmtz => {
+      getCmt("following", sessionUser).then(cmtz => {
          if (cmtz) {
           setcmt(cmtz)
-          console.log("Users data object retrieved is:", cmtz)
+          console.log("get friends object retrieved is:", cmtz)
          }
       })
-      setScope("friends")
+      setScope("following")
+    }
+
+    function goToReplys (){
+      getCmt("replys", viewing).then(cmtz => {
+         if (cmtz) {
+          setcmt(cmtz)
+          console.log("get friends object retrieved is:", cmtz)
+         }
+      })
+      //setScope("user")
+    }
+
+    function goToLikes (){
+      getCmt("likes", viewing).then(cmtz => {
+         if (cmtz) {
+          setcmt(cmtz)
+          console.log("get friends object retrieved is:", cmtz)
+         }
+      })
+      //setScope("user")
     }
 
     function goToPhotos () {
@@ -432,7 +451,29 @@ function Home (props) {
                <Col md="3"></Col>
                               
             </Row>
-                  
+
+
+             <Row>
+               <Col md="3"></Col>
+               <Col md="6">
+                  <Row>
+                     <Col>
+                        {scope === "user" && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToUser(viewing)}}>Posts</button>}
+                     </Col>
+                     <Col>
+                        {scope === "user" && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToReplys(viewing)}}>Replys</button>}
+                     </Col>
+                     <Col>
+                        {scope === "user" && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToLikes(viewing)}}>Likes</button>}
+                     </Col>
+                     <Col>
+                        {scope === "user" && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToPhotos(viewing)}}>Media</button>}
+                     </Col>
+                  </Row>
+               </Col>
+               <Col md="3"></Col>
+                              
+            </Row>      
               
              
            <Row>
@@ -444,7 +485,7 @@ function Home (props) {
                </Row>
                <Row>
                      <Col style={{}}>
-                     {sessionUser && <button className="login100-form-btn" type="button"  onClick={(e)=> {e.preventDefault() ; goToAllPosts()}}>FOR YOU</button>}
+                     {sessionUser && <button className="login100-form-btn" type="button"  onClick={(e)=> {e.preventDefault() ; goToSuggestedPosts()}}>FOR YOU</button>}
                              
                      </Col>
                </Row>
@@ -609,7 +650,7 @@ function Home (props) {
                                                             {
                                                                sessionUser === replys.Username &&
 
-                                                               <i class="fa fa-trash-o" onClick={() => deleteResponse(sessionUser, userData.ID, replys.ID)} aria-hidden="true"></i>
+                                                               <i class="fa fa-trash-o" onClick={() => deleteResponse(userData.Username, userData.ID, replys.ID)} aria-hidden="true"></i>
                                                             }
                                                             </Col>
                                                          </Row>
@@ -664,9 +705,8 @@ function Home (props) {
 
    return (
       <>
-      {page === "updatedetails" && <UpdateDetails username={sessionUser} /* setSessionUser={setSessionUser()} */ />}
+      {page === "updatedetails" && <UpdateHybrid username={sessionUser} /* setSessionUser={setSessionUser()} */ />}
 	   {page === "home" &&  <Home sessionuser={sessionUser} page={page} viewing={sessionUser} />}
-      {page === "editprofile" && <EditProfile sessionuser={sessionUser} />}
       {page === "signin" && <SignIn/>}
       </>
 

@@ -2,18 +2,23 @@ import React from 'react';
 import SendData from './SendData';
 import { useAlert } from "react-alert";
 import RequestOTP from './RequestOTP';
-import UpdateDetails from './UpdateDetails';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Home from './Home';
 
 export default function UpdateHybrid (props) {
 	
 	const [page, setPage] = React.useState("default");
-	const [rendertype, setRenderType] = React.useState(props.rendertype); // an remove this and set to auto take session and get a proceed and address clue and use as a point on seurity.
+	const [rendertype, setRenderType] = React.useState("updateselector"); // an remove this and set to auto take session and get a proceed and address clue and use as a point on seurity.
 	const [authtype, setAuthType] = React.useState("init");
 	const [address, setAddress] = React.useState("init");
+	const [hoverUsername, setHoverUsername] = React.useState(false);
+	const [hoverEmail, setHoverEmail] = React.useState(false);
+	const [hoverMobile, setHoverMobile] = React.useState(false);
+	const [hoverPassword, setHoverPassword] = React.useState(false);
 	const [resetdata, setResetData] = React.useState({
 		Username: props.username,
-		UpdateType: props.updatetype,
+		UpdateType: "unassigned",
 		RequestType: "stage2",
 	});
 	const alert = useAlert()
@@ -135,6 +140,7 @@ export default function UpdateHybrid (props) {
 	function ConfirmSms () {
 		return (
 			<>
+				<Header/>
 				<div className="p-t-31 p-b-9">
 					<span className="txt1">
 						{"Enter code sent to *******" + address[0]}
@@ -166,6 +172,7 @@ export default function UpdateHybrid (props) {
 	function ConfirmEmail () {
 		return (
 			<>
+				<Header/>
 				<div className="p-t-31 p-b-9">
 					<span className="txt1">
 						{"Enter code sent to email " + address[1] + "*******"}
@@ -191,6 +198,7 @@ export default function UpdateHybrid (props) {
 	function ConfirmPassword () {
 		return (
 			<>
+				<Header/>
 				<div className="p-t-31 p-b-9">
 					<span className="txt1">
 						Enter your password
@@ -212,6 +220,7 @@ export default function UpdateHybrid (props) {
 	function Update () {
 		return (
 			<>
+				<Header/>
 				<div className="p-t-31 p-b-9">
 				<span className="txt1">
 					{"Enter your new " + resetdata.UpdateType}
@@ -235,6 +244,129 @@ export default function UpdateHybrid (props) {
 		)
 	}
 
+	function UpdateSelector() {
+	  
+		const mobile = () => {
+			setResetData({...resetdata, UpdateType: "sms"})
+		  	setRenderType("password");
+		};
+	  
+		const email = () => {
+			setResetData({...resetdata, UpdateType: "email"})
+		  	setRenderType("password");
+		};
+
+		const password = () => {
+			setResetData({...resetdata, UpdateType: "password"})
+		  	setRenderType("password");
+		}
+
+		const username = () => {
+			setResetData({...resetdata, UpdateType: "username"})
+		  	setRenderType("password");
+		}
+		
+		const hoverusername = () => {
+			setHoverUsername(true);
+		  };
+		
+		  const unHoverusername = () => {
+			setHoverUsername(false);
+		  };
+
+		  const hoverpassword = () => {
+			setHoverPassword(true);
+		  };
+
+		  const unHoverpassword = () => {
+			setHoverPassword(false);
+		  };
+
+		  const hoveremail = () => {
+			setHoverEmail(true);
+		  };
+
+		  const unHoveremail = () => {
+			setHoverEmail(false);
+		  };
+
+		  const hovermobile = () => {
+			setHoverMobile(true);
+		  };
+
+		  const unHovermobile = () => {
+			setHoverMobile(false);
+		  };
+
+		return (
+			<>
+					<Row>
+						<Col>
+							<div style={{textAlign: 'center', marginLeft: "47px", marginBottom: "30px"}} >
+								<span className="txt1" style={{fontSize: "20px"}} >
+									{"select the item you want to update"}
+								</span>
+							</div>
+						</Col>
+					</Row>
+					<Row>
+						<Col>
+							<div className={`mfa-box ${hoverUsername && "highlighted"}`} style={{textAlign: 'center'}}  onMouseEnter={hoverusername} onMouseLeave={unHoverusername} onClick={() => username()}>
+								<span className="txt1">
+									{"Username"}
+								</span>
+								<div> 
+									<i class="fa fa-user fa-5x" style={{marginTop: "5px", marginRight: "20px"}} aria-hidden="true"></i> 
+								</div>
+								
+							</div>
+							
+						</Col>
+						<Col>
+							<div className={`mfa-box ${hoverPassword ? "highlighted" : ""}`}  style={{textAlign: 'center'}}  onMouseEnter={hoverpassword} onMouseLeave={unHoverpassword}  onClick={() => { password()}}>
+								<span className="txt1">
+									{"Password"}
+								</span>
+								<div>
+									<i class="fa fa-unlock-alt fa-5x" style={{marginTop: "5px"}} aria-hidden="true"></i>
+								</div>
+								
+							</div>
+							
+						</Col>
+					</Row>
+					<Row>
+						<Col>
+							<div className={`mfa-box ${hoverMobile ? "highlighted" : ""}`} style={{textAlign: 'center'}}  onMouseEnter={hovermobile} onMouseLeave={unHovermobile} onClick={() => mobile()}>
+								<span className="txt1">
+									{"Mobile"}
+								</span>
+								<div>
+									<i class="fa fa-mobile fa-5x" style={{marginTop: "5px"}} aria-hidden="true"></i>
+								</div>
+								
+							</div>
+							
+						</Col>
+						<Col>
+							<div className={`mfa-box ${hoverEmail ? "highlighted" : null}`}  style={{textAlign: 'center'}} onMouseEnter={hoveremail} onMouseLeave={unHoveremail} onClick={() => email()}>
+								<span className="txt1">
+									{"Email"}
+								</span>
+								<div>
+									<i class="fa fa-envelope fa-5x" style={{marginTop: "5px"}} aria-hidden="true"></i>
+								</div>
+								
+							</div>
+							
+						</Col>
+						
+					</Row>
+				
+			</>
+		);
+	}
+
 	function Header () {
 		return (
 			<>
@@ -254,6 +386,7 @@ export default function UpdateHybrid (props) {
 	function HighSecurity () {
 		return (
 			<>
+				<Header/>
 				<ConfirmSms/>
 				<ConfirmEmail/>
 			</>
@@ -268,7 +401,7 @@ export default function UpdateHybrid (props) {
       				<div className="container-login100" >
        					<div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
           					<form className="login100-form validate-form flex-sb flex-w">
-								<Header/>
+								{rendertype === "updateselector" && <UpdateSelector/>}
 								{rendertype === "password" && <ConfirmPassword/>}
 								{rendertype === "email" && <ConfirmEmail/>}
 								{rendertype === "sms" && <ConfirmSms/>}
@@ -286,7 +419,6 @@ export default function UpdateHybrid (props) {
 		<>
 			
 			{page === "default" && <ConfirmUpdate /> }
-			{page === "updatedetails" && <UpdateDetails username={resetdata.Username}/>}
 			{page === "home" && <Home sessionuser={resetdata.Username} viewing ={resetdata.Username} page={"home"}/>}
 			
 		</>
