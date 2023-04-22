@@ -401,7 +401,24 @@ function Home (props) {
         <div style={containerStyle}>
          <Container>
            <Row>
-               <Col md="3"></Col>
+               <Col md="3">
+                  <Row>
+                     <Col style={{}}>
+                        {sessionUser && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToHome()}}>PROFILE</button>}
+                     </Col>
+                  </Row>
+                  <Row>
+                        <Col style={{}}>
+                        {sessionUser && <button className="login100-form-btn" type="button"  onClick={(e)=> {e.preventDefault() ; goToSuggestedPosts()}}>FOR YOU</button>}
+                              
+                        </Col>
+                  </Row>
+                  <Row>
+                        <Col>
+                        {sessionUser && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToFriends()}}>FRIENDS</button>}  
+                        </Col>        
+                  </Row>
+               </Col>
                <Col md="6">
                   <div className="comments" style={{background: "black"}}>
                      <Row>
@@ -447,15 +464,6 @@ function Home (props) {
                         </Col>
                      </Row>
                   </div>
-               </Col>
-               <Col md="3"></Col>
-                              
-            </Row>
-
-
-             <Row>
-               <Col md="3"></Col>
-               <Col md="6">
                   <Row>
                      <Col>
                         {scope === "user" && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToUser(viewing)}}>Posts</button>}
@@ -470,234 +478,212 @@ function Home (props) {
                         {scope === "user" && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToPhotos(viewing)}}>Media</button>}
                      </Col>
                   </Row>
+                  <Row>
+                     <Col>
+                           {sessionUser && scope === "media" &&
+                           <>
+                              <div className="connected-container">
+                                 <div className="gif-grid">
+                                    {cmt.Photos.map((pic) => (
+                                       <div className="gif-item" key={pic}>
+                                          <img src={pic} alt={pic} />
+                                       </div>
+                                    ))}
+                                 </div>
+                              </div>
+                              <div>
+                                 <a href="!" className="btn btn-sm btn-info mb-2" name="mediaUplaod" style={{marginTop: "10px"}} onClick={(e) => {e.preventDefault(); triggerClick(e)}}>Add Photos</a>
+                              </div>  
+                              <div>
+                                    <input id="mediaUplaod" type="file" className="blocked" onChange={(e)=> addPhotos(e)}  name= "uploader1"/>
+                              </div>
+                           </>
+                           }
+
+                           
+                           {/*renders the post comment box if user is logged in and viewing theyre own profile or all posts page*/}
+                           {(sessionUser === viewing && page !== "media") || (sessionUser && page === "all") ? 
+                              <div className= "comments">
+                                 <Row>
+                                    
+                                       <form action="">
+                                          <div className="input-group">
+                                             <textarea style={{height: "36px"}} type="text" className="form-control rounded-corner" id="cmt" placeholder="Write a comment..."/>
+                                             <span className="input-group-btn p-l-10">
+                                                <button className="btn btn-primary f-s-12 rounded-corner" type="button" onClick={() => sendCmt(sessionUser)}>Comment</button>
+                                             </span>
+                                          </div>
+                                       </form>
+                                    
+                                 </Row>
+                              </div> : null}
+                                 
+
+
+                           {/*render users profile page or news feed showing all comments*/}
+                           { page !== "media" &&
+                              cmt.Posts.map((userData)=> {
+                                 return (
+                                    <>
+                                       <div className="comments" style={{background: "white"}}>
+                                          <Row>
+                                          <div>
+                                             <Row>
+                                                <Col md="auto">
+                                                   <span className="userimage"><img onClick={()=>   goToUser(userData.Username)} src={cmt.Profpic} alt=""/></span>
+                                                </Col>
+                                                <Col>
+                                                   <Row>
+                                                      <Col md="auto">
+                                                         <div className="username" onClick={()=> goToUser(userData.Username)}>{userData.Username}</div>
+                                                      </Col>
+                                                      <Col>
+                                                         <div className="time">{dayjs(userData.TimeStamp).from(timeAtRender) }</div>
+                                                      </Col>
+                                                      <Col>
+                                                         {
+                                                            sessionUser === userData.Username &&
+
+                                                            <i class="fa fa-trash-o" onClick={() => deleteCmt(sessionUser, userData.ID)} aria-hidden="true"></i>
+                                                         }
+                                                      </Col>
+
+                                                         
+                                                         
+                                                   </Row>
+                                                   <Row>
+                                                      <Col>
+                                                         <div className="comment-content">
+                                                            <p>
+                                                               {userData.MainCmt}
+                                                            </p>
+                                                         </div>
+                                                      </Col>
+                                                   </Row>
+                                                </Col>
+                                             </Row>
+                                             <Row>
+                                                <Col>
+                                                   <div className="reply-icons" >
+                                                      { 
+                                                         userData.Likes.some(e => e.Username === sessionUser) ?
+                                                            <span className="fa-stack fa-fw stats-icon">
+                                                               <i className="fa fa-circle fa-stack-2x text-danger"></i>
+                                                               <i className="fa fa-heart fa-stack-1x fa-inverse t-plus-1" onClick={()=>deleteLike(userData.Username, userData.ID)}></i>
+                                                            </span>
+
+                                                         :
+
+                                                         <span className="fa-stack fa-fw stats-icon">
+                                                            <i className="fa fa-heart fa-stack-1x fa-inverse t-plus-1" style={{backgroundColor: "red"}} onClick={()=>sendLike(userData.Username, userData.ID)}></i>
+                                                         </span>
+
+                                                      }
+                                                      <span className="stats-text" onClick={() => {viewReply[userData.PostNum] && toggleReply(userData.PostNum) ; viewCmtBox[userData.PostNum] && toggleCmt(userData.PostNum); toggleLikes(userData.PostNum)}}>{userData.Likes?.length} Likes</span>
+                                                   </div>
+                                                </Col>
+                                                <Col>
+                                                      <i class="fa fa-comment-o" aria-hidden="true"></i>
+                                                      <span className="stats-text" onClick={() => {viewLikes[userData.PostNum] && toggleLikes(userData.PostNum) ; viewCmtBox[userData.PostNum] && toggleCmt(userData.PostNum); toggleReply(userData.PostNum)}}>{userData.Comments?.length} Comments</span>
+                                                </Col>
+                                                <Col>
+                                                   <i class="fa fa-reply" aria-hidden="true"></i>
+                                                   <span className="stats-text" onClick={() => { viewLikes[userData.PostNum] && toggleLikes(userData.PostNum) ; viewReply[userData.PostNum] && toggleReply(userData.PostNum) ;  toggleCmt(userData.PostNum)}}>Reply</span>
+                                                
+                                                </Col>
+                                             </Row>
+                                             <Row>
+                                                      {/* show likes */}
+                                                      {viewLikes[userData.PostNum] &&
+                                                      userData.Likes.map((Likes)=> (
+                                                            <Row >
+                                                               <div className="replys">
+                                                                  <Col md="auto">
+                                                                     <span className="userimage"><img onClick={()=> setViewing(userData.Username)} src={Likes.Profpic} alt=""/></span>  
+                                                                  </Col>
+                                                                  <Col>
+                                                                     <Row>
+                                                                        <div ClassName = "username" onClick={()=> setViewing(userData.Username)} >{Likes.Username}</div> 
+                                                                     </Row>
+                                                                  </Col>
+                                                               </div>
+                                                               
+                                                            </Row> 
+                                                      ))
+                                                      } 
+
+                                                      {/* show comments */}
+                                                      {viewReply[userData.PostNum] &&
+                                                      userData.Comments.map((replys)=> (
+                                                         <Row >
+                                                            <div className="replys">
+                                                               <Col  md="auto">
+                                                                  <span className="userimage"><img onClick={()=> setViewing(userData.Username)} src={replys.Profpic} alt=""/></span>  
+                                                               </Col>
+                                                               <Col>
+                                                                  <Row>
+                                                                     <Col>
+                                                                        <div ClassName = "username" onClick={()=> setViewing(replys.Username)} >{replys.Username}</div>
+                                                                     </Col> 
+                                                                     <Col>
+                                                                     {
+                                                                        sessionUser === replys.Username &&
+
+                                                                        <i class="fa fa-trash-o" onClick={() => deleteResponse(userData.Username, userData.ID, replys.ID)} aria-hidden="true"></i>
+                                                                     }
+                                                                     </Col>
+                                                                  </Row>
+                                                                  <Row>
+                                                                     <p>{replys.Comment}</p>
+                                                                  </Row>
+                                                               </Col>
+                                                            </div>
+                                                         </Row>
+                                                      ))
+                                                      } 
+
+                                                      {/* show reply box */}
+                                                      {viewCmtBox[userData.PostNum] && 
+                                                         <>
+                                                            <Row>
+                                                                  <div className="input">
+                                                                     <form action="">
+                                                                        <div className="input-group">
+                                                                           <textarea type="text" className="form-control rounded-corner" id={userData.ID} style={{height:"90px", width:"180px"}} placeholder="Reply to the post..."/>
+                                                                        </div>
+                                                                     </form>
+                                                                  </div>
+                                                            </Row>
+                                                            <Row>
+                                                               <span className="input-group-btn p-l-10">
+                                                                  <button className="btn btn-primary f-s-12 rounded-corner" type="button"  onClick={()=>sendReply(userData.Username, userData.ID)}>Comment</button>
+                                                               </span>
+                                                            </Row>
+                                                         </> 
+                                                      }
+                                                   
+                                             </Row>
+                                          </div>
+                                             
+                                          </Row>
+                                       </div>
+                                    </>
+                           )})}
+                                       
+
+                           
+                     </Col>
+                  </Row>
                </Col>
                <Col md="3"></Col>
                               
-            </Row>      
+            </Row>
+
+
+                
               
              
-           <Row>
-             <Col xs lg="3"> 
-               <Row>
-                   <Col style={{}}>
-                     {sessionUser && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToHome()}}>PROFILE</button>}
-                   </Col>
-               </Row>
-               <Row>
-                     <Col style={{}}>
-                     {sessionUser && <button className="login100-form-btn" type="button"  onClick={(e)=> {e.preventDefault() ; goToSuggestedPosts()}}>FOR YOU</button>}
-                             
-                     </Col>
-               </Row>
-               <Row>
-                     <Col style={{}}>
-                     {sessionUser && <button className="login100-form-btn" type="button"  onClick={(e)=> {e.preventDefault() ; goToPhotos()}}>MEDIA</button>}      
-                     </Col>
-               </Row>
-               <Row>
-                     <Col>
-                     {sessionUser && <button className="login100-form-btn" type="button" onClick={(e)=> {e.preventDefault() ; goToFriends()}}>FRIENDS</button>}  
-                     </Col>        
-               </Row>
-             </Col>
-             <Col>
-                  {sessionUser && scope === "media" &&
-                  <>
-                     <div className="connected-container">
-                        <div className="gif-grid">
-                           {cmt.Photos.map((pic) => (
-                              <div className="gif-item" key={pic}>
-                                 <img src={pic} alt={pic} />
-                              </div>
-                           ))}
-                        </div>
-                     </div>
-                     <div>
-                        <a href="!" className="btn btn-sm btn-info mb-2" name="mediaUplaod" style={{marginTop: "10px"}} onClick={(e) => {e.preventDefault(); triggerClick(e)}}>Add Photos</a>
-                     </div>  
-                     <div>
-                           <input id="mediaUplaod" type="file" className="blocked" onChange={(e)=> addPhotos(e)}  name= "uploader1"/>
-                     </div>
-                  </>
-                  }
-
-                  
-                   {/*renders the post comment box if user is logged in and viewing theyre own profile or all posts page*/}
-                   {(sessionUser === viewing && page !== "media") || (sessionUser && page === "all") ? 
-                       <div className= "comments">
-                        <Row>
-                           
-                              <form action="">
-                                 <div className="input-group">
-                                    <textarea style={{height: "36px"}} type="text" className="form-control rounded-corner" id="cmt" placeholder="Write a comment..."/>
-                                    <span className="input-group-btn p-l-10">
-                                       <button className="btn btn-primary f-s-12 rounded-corner" type="button" onClick={() => sendCmt(sessionUser)}>Comment</button>
-                                    </span>
-                                 </div>
-                              </form>
-                           
-                        </Row>
-                       </div> : null}
-                        
-
-
-                  {/*render users profile page or news feed showing all comments*/}
-                  { page !== "media" &&
-                     cmt.Posts.map((userData)=> {
-                        return (
-                           <>
-                              <div className="comments" style={{background: "white"}}>
-                                 <Row>
-                                   <div>
-                                    <Row>
-                                       <Col md="auto">
-                                          <span className="userimage"><img onClick={()=>   goToUser(userData.Username)} src={cmt.Profpic} alt=""/></span>
-                                       </Col>
-                                       <Col>
-                                          <Row>
-                                             <Col md="auto">
-                                                <div className="username" onClick={()=> goToUser(userData.Username)}>{userData.Username}</div>
-                                             </Col>
-                                             <Col>
-                                                <div className="time">{dayjs(userData.TimeStamp).from(timeAtRender) }</div>
-                                             </Col>
-                                             <Col>
-                                                {
-                                                   sessionUser === userData.Username &&
-
-                                                   <i class="fa fa-trash-o" onClick={() => deleteCmt(sessionUser, userData.ID)} aria-hidden="true"></i>
-                                                }
-                                             </Col>
-
-                                                
-                                                
-                                          </Row>
-                                          <Row>
-                                             <Col>
-                                                <div className="comment-content">
-                                                   <p>
-                                                      {userData.MainCmt}
-                                                   </p>
-                                                </div>
-                                             </Col>
-                                          </Row>
-                                       </Col>
-                                    </Row>
-                                    <Row>
-                                       <Col>
-                                          <div className="reply-icons" >
-                                             { 
-                                                userData.Likes.some(e => e.Username === sessionUser) ?
-                                                   <span className="fa-stack fa-fw stats-icon">
-                                                      <i className="fa fa-circle fa-stack-2x text-danger"></i>
-                                                      <i className="fa fa-heart fa-stack-1x fa-inverse t-plus-1" onClick={()=>deleteLike(userData.Username, userData.ID)}></i>
-                                                   </span>
-
-                                                :
-
-                                                <span className="fa-stack fa-fw stats-icon">
-                                                   <i className="fa fa-heart fa-stack-1x fa-inverse t-plus-1" style={{backgroundColor: "red"}} onClick={()=>sendLike(userData.Username, userData.ID)}></i>
-                                                </span>
-
-                                             }
-                                             <span className="stats-text" onClick={() => {viewReply[userData.PostNum] && toggleReply(userData.PostNum) ; viewCmtBox[userData.PostNum] && toggleCmt(userData.PostNum); toggleLikes(userData.PostNum)}}>{userData.Likes?.length} Likes</span>
-                                          </div>
-                                       </Col>
-                                       <Col>
-                                             <i class="fa fa-comment-o" aria-hidden="true"></i>
-                                             <span className="stats-text" onClick={() => {viewLikes[userData.PostNum] && toggleLikes(userData.PostNum) ; viewCmtBox[userData.PostNum] && toggleCmt(userData.PostNum); toggleReply(userData.PostNum)}}>{userData.Comments?.length} Comments</span>
-                                       </Col>
-                                       <Col>
-                                          <i class="fa fa-reply" aria-hidden="true"></i>
-                                          <span className="stats-text" onClick={() => { viewLikes[userData.PostNum] && toggleLikes(userData.PostNum) ; viewReply[userData.PostNum] && toggleReply(userData.PostNum) ;  toggleCmt(userData.PostNum)}}>Reply</span>
-                                       
-                                       </Col>
-                                    </Row>
-                                    <Row>
-                                             {/* show likes */}
-                                             {viewLikes[userData.PostNum] &&
-                                             userData.Likes.map((Likes)=> (
-                                                   <Row >
-                                                      <div className="replys">
-                                                         <Col md="auto">
-                                                            <span className="userimage"><img onClick={()=> setViewing(userData.Username)} src={Likes.Profpic} alt=""/></span>  
-                                                         </Col>
-                                                         <Col>
-                                                            <Row>
-                                                               <div ClassName = "username" onClick={()=> setViewing(userData.Username)} >{Likes.Username}</div> 
-                                                            </Row>
-                                                         </Col>
-                                                      </div>
-                                                      
-                                                   </Row> 
-                                             ))
-                                             } 
-
-                                             {/* show comments */}
-                                             {viewReply[userData.PostNum] &&
-                                             userData.Comments.map((replys)=> (
-                                                <Row >
-                                                   <div className="replys">
-                                                      <Col  md="auto">
-                                                         <span className="userimage"><img onClick={()=> setViewing(userData.Username)} src={replys.Profpic} alt=""/></span>  
-                                                      </Col>
-                                                      <Col>
-                                                         <Row>
-                                                            <Col>
-                                                                <div ClassName = "username" onClick={()=> setViewing(replys.Username)} >{replys.Username}</div>
-                                                            </Col> 
-                                                            <Col>
-                                                            {
-                                                               sessionUser === replys.Username &&
-
-                                                               <i class="fa fa-trash-o" onClick={() => deleteResponse(userData.Username, userData.ID, replys.ID)} aria-hidden="true"></i>
-                                                            }
-                                                            </Col>
-                                                         </Row>
-                                                         <Row>
-                                                            <p>{replys.Comment}</p>
-                                                         </Row>
-                                                      </Col>
-                                                   </div>
-                                                </Row>
-                                             ))
-                                             } 
-
-                                             {/* show reply box */}
-                                             {viewCmtBox[userData.PostNum] && 
-                                                <>
-                                                   <Row>
-                                                         <div className="input">
-                                                            <form action="">
-                                                               <div className="input-group">
-                                                                  <textarea type="text" className="form-control rounded-corner" id={userData.ID} style={{height:"90px", width:"180px"}} placeholder="Reply to the post..."/>
-                                                               </div>
-                                                            </form>
-                                                         </div>
-                                                   </Row>
-                                                   <Row>
-                                                      <span className="input-group-btn p-l-10">
-                                                         <button className="btn btn-primary f-s-12 rounded-corner" type="button"  onClick={()=>sendReply(userData.Username, userData.ID)}>Comment</button>
-                                                      </span>
-                                                   </Row>
-                                                </> 
-                                             }
-                                            
-                                    </Row>
-                                  </div>
-                                    
-                                 </Row>
-                              </div>
-                           </>
-                  )})}
-                              
-
-                  
-             </Col>
-             <Col xs lg="3">
-             </Col>
           
-           </Row>
          </Container>
       </div>
        );
