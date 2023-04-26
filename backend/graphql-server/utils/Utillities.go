@@ -26,7 +26,7 @@ func Connectedaws(err2 error) { // prints connected to aws if all error checks p
 	if err2 != nil {
 		log.Fatal(err2)
 	} else {
-		fmt.Println("Connected to MongoDB!")
+		fmt.Println("Connected to AWS!")
 	}
 }
 

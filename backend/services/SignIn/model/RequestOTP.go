@@ -26,7 +26,7 @@ func (s *Server) RequestOTP (ctx context.Context, in *RequestOtpInput) (*Confirm
 
 	otp := string(b) 
 
-	fmt.Println("randon otp is", otp, "this isnt safe, will need some secret key to truly randomize")
+	fmt.Println("otp is:", otp)
 
 	//save otp to db
 	otpHash := utils.HashAndSalt([]byte(otp))

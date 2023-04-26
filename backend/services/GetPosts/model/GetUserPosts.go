@@ -2,7 +2,6 @@ package model
 
 import (
 	"context"
-	"fmt"
 	"errors"
 	"time"
 	"github.com/andru100/Social-Network-Microservices/backend/services/GetUserComments/utils"
@@ -17,9 +16,7 @@ func GetUserPosts(ctx context.Context, in *GetPost) (*MongoFields, error) {
 
 	err := collection.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&currentDoc)
 	if err != nil {
-		err5 := errors.New("unable to find users data")
-		fmt.Println(err5, err, in.Username)
-		return nil, err5
+		return nil, errors.New("unable to find users data")
 	}
 	
 	return &currentDoc, err

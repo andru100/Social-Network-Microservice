@@ -1,15 +1,12 @@
 package model
 
 import (
-	"fmt"
 	"golang.org/x/net/context"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
 
 func (s *Server) Chkauth(ctx context.Context, in *JwtdataInput) (*Authd, error) {
-	
-	fmt.Println("token iss", in.Token)
 
 	var jwtKey = []byte("AllYourBase")
 

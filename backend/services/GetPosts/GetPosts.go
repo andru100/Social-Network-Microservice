@@ -35,7 +35,7 @@ func main() {
 }
 
 func (s *Server) GetPosts(ctx context.Context, in *model.GetPost) (*model.MongoFields, error) {
-	fmt.Println("GetUserComments called!")
+	fmt.Println("get posts service called!")
 	
 	switch in.RequestType {
 		case "suggested":

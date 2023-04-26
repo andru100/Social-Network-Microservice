@@ -61,6 +61,10 @@ func SendEmail(recipient *string, otp *string) (bool, error) {
 	// Attempt to send the email.
 	result, err := svc.SendEmail(input)
 
+	if err != nil {
+		fmt.Println(result, err)
+	}
+
 	// Display error messages if they occur.
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
@@ -84,7 +88,6 @@ func SendEmail(recipient *string, otp *string) (bool, error) {
 	}
 
 	fmt.Println("Email Sent to address: " + *recipient)
-	fmt.Println(result)
 
 	return true, nil
 

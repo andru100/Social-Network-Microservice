@@ -40,7 +40,7 @@ func main() {
 
 func (s *Server) Follow (ctx context.Context, in *model.FollowInput) (*model.MongoFields, error) {
 
-	fmt.Println("Follow called!")
+	fmt.Println("Follow service called!")
 
 	collection := utils.Client.Database("datingapp").Collection("userdata")
 

@@ -40,7 +40,7 @@ type Server struct {
 }
 
 func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb doc
-	fmt.Println("secure update called request type is", in.RequestType)
+	fmt.Println("secure update called")
 
 	
 	if in.UpdateType == "bio" { // bio does not need security check
@@ -77,7 +77,7 @@ func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput
 
 	switch in.RequestType {
 	case "update":
-			fmt.Println("update called details are: ", in.Username, in.Password, in.OTP_Mobile, in.OTP_Email, in.UpdateType, in.UpdateData)
+			fmt.Println("request type is update")
 
 			if securityscore >= userdata.SecurityLevel && err == nil {
 
@@ -111,7 +111,6 @@ func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput
 					err = db.FindOne(ctxMongo, bson.M{"Mobile": in.UpdateData}).Decode(&verifyMobile)
 
 					if err == nil {
-						fmt.Println("mobile in use error, says it found dupliate, found mob is: ", verifyMobile.Mobile, "full doc is: ", verifyMobile)
 						err = errors.New("mobile in use")
 						return nil, err
 					}
@@ -190,7 +189,7 @@ func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput
 
 	case "stage2":
 
-		fmt.Println("secure update stage 2 called: ", in)
+		fmt.Println("request tpe is stage 2")
 
 		if err != nil  || securityscore < 1{
 			return nil, errors.New(fmt.Sprintf("security check failed, score: %v error %v", securityscore, err))
@@ -204,7 +203,6 @@ func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput
 			_, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Email: in.Email, Mobile: in.Mobile, RequestType: userdata.AuthType, UserType: "user"})
 
 			if err != nil {
-				fmt.Println(err)
 				return nil, errors.New(fmt.Sprintf("error requesting otp on signup stage 2: %v", err))
 			}
 			
@@ -226,7 +224,7 @@ func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput
 
 	default:
 
-		fmt.Println("default called, request is: ", in.RequestType, "username is: ", in.Username)
+		fmt.Println("request type is default")
 
 		authoverride := userdata.AuthType
 		
@@ -249,8 +247,6 @@ func (s *Server) SecureUpdate (ctx context.Context, in *model.SecurityCheckInput
 		
 		emailclue := userdata.Email[0:3]
 		a:= &model.Jwtdata{Token: "proceed", AuthType: userdata.AuthType, MobClue: mobileclue, EmailClue: emailclue}
-				
-		fmt.Println("sending this here:", a)
 
 		return a, nil
 	}

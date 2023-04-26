@@ -38,7 +38,6 @@ func (r *mutationResolver) SignIn(ctx context.Context, input model.SecurityCheck
 
 // SignUp is the resolver for the SignUp field.
 func (r *mutationResolver) SignUp(ctx context.Context, input model.SecurityCheckInput) (*model.Jwtdata, error) {
-	fmt.Printf("signup called in gql server, in is: %v", input)
 	var conn *grpc.ClientConn
 
 	conn, err := grpc.Dial(os.Getenv("HOSTIP")+":4002", grpc.WithInsecure())
@@ -159,14 +158,11 @@ func (r *mutationResolver) SecureUpdate(ctx context.Context, input model.Securit
 	}
 	defer conn.Close()
 
-	fmt.Println("connection is fine")
-
 	c := model.NewSocialGrpcClient(conn)
 
 	result, err := c.SecureUpdate(context.Background(), &input)
 
 	if err != nil {
-		fmt.Println("error is ", err)
 		return nil, err
 	}
 
@@ -189,7 +185,6 @@ func (r *mutationResolver) Follow(ctx context.Context, input model.FollowInput) 
 	result, err := c.Follow(context.Background(), &input)
 
 	if err != nil {
-		fmt.Println("error is ", err)
 		return nil, err
 	}
 

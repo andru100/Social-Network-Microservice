@@ -25,7 +25,6 @@ func (s *Server) RequestOTP(ctx context.Context, in *RequestOtpInput) (*Confirma
 
 	otp := string(b)
 
-	fmt.Println("randon otp is", otp, "this isnt safe, will need some secret key to truly randomize")
 
 	//save otp to db
 	otpHash := utils.HashAndSalt([]byte(otp))
@@ -133,7 +132,6 @@ func (s *Server) RequestOTP(ctx context.Context, in *RequestOtpInput) (*Confirma
 		//put to db
 		_, err := db.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
-			fmt.Println("its updateone on requestotp3")
 			return nil, errors.New("its updateone on requestotp3")
 		}
 
@@ -163,19 +161,16 @@ func (s *Server) RequestOTP(ctx context.Context, in *RequestOtpInput) (*Confirma
 		//put to db
 		_, err = db.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
-			fmt.Println("its updateone on requestotp4")
 			return nil, errors.New("its updateone on requestotp4")
 		}
 
 		_, err = SendSMS(&in.Mobile, &otp)
 		if err != nil {
-			fmt.Println("its send sms on requestotp4")
 			return nil, err
 		}
 
 		_, err = SendEmail(&in.Email, &otp2)
 		if err != nil {
-			fmt.Println("its send email on requestotp4")
 			return nil, err
 		}
 

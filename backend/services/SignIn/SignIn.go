@@ -42,12 +42,13 @@ func main() {
 
 func (s *Server) SignIn(ctx context.Context, in *model.SecurityCheckInput) (*model.Jwtdata, error) {// takes id and sets up bucket and mongodb doc
 
+	fmt.Println("SignIn called")
 	// check username and password are correct and return security score. 
 
 	switch in.RequestType {
 		case "stage1":
 
-			fmt.Println("signin stage 1  called", in)
+			fmt.Println("request type is stage 1")
 
 			collection := utils.Client.Database("datingapp").Collection("security") // connect to db and collection.
 

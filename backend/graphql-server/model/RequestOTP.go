@@ -25,13 +25,14 @@ func (s *Server) RequestOTP(ctx context.Context, in *RequestOtpInput) (*Confirma
 
 	otp := string(b)
 
-	fmt.Println("randon otp is", otp, "this isnt safe, will need some secret key to truly randomize")
+	fmt.Println("Debug mode: OTP created is: ", otp)
 
 	//save otp to db
 	otpHash := utils.HashAndSalt([]byte(otp))
 
 	switch in.RequestType {
 	case "sms":
+		fmt.Println("sms otp requested")
 
 		db := utils.Client.Database("datingapp").Collection("security")
 
@@ -133,8 +134,7 @@ func (s *Server) RequestOTP(ctx context.Context, in *RequestOtpInput) (*Confirma
 		//put to db
 		_, err := db.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
-			fmt.Println("its updateone on requestotp3")
-			return nil, errors.New("its updateone on requestotp3")
+			return nil, errors.New("error updating mobile otp to db")
 		}
 
 		//send email otp
@@ -163,19 +163,16 @@ func (s *Server) RequestOTP(ctx context.Context, in *RequestOtpInput) (*Confirma
 		//put to db
 		_, err = db.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
-			fmt.Println("its updateone on requestotp4")
-			return nil, errors.New("its updateone on requestotp4")
+			return nil, errors.New("error updating email otp to db")
 		}
 
 		_, err = SendSMS(&in.Mobile, &otp)
 		if err != nil {
-			fmt.Println("its send sms on requestotp4")
 			return nil, err
 		}
 
 		_, err = SendEmail(&in.Email, &otp2)
 		if err != nil {
-			fmt.Println("its send email on requestotp4")
 			return nil, err
 		}
 

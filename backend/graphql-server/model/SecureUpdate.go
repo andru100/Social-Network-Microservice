@@ -56,8 +56,6 @@ func (s *Server) SecureUpdate (ctx context.Context, in *SecurityCheckInput) (*Jw
 
 		err := db.FindOne(ctxMongo, bson.M{"Username": in.Username}).Decode(&sendotp)
 
-		fmt.Println("sendSms.Mobile: ", sendotp.Mobile)
-
 		if err != nil {
 			err = errors.New(fmt.Sprintf("unable to locate sms no.: %v", err))
 			return nil, err

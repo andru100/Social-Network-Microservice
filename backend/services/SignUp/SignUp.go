@@ -41,11 +41,11 @@ func main() {
 }
 
 func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*model.Jwtdata, error) { // takes id and sets up bucket and mongodb
-	fmt.Println("signup called request is", in)
+	fmt.Println("signup called")
 	
 	switch in.RequestType {
 	case "username":
-		fmt.Println("signup username called:", in, "in.UpdateData is: ", in.UpdateData)
+		fmt.Println("signup request type is username")
 		collection := utils.Client.Database("datingapp").Collection("security") // connect to db and collection.
 
 		ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
@@ -95,7 +95,7 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 		db := utils.Client.Database("datingapp").Collection("security") // connect to db and collection.
 
 		ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
-		fmt.Println("signup email called:", in, "in.UpdateData is: ", in.UpdateData)
+		fmt.Println("signup request type is email:")
 		verifyEmail := model.Security{}
 
 		err := db.FindOne(ctxMongo, bson.M{"Email": in.Email}).Decode(&verifyEmail)
@@ -122,7 +122,6 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 			_, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Email: in.Email, RequestType: "email", UserType: "temp"})
 
 			if err != nil {
-				fmt.Println(err)
 				return nil, errors.New("error requesting email otp")
 			}
 
@@ -133,7 +132,7 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 				
 		}
 	case "sms":
-		fmt.Println("signup mobile called:", in, "in.UpdateData is: ", in.UpdateData)
+		fmt.Println("signup request type is sms")
 		verifyMobile := model.Security{}
 
 		db := utils.Client.Database("datingapp").Collection("security") // connect to db and collection.
@@ -176,7 +175,7 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 			return &model.Jwtdata{Token: "proceed", AuthType: "confirmsms", EmailClue: emailclue, MobClue: mobclue}, nil	
 		}
 	case "setsecurity":
-		fmt.Println("setsecurity called:", in, )
+		fmt.Println("sign up request type is  setsecurity:" )
 		tempDB := utils.Client.Database("datingapp").Collection("tempuser") // connect to db and collection.
 
 		ctxMongo, _ := context.WithTimeout(context.Background(), 15*time.Second)
@@ -241,7 +240,7 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 				}
 
 				token, err2 := model.MakeJwt(&in.Username, true) // make jwt with user id and auth true
-				fmt.Println("made jwt in ccreat acccount")
+				fmt.Println("created jwt for sign in")
 
 				if err2 != nil {
 					return nil, err2
@@ -257,7 +256,7 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 
 	case "stage2":
 
-		fmt.Println("signup stage 2 new called", in)
+		fmt.Println("signup request type is stage 2")
 
 		collection := utils.Client.Database("datingapp").Collection("tempuser") // connect to db and collection.
 
@@ -288,7 +287,7 @@ func (s *Server) SignUp(ctx context.Context, in *model.SecurityCheckInput) (*mod
 
 		if securityscore > 0 && securityscore < userdata.SecurityLevel { // if is  check request gets sccore 1 for pass and doesnt return errors then do a rpc and return a proceed and auth type being asked for
 
-			fmt.Println("security check passed but not enough, sending next steps and otp")
+			fmt.Println("security check passed some, but does not meet security level threshold, sending next steps and otp")
 
 			_, err = model.RequestOtpRpc(&model.RequestOtpInput{Username: in.Username, Email: in.Email, Mobile: in.Mobile, RequestType: userdata.AuthType, UserType: "temp"})
 

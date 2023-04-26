@@ -62,8 +62,6 @@ func (s *Server) NewComment (ctx context.Context, in *model.SendCmtInput) (*mode
 			likeHolder := []*model.Likes{}
 			id := uuid.New()
 
-			fmt.Println("adding New post to DB, uuid is: ", id)
-
 			//make new comment struct: 
 			newPost := model.PostData{
 				ID: id.String(),

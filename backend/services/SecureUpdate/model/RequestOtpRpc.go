@@ -27,7 +27,6 @@ func RequestOtpRpc (in *RequestOtpInput) (*Confirmation, error) {
 	result, err := c.RequestOTP(context.Background(), in)
 	
 	if err != nil {
-		fmt.Println("error in request otp rpc", err)
 		return nil, err
 	}
 	
