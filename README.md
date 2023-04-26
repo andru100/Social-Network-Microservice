@@ -13,13 +13,13 @@ By default the aws features are turned off for testing. This way when signing up
 
 If you want to use the aws features eg. to send OTP to sms and email:
 
-* change value *** ENABLE_AWS = true ***
+* change value **ENABLE_AWS = true**
 
-* change *** Sender_Email = "Your-AWS-SNS-Registered-Email" ***
+* change **Sender_Email = "Your-AWS-SNS-Registered-Email"**
 
 Also ensure you have a credentials file in the default .aws directory. The docker compose will copy this volume and use this to authenticate. Or you can use role based access with aws and ignore this step.
 
-Then run the container images *** docker compose up --build ***
+Then run the container images **docker compose up --build**
 
 This builds:
 
@@ -82,7 +82,7 @@ user enters password wrong 5 times, gets locked out for 5 mins is on security lo
 
 The only way to reset the security level is to successfully pass all authentication. Upon signing in the back end resets this for next time.
 
-*** Note: *** you can change the duration on the security lock at each stage in the .env file name *** Lock_Duration ***
+**Note: **you can change the duration on the security lock at each stage in the .env file name **Lock_Duration**
 
 
 ## Homepage:
