@@ -5,6 +5,7 @@ services:
     build: 
       context: ./frontend-react
       args:
+        - REACT_APP_BACKEND_SIGNIN=${REACT_APP_BACKEND_SIGNIN}
         - REACT_APP_BACKEND_GRAPHQL=${REACT_APP_BACKEND_GRAPHQL}
         - REACT_APP_BACKEND_UPLOAD=${REACT_APP_BACKEND_UPLOAD} 
         - REACT_APP_FRONTEND=${REACT_APP_FRONTEND} 
@@ -45,6 +46,9 @@ services:
         context: ./backend/services/SignIn
         args:
           - HOSTIP=${HOSTIP}
+          - LOCK_DURATION_1=${LOCK_DURATION_1}
+          - LOCK_DURATION_2=${LOCK_DURATION_2}
+          - LOCK_DURATION_3=${LOCK_DURATION_3}
     container_name: backend-signin
     ports:
       - 4001:4001
@@ -55,6 +59,9 @@ services:
       args:
           - HOSTIP=${HOSTIP}
           - SENDER_EMAIL=${SENDER_EMAIL}
+          - LOCK_DURATION_1=${LOCK_DURATION_1}
+          - LOCK_DURATION_2=${LOCK_DURATION_2}
+          - LOCK_DURATION_3=${LOCK_DURATION_3}
     container_name: backend-signup
     volumes: # for aws credentials ( delte this if you are using role based auth)
       - /home/dev/.aws:/root/.aws
@@ -114,6 +121,10 @@ services:
         args:
           - HOSTIP=${HOSTIP}
           - SENDER_EMAIL=${SENDER_EMAIL}
+          - LOCK_DURATION_1=${LOCK_DURATION_1}
+          - LOCK_DURATION_2=${LOCK_DURATION_2}
+          - LOCK_DURATION_3=${LOCK_DURATION_3}
+          
     container_name: backend-secureupdate
     ports:
       - 4012:4012
